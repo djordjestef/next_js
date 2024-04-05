@@ -1,13 +1,21 @@
-import Link from "next/link";
+import Links from "./links/Links";
+import Image from "next/image";
+import styles from "./navbar.module.css";
 
 const Navbar = () => {
   return (
-    <div>
-      <div>Logo</div>
-        <Link href='/'>Homepage</Link>
-        <Link href='/about'>About</Link>
-        <Link href='/contact'>Contact</Link>
-
+    <div className={styles.container}>
+      <div>
+        <Image
+          src="/logo.jpg"
+          width={40}
+          height={40}
+          alt="Picture of the author"
+        />
+      </div>
+      <div>
+        <Links />
+      </div>
     </div>
   );
 };
