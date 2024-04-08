@@ -5,7 +5,6 @@ import styles from "./navLink.module.css";
 
 const NavLink = ({ item }: any) => {
   const pathName = usePathname();
-  console.log("pathName", pathName);
 
   return (
     <Link
