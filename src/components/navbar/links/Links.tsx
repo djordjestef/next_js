@@ -1,7 +1,8 @@
-'use client'
+"use client";
 import { useState } from "react";
 import styles from "./links.module.css";
 import NavLink from "./navLink/navLink";
+import Image from "next/image";
 const links = [
   {
     title: "Home",
@@ -29,28 +30,37 @@ const Links = () => {
 
   return (
     <div className={styles.container}>
-    <div className={styles.links}>
-      {links.map((link) => (
-        <NavLink item={link} key={link.title} />
-      ))}
-      {session ? (
-        isAdmin && (
-          <>
-            <NavLink item={{ title: "Admin", path: "/admin" }} />
-            <button className={styles.logout}>Logout</button>
-          </>
-        )
-      ) : (
-        <NavLink item={{ title: "Login", path: "/login" }} />
-      )}
-    </div>
-    <button className={styles.menuBtn} onClick={()=>setOpen((prevState)=>!prevState)}>Menu</button>
-    {open && <div className={styles.mobileLinks}>
-        {links.map(link=>(
-               <NavLink item={link} key={link.title} />
+      <div className={styles.links}>
+        {links.map((link) => (
+          <NavLink item={link} key={link.title} />
         ))}
+        {session ? (
+          isAdmin && (
+            <>
+              <NavLink item={{ title: "Admin", path: "/admin" }} />
+              <button className={styles.logout}>Logout</button>
+            </>
+          )
+        ) : (
+          <NavLink item={{ title: "Login", path: "/login" }} />
+        )}
+      </div>
+      <Image
+        className={styles.menuBtn}
+        src="/menu.png"
+        alt=""
+        width={30}
+        height={30}
+        onClick={() => setOpen((prevState) => !prevState)}
+      />
 
-    </div> }
+      {open && (
+        <div className={styles.mobileLinks}>
+          {links.map((link) => (
+            <NavLink item={link} key={link.title} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
