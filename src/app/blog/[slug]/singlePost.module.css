@@ -29,21 +29,6 @@
   gap: 20px;
 }
 
-.detailText {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.detailTitle {
-  color: gray;
-  font-weight: bold;
-}
-
-.detailValue {
-  font-weight: 500;
-}
-
 .content {
   font-size: 20px;
 }
