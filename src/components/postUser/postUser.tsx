@@ -1,25 +1,37 @@
 import styles from "./postUser.module.css";
+import { getUser } from "@/lib/data";
+import Image from "next/image";
 
-const getData = async (userId: number) => {
-  const res = await fetch(
-    `https://jsonplaceholder.typicode.com/users/${userId}`,
-    { cache: "no-store" }
-  );
+// FETCH DATA WITH AN API
+// const getData = async (userId: number) => {
+//   const res = await fetch(
+//     `https://jsonplaceholder.typicode.com/users/${userId}`,
+//     { cache: "no-store" }
+//   );
 
-  if (!res.ok) {
-    throw new Error("User does not exist");
-  }
+//   if (!res.ok) {
+//     throw new Error("User does not exist");
+//   }
 
-  return res.json();
-};
+//   return res.json();
+// };
+const PostUser = async ({ userId }: any) => {
+  const user = await getUser(userId);
 
-const PostUser = async ({ userId }) => {
-  const user = await getData(userId);
   console.log("user", user);
   return (
     <div className={styles.container}>
-      <div className={styles.title}>Author</div>
-      <div className={styles.username}>{user.username}</div>
+      <Image
+        className={styles.avatar}
+        src={user.img ? user.img : '/noavatar.png'}
+        alt=""
+        width={50}
+        height={50}
+      />
+      <div className={styles.texts}>
+        <div className={styles.title}>Author</div>
+        <div className={styles.username}>{user.username}</div>
+      </div>
     </div>
   );
 };

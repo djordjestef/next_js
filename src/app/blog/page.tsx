@@ -21,6 +21,7 @@ const BlogPage = async () => {
   // const posts = await getData();
 
   const posts = await getPosts();
+  console.log('posts',posts)
 
   return (
     <div className={styles.container}>
