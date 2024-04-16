@@ -2,11 +2,14 @@ import Links from "./links/Links";
 import Image from "next/image";
 import styles from "./navbar.module.css";
 import Link from "next/link";
+import { auth } from "../../lib/auth";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await auth();
+
   return (
     <div className={styles.container}>
-      <Link href='/'>
+      <Link href="/">
         <Image
           src="/logo.jpg"
           width={40}
@@ -15,7 +18,7 @@ const Navbar = () => {
         />
       </Link>
       <div>
-        <Links />
+        <Links session={session} />
       </div>
     </div>
   );
