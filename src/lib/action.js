@@ -4,28 +4,28 @@ import { Post, User } from "./models";
 import { connectToDb } from "./utils";
 import { signIn, signOut } from "./auth";
 
-export const addPost = async (formData) => {
-  console.log("formData", formData);
-  console.log(Object.fromEntries(formData));
-  const { title, desc, slug, userId } = Object.fromEntries(formData);
-  console.log("title", title);
-  try {
-    connectToDb();
-    const newPost = new Post({
-      title,
-      desc,
-      slug,
-      userId,
-    });
+// export const addPost = async (formData) => {
+//   console.log("formData", formData);
+//   console.log(Object.fromEntries(formData));
+//   const { title, desc, slug, userId } = Object.fromEntries(formData);
+//   console.log("title", title);
+//   try {
+//     connectToDb();
+//     const newPost = new Post({
+//       title,
+//       desc,
+//       slug,
+//       userId,
+//     });
 
-    await newPost.save();
-    revalidatePath("/blog");
-    console.log("saved to DB");
-  } catch (error) {
-    console.log("error", error);
-    return { error: "Something went wrong" };
-  }
-};
+//     await newPost.save();
+//     revalidatePath("/blog");
+//     console.log("saved to DB");
+//   } catch (error) {
+//     console.log("error", error);
+//     return { error: "Something went wrong" };
+//   }
+// };
 
 export const deletePost = async (formData) => {
   const { id } = Object.fromEntries(formData);
