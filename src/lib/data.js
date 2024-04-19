@@ -1,4 +1,4 @@
-'use server'
+"use server";//this is a problem try to make request from client side
 import { User } from "./models";
 import { connectToDb } from "./utils";
 import { unstable_noStore as noStore } from "next/cache";
@@ -28,7 +28,7 @@ import { unstable_noStore as noStore } from "next/cache";
 // };
 
 export const getUser = async (id) => {
-  console.log("GET USER")
+  console.log("GET USER");
   noStore();
   try {
     connectToDb();
@@ -51,7 +51,7 @@ export const getUsers = async () => {
   }
 };
 
-export async function generateBlog(formData) {
+export async function postBlog(formData) {
   const url = "http://localhost:3000/api/blog";
 
   try {
@@ -62,7 +62,7 @@ export async function generateBlog(formData) {
 
     return await response.json();
   } catch (error) {
-    console.error("Failed to generate summary:", error);
+    console.error("Failed to generate blog:", error);
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
   }

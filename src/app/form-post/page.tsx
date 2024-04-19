@@ -1,13 +1,13 @@
 "use client"
-import { generateBlog } from "../../lib/data";
+import { postBlog } from "@/lib/data";
 
 const FormPage = () => {
-  const getFormData = async (event) => {
+  const getFormData = async (event:any) => {
     event.preventDefault();
-    const title = document.getElementById("title").value;
-    const desc = document.getElementById("desc").value;
-    const slug = document.getElementById("slug").value;
-    const userId = document.getElementById("userId").value;
+    const title = document.getElementById("title")?.value;
+    const desc = document.getElementById("desc")?.value;
+    const slug = document.getElementById("slug")?.value;
+    const userId = document.getElementById("userId")?.value;
     const formData = {
       title,
       desc,
@@ -15,7 +15,7 @@ const FormPage = () => {
       userId,
     };
     console.log("formData", formData);
-    await generateBlog(formData);
+    await postBlog(formData);
   };
   return (
     <div>

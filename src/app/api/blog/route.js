@@ -13,7 +13,31 @@ export const GET = async () => {
   }
 };
 
+export const POST = async (req, res) => {
+  try {
+    connectToDb();
+    const data = await req.json();
+    const { formData } = data;
+    console.log("formData", formData);
 
+    const newPost = new Post(formData);
+
+    await newPost.save();
+
+    //making response to browser(client) of this POST
+    return new Response(
+      JSON.stringify({
+        data: "data that i need to return to client",
+        error: null,
+      }),
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.log("error", error);
+  }
+};
 
 // export async function POST(req, res) {
 //   try {
@@ -45,4 +69,3 @@ export const GET = async () => {
 //     return new Response(JSON.stringify({ error: "Unknown error" }));
 //   }
 // }
-
