@@ -21,19 +21,19 @@ export const {
       console.log("account", account);
       console.log("profile", profile);
       if (account.provider === "github") {
-        connectToDb();
+        await connectToDb();
 
         try {
           const user = await User.findOne({ email: profile.email });
 
           if (!user) {
-            console.log('creating NEW USER')
+            console.log("creating NEW USER");
             const newUser = new User({
               username: profile.login,
               email: profile.email,
               img: profile.avatar_url,
             });
-            await newUser.save()
+            await newUser.save();
           }
         } catch (error) {
           console.log("error", error);

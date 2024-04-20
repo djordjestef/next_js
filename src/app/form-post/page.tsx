@@ -1,5 +1,5 @@
 "use client"
-import { postBlog } from "@/lib/data";
+import { postBlog } from "@/lib/services";
 
 const FormPage = () => {
   const getFormData = async (event:any) => {

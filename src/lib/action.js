@@ -31,7 +31,7 @@ export const deletePost = async (formData) => {
   const { id } = Object.fromEntries(formData);
   console.log("id", id);
   try {
-    connectToDb();
+    await connectToDb();
 
     await Post.findByIdAndDelete(id);
     revalidatePath("/blog");
@@ -53,13 +53,13 @@ export const handleLogout = async () => {
 };
 
 export const register = async (formData) => {
-  const { username, email, password,img, passwordRepeat } =
+  const { username, email, password, img, passwordRepeat } =
     Object.fromEntries(formData);
 
   if (password !== passwordRepeat) return "Password does not match";
 
   try {
-    connectToDb();
+    await connectToDb();
 
     const user = User.findOne({ username });
 
@@ -69,7 +69,7 @@ export const register = async (formData) => {
       username,
       email,
       password,
-      img
+      img,
     });
 
     await newUser.save();

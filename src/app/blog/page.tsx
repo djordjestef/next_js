@@ -1,23 +1,12 @@
 import PostCard from "@/components/postCard/postCard";
 import styles from "./blog.module.css";
+import { getBlogs } from "@/lib/services";
 // import { getPosts } from "@/lib/data";
-
-// FETCH DATA WITH AN API
-const getData = async () => {
-  const res = await fetch("http://localhost:3000/api/blog", {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Something went wrong");
-  }
-
-  return res.json();
-};
 
 const BlogPage = async () => {
   // FETCH DATA WITH AN API
-  const posts = await getData();
+  const posts = await getBlogs();
+  console.log('posts',posts)
 
   // const posts = await getPosts();
 

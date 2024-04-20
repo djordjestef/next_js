@@ -2,25 +2,14 @@ import Image from "next/image";
 import styles from "./singlePost.module.css";
 import PostUser from "@/components/postUser/postUser";
 import { Suspense } from "react";
+import { getBlog } from "@/lib/services";
 // import { getPost } from "@/lib/data";
-
-// FETCH DATA WITH AN API
-const getData = async (slug: any) => {
-  console.log("slug", slug);
-  const res = await fetch(`http://localhost:3000/api/blog/${slug}`);
-
-  if (!res.ok) {
-    throw new Error("Single Post Error");
-  }
-
-  return res.json();
-};
 
 const SinglePostPage = async ({ params }: any) => {
   const { slug } = params;
 
   // FETCH DATA WITH AN API
-  const post = await getData(slug);
+  const post = await getBlog(slug);
 
   // const post: any = await getPost(slug);
   // console.log("post", post);
