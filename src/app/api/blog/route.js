@@ -1,6 +1,7 @@
 import { Post } from "@/lib/models";
 import { connectToDb } from "@/lib/utils";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export const GET = async (req) => {
   try {
@@ -27,11 +28,34 @@ export const POST = async (req, res) => {
     //making response to browser(client) of this POST
     return new Response(
       JSON.stringify({
-        data: newPost,
+        data: { ...newPost, custom: "custom id" },
         error: null,
       }),
       {
         status: 201,
+      }
+    );
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const DELETE = async (request) => {
+  try {
+    const req = await request.json();
+    const { id } = req;
+
+    await connectToDb()
+    await Post.findByIdAndDelete(id)
+    revalidatePath("/blog")
+
+    return new Response(
+      JSON.stringify({
+        data: "",
+        error: null,
+      }),
+      {
+        status: 200,
       }
     );
   } catch (error) {

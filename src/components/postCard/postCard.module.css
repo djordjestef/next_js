@@ -41,3 +41,15 @@
 .link {
   text-decoration: underline;
 }
+
+.deleteBtn {
+  all: unset;
+  font-size: 20px;
+  font-weight: bold;
+  color: brown;
+  position: relative;
+  z-index: 99;
+  float: right;
+  right: -20px;
+  cursor: pointer;
+}

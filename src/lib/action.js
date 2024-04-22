@@ -27,20 +27,20 @@ import { signIn, signOut } from "./auth";
 //   }
 // };
 
-export const deletePost = async (formData) => {
-  const { id } = Object.fromEntries(formData);
-  console.log("id", id);
-  try {
-    await connectToDb();
+// export const deletePost = async (formData) => {
+//   const { id } = Object.fromEntries(formData);
+//   console.log("id", id);
+//   try {
+//     await connectToDb();
 
-    await Post.findByIdAndDelete(id);
-    revalidatePath("/blog");
-    console.log("deleted from DB");
-  } catch (error) {
-    console.log("error", error);
-    return { error: "Something went wrong" };
-  }
-};
+//     await Post.findByIdAndDelete(id);
+//     revalidatePath("/blog");
+//     console.log("deleted from DB");
+//   } catch (error) {
+//     console.log("error", error);
+//     return { error: "Something went wrong" };
+//   }
+// };
 
 export const handleGithubLogin = async () => {
   "use server";

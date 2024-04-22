@@ -37,6 +37,31 @@ export async function postBlog(formData) {
   }
 }
 
+export const deleteBlog = async (id) => {
+  try {
+    const response = await fetch("http://localhost:3000/api/blog", {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to delete blog:", error);
+    if (error instanceof Error) return { error: { message: error.message } };
+    return { data: null, error: { message: "Unknown error" } };
+  }
+
+  // try {
+  //   await connectToDb();
+
+  //   await Post.findByIdAndDelete(id);
+  //   revalidatePath("/blog");
+  //   console.log("deleted from DB");
+  // } catch (error) {
+  //   console.log("error", error);
+  //   return { error: "Something went wrong" };
+  // }
+};
+
 export const getUsers = async () => {
   const res = await fetch("http://localhost:3000/api/user");
   if (!res.ok) {
