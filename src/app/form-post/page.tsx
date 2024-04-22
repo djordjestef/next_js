@@ -1,30 +1,33 @@
-"use client"
+"use client";
 import { postBlog } from "@/lib/services";
+import styles from "./form.module.css";
 
 const FormPage = () => {
-  const getFormData = async (event:any) => {
+  const getFormData = async (event: any) => {
     event.preventDefault();
     const title = document.getElementById("title")?.value;
     const desc = document.getElementById("desc")?.value;
     const slug = document.getElementById("slug")?.value;
     const userId = document.getElementById("userId")?.value;
+    const img = document.getElementById("img")?.value;
     const formData = {
       title,
       desc,
       slug,
       userId,
+      img,
     };
-    console.log("formData", formData);
     await postBlog(formData);
   };
   return (
     <div>
-      <form action=''>
+      <form action="" className={styles.form}>
         <input type="text" placeholder="title" name="title" id="title" />
         <input type="text" placeholder="desc" name="desc" id="desc" />
         <input type="text" placeholder="slug" name="slug" id="slug" />
         <input type="text" placeholder="userId" name="userId" id="userId" />
-        <button onClick={getFormData}>Create</button>
+        <input type="text" placeholder="image URL" name="img" id="img" />
+        <button onClick={getFormData}>Create Blog</button>
       </form>
     </div>
   );

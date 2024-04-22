@@ -19,7 +19,7 @@ import Image from "next/image";
 const PostUser = async ({ userId }: any) => {
   const users = await getUsers()
   const user = await getUser(userId);
-  console.log('users',users)
+  console.log('user',user)
 
   return (
     <div className={styles.container}>

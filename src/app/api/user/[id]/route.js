@@ -4,7 +4,6 @@ import { connectToDb } from "@/lib/utils";
 
 export const GET = async (request, { params }) => {
   const { id } = params;
-
   try {
     await connectToDb();
     const user = await User.findById(id);
