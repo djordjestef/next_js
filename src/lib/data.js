@@ -27,26 +27,26 @@ import { unstable_noStore as noStore } from "next/cache";
 //   }
 // };
 
-export const getUser = async (id) => {
-  console.log("GET USER");
-  noStore();
-  try {
-    await connectToDb();
-    const user = await User.findById(id);
-    return user;
-  } catch (error) {
-    console.log("error", error);
-    throw new Error("Failed to fetch user!");
-  }
-};
+// export const getUser = async (id) => {
+//   console.log("GET USER");
+//   noStore();
+//   try {
+//     await connectToDb();
+//     const user = await User.findById(id);
+//     return user;
+//   } catch (error) {
+//     console.log("error", error);
+//     throw new Error("Failed to fetch user!");
+//   }
+// };
 
-export const getUsers = async () => {
-  try {
-    await connectToDb();
-    const users = await User.find();
-    return users;
-  } catch (error) {
-    console.log("error", error);
-    throw new Error(error);
-  }
-};
+// export const getUsers = async () => {
+//   try {
+//     await connectToDb();
+//     const users = await User.find();
+//     return users;
+//   } catch (error) {
+//     console.log("error", error);
+//     throw new Error(error);
+//   }
+// };

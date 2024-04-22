@@ -11,7 +11,6 @@ export const getBlogs = async () => {
 };
 
 export const getBlog = async (slug) => {
-  console.log("slug", slug);
   const res = await fetch(`http://localhost:3000/api/blog/${slug}`);
 
   if (!res.ok) {
@@ -37,3 +36,22 @@ export async function postBlog(formData) {
     return { data: null, error: { message: "Unknown error" } };
   }
 }
+
+export const getUsers = async () => {
+  const res = await fetch("http://localhost:3000/api/user");
+  if (!res.ok) {
+    throw new Error("Get UserS Error");
+  }
+
+  return res.json();
+};
+
+export const getUser = async (id) => {
+  const res = await fetch(`http://localhost:3000/api/user/${id}`);
+
+  if (!res.ok) {
+    throw new Error("Get User Error");
+  }
+
+  return res.json();
+};

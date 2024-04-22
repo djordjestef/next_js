@@ -2,11 +2,12 @@ import { Post } from "@/lib/models";
 import { connectToDb } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
-export const GET = async () => {
+export const GET = async (req) => {
   try {
     await connectToDb();
     const posts = await Post.find();
-    // return new Response(
+
+    // const djordje = new Response(
     //   JSON.stringify({
     //     data: posts,
     //     error: null,
@@ -15,6 +16,9 @@ export const GET = async () => {
     //     status: 200,
     //   }
     // );
+
+    // console.log('djordje',djordje)
+
     return NextResponse.json(posts);
   } catch (error) {
     console.log("error", error);

@@ -6,7 +6,6 @@ import { getBlogs } from "@/lib/services";
 const BlogPage = async () => {
   // FETCH DATA WITH AN API
   const posts = await getBlogs();
-  console.log('posts',posts)
 
   // const posts = await getPosts();
 
