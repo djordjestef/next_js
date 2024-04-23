@@ -2,6 +2,7 @@
 "use client";
 import { postBlog } from "@/lib/services";
 import styles from "./form.module.css";
+import { Alert } from "react-st-modal";
 
 const FormPage = () => {
   const getFormData = async (event: any) => {
@@ -19,22 +20,25 @@ const FormPage = () => {
       userId,
       img,
     };
-    // if (
-    //   formData.title === "" ||
-    //   formData.desc === "" ||
-    //   formData.slug === "" ||
-    //   formData.userId === ""
-    // )
-    //   return alert("All inputs must be field");
+    if (
+      formData.title === "" ||
+      formData.desc === "" ||
+      formData.slug === "" ||
+      formData.userId === ""
+    )
+      return Alert(`All inputs must be field`, "Error");
+
     await postBlog(formData).then((res) => {
-      console.log(res.error)
       if (res.error) {
-        alert(res.error);
+        Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
+      } else {
+        Alert(`Blog has been created successfully`, "Error");
       }
     });
   };
   return (
     <div>
+  
       <form action="" className={styles.form}>
         <input type="text" placeholder="title" name="title" id="title" />
         <input type="text" placeholder="desc" name="desc" id="desc" />

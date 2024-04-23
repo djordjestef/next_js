@@ -46,7 +46,6 @@ export const POST = async (req, res) => {
 
     await newPost.save();
 
-    //making response to browser(client) of this POST
     return new Response(
       JSON.stringify({
         data: { ...newPost, custom: "custom id" },

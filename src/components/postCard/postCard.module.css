@@ -10,7 +10,7 @@
 }
 
 .imgContainer {
-  width: 90%;
+  width: 100%;
   height: 400px;
   position: relative;
 }
@@ -42,14 +42,19 @@
   text-decoration: underline;
 }
 
+.btnHolder {
+  text-align: right;
+  margin: 10px 0;
+}
+
 .deleteBtn {
-  all: unset;
-  font-size: 20px;
+  padding: 10px 20px;
+  /* background-color: var(--btn); */
+  background-color: #ed4337;
+  color: var(--text);
   font-weight: bold;
-  color: brown;
-  position: relative;
-  z-index: 99;
-  float: right;
-  right: -20px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
+
