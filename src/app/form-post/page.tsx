@@ -38,7 +38,6 @@ const FormPage = () => {
   };
   return (
     <div>
-  
       <form action="" className={styles.form}>
         <input type="text" placeholder="title" name="title" id="title" />
         <input type="text" placeholder="desc" name="desc" id="desc" />

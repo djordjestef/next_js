@@ -1,69 +1,60 @@
-"use client";
-
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import React from "react";
 import { useState } from "react";
+import Modal from "react-modal";
 import styles from "./editForm.module.css";
 
-const EditForm = () => {
-  const [openModal, setOpenModal] = useState(true);
-  const [email, setEmail] = useState("");
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
 
-  function onCloseModal() {
-    setOpenModal(false);
-    setEmail("");
+// Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
+// Modal.setAppElement('#yourAppElement');
+
+const EditForm = () => {
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    // subtitle.style.color = '#f00';
+  }
+
+  function closeModal() {
+    setIsOpen(false);
   }
 
   return (
     <>
-      <Button className={styles.editBtn} onClick={() => setOpenModal(true)}>
+      <button className={styles.editBtn} onClick={openModal}>
         Edit
-      </Button>
+      </button>
       <Modal
-        show={openModal}
-        size="md"
-        onClose={onCloseModal}
-        popup
-        className='modalContainer'
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
       >
-        <Modal.Header />
-        <Modal.Body>
-          {/* <div className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Sign in to our platform
-            </h3>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="email" value="Your email" />
-              </div>
-              <TextInput
-                id="email"
-                placeholder="name@company.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
-              />
-            </div>
-            
-            <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-300">
-              Not registered?&nbsp;
-              <a
-                href="#"
-                className="text-cyan-700 hover:underline dark:text-cyan-500"
-              >
-                Create account
-              </a>
-            </div>
-          </div> */}
-          <h1>Edit Blog</h1>
-          <form action="" className={styles.form}>
-            <input type="text" placeholder="title" name="title" id="title" />
-            <input type="text" placeholder="desc" name="desc" id="desc" />
-            <input type="text" placeholder="slug" name="slug" id="slug" />
-            <input type="text" placeholder="userId" name="userId" id="userId" />
-            <input type="text" placeholder="image URL" name="img" id="img" />
-            {/* <button onClick={getFormData}>Create Blog</button> */}
-          </form>
-        </Modal.Body>
+        <button onClick={closeModal}>close</button>
+        <div>I am a modal</div>
+        <form action="" className={styles.form}>
+          <input type="text" placeholder="title" name="title" id="title" />
+          <input type="text" placeholder="desc" name="desc" id="desc" />
+          <input type="text" placeholder="slug" name="slug" id="slug" />
+          <input type="text" placeholder="userId" name="userId" id="userId" />
+          <input type="text" placeholder="image URL" name="img" id="img" />
+          {/* <button onClick={getFormData}>Create Blog</button> */}
+        </form>
       </Modal>
     </>
   );
