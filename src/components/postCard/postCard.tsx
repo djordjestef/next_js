@@ -6,7 +6,7 @@ import { deleteBlog } from "@/lib/services";
 import { Confirm } from "react-st-modal";
 import EditForm from "../editForm/EditForm";
 
-const PostCard = ({ post }: any) => {
+const PostCard = ({ post, session }: any) => {
   const deleteOneBlog = async (id: any, title: any) => {
     const result = await Confirm(
       `Are you sure to delete ${title}`,
@@ -14,7 +14,7 @@ const PostCard = ({ post }: any) => {
     );
 
     if (result) {
-      deleteBlog(id);
+      await deleteBlog(id);
     } else {
       // Сonfirmation not confirmed
     }
@@ -37,15 +37,18 @@ const PostCard = ({ post }: any) => {
         <Link className={styles.link} href={`/blog/${post.slug}`}>
           READ MORE
         </Link>
-        <div className={styles.btnHolder}>
-          <EditForm post={post} />
-          <button
-            className={styles.deleteBtn}
-            onClick={() => deleteOneBlog(post._id, post.title)}
-          >
-            Delete
-          </button>
-        </div>
+        {/* change condition for Admin only */}
+        {!session.user.isAdmin && (
+          <div className={styles.btnHolder}>
+            <EditForm post={post} />
+            <button
+              className={styles.deleteBtn}
+              onClick={() => deleteOneBlog(post._id, post.title)}
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

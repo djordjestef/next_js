@@ -17,9 +17,9 @@ export const {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log("user", user);
-      console.log("account", account);
-      console.log("profile", profile);
+      // console.log("user", user);
+      // console.log("account", account);
+      // console.log("profile", profile);
       if (account.provider === "github") {
         await connectToDb();
 

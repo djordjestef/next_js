@@ -26,6 +26,19 @@ const EditForm = ({ post }: any) => {
     userId: "",
     img: "",
   });
+
+  const handleChange = (event: any) => {
+    const { name, value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const getFormData = (event: any) => {
+    event.preventDefault();
+    console.log("get", formData);
+  };
   // console.log('post FORM',post)
   function openModal(post: any) {
     console.log("post", post);
@@ -72,6 +85,7 @@ const EditForm = ({ post }: any) => {
             name="title"
             id="title"
             defaultValue={formData.title}
+            onChange={handleChange}
           />
           <label>Description</label>
           <input
@@ -80,6 +94,7 @@ const EditForm = ({ post }: any) => {
             name="desc"
             id="desc"
             defaultValue={formData.desc}
+            onChange={handleChange}
           />
           <label>Path</label>
           <input
@@ -88,6 +103,7 @@ const EditForm = ({ post }: any) => {
             name="slug"
             id="slug"
             defaultValue={formData.slug}
+            onChange={handleChange}
           />
           <label>User Id</label>
           <input
@@ -96,6 +112,7 @@ const EditForm = ({ post }: any) => {
             name="userId"
             id="userId"
             defaultValue={formData.userId}
+            onChange={handleChange}
           />
           <label>Image</label>
           <input
@@ -104,8 +121,9 @@ const EditForm = ({ post }: any) => {
             name="img"
             id="img"
             defaultValue={formData.img}
+            onChange={handleChange}
           />
-          {/* <button onClick={getFormData}>Create Blog</button> */}
+          <button onClick={getFormData}>Create Blog</button>
         </form>
       </Modal>
     </>

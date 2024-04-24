@@ -3,23 +3,27 @@
 import { postBlog } from "@/lib/services";
 import styles from "./form.module.css";
 import { Alert } from "react-st-modal";
+import { useState } from "react";
 
 const FormPage = () => {
+  const [formData, setFormData] = useState({
+    title: "",
+    desc: "",
+    slug: "",
+    userId: "",
+    img: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
   const getFormData = async (event: any) => {
     event.preventDefault();
 
-    const title = document.getElementById("title")?.value;
-    const desc = document.getElementById("desc")?.value;
-    const slug = document.getElementById("slug")?.value;
-    const userId = document.getElementById("userId")?.value;
-    const img = document.getElementById("img")?.value;
-    const formData = {
-      title,
-      desc,
-      slug,
-      userId,
-      img,
-    };
     if (
       formData.title === "" ||
       formData.desc === "" ||
@@ -36,14 +40,51 @@ const FormPage = () => {
       }
     });
   };
+
+  console.log("formData", formData);
   return (
     <div>
       <form action="" className={styles.form}>
-        <input type="text" placeholder="title" name="title" id="title" />
-        <input type="text" placeholder="desc" name="desc" id="desc" />
-        <input type="text" placeholder="path" name="slug" id="slug" />
-        <input type="text" placeholder="userId" name="userId" id="userId" />
-        <input type="text" placeholder="image URL" name="img" id="img" />
+        <input
+          type="text"
+          placeholder="title"
+          name="title"
+          id="title"
+          value={formData.title}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          placeholder="desc"
+          name="desc"
+          id="desc"
+          value={formData.desc}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          placeholder="path"
+          name="slug"
+          id="slug"
+          value={formData.slug}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          placeholder="userId"
+          name="userId"
+          id="userId"
+          value={formData.userId}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          placeholder="image URL"
+          name="img"
+          id="img"
+          value={formData.img}
+          onChange={handleChange}
+        />
         <button onClick={getFormData}>Create Blog</button>
       </form>
     </div>

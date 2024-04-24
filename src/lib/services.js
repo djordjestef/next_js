@@ -16,7 +16,6 @@ export const getBlog = async (slug) => {
   if (!res.ok) {
     throw new Error("Single Post Error");
   }
-
   return res.json();
 };
 

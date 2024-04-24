@@ -10,7 +10,7 @@ const SinglePostPage = async ({ params }: any) => {
 
   // FETCH DATA WITH AN API
   const post = await getBlog(slug);
-
+  console.log('post',post)
   // const post: any = await getPost(slug);
   // console.log("post", post);
 
