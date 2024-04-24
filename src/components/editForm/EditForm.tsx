@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { useState } from "react";
 import Modal from "react-modal";
@@ -11,17 +12,32 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
+    backgroundColor: "#0d0c22",
+    width: "50%",
   },
 };
 
-// Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
-// Modal.setAppElement('#yourAppElement');
-
-const EditForm = () => {
+const EditForm = ({ post }: any) => {
   const [modalIsOpen, setIsOpen] = useState(false);
-
-  function openModal() {
+  const [formData, setFormData] = useState({
+    title: "",
+    desc: "",
+    slug: "",
+    userId: "",
+    img: "",
+  });
+  // console.log('post FORM',post)
+  function openModal(post: any) {
+    console.log("post", post);
     setIsOpen(true);
+
+    setFormData({
+      title: post.title,
+      desc: post.desc,
+      slug: post.slug,
+      userId: post.userId,
+      img: post.img,
+    });
   }
 
   function afterOpenModal() {
@@ -35,7 +51,7 @@ const EditForm = () => {
 
   return (
     <>
-      <button className={styles.editBtn} onClick={openModal}>
+      <button className={styles.editBtn} onClick={() => openModal(post)}>
         Edit
       </button>
       <Modal
@@ -43,16 +59,52 @@ const EditForm = () => {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
+        ariaHideApp={false}
         contentLabel="Example Modal"
       >
         <button onClick={closeModal}>close</button>
         <div>I am a modal</div>
         <form action="" className={styles.form}>
-          <input type="text" placeholder="title" name="title" id="title" />
-          <input type="text" placeholder="desc" name="desc" id="desc" />
-          <input type="text" placeholder="slug" name="slug" id="slug" />
-          <input type="text" placeholder="userId" name="userId" id="userId" />
-          <input type="text" placeholder="image URL" name="img" id="img" />
+          <label>Title</label>
+          <input
+            type="text"
+            placeholder="title"
+            name="title"
+            id="title"
+            defaultValue={formData.title}
+          />
+          <label>Description</label>
+          <input
+            type="text"
+            placeholder="desc"
+            name="desc"
+            id="desc"
+            defaultValue={formData.desc}
+          />
+          <label>Path</label>
+          <input
+            type="text"
+            placeholder="path"
+            name="slug"
+            id="slug"
+            defaultValue={formData.slug}
+          />
+          <label>User Id</label>
+          <input
+            type="text"
+            placeholder="userId"
+            name="userId"
+            id="userId"
+            defaultValue={formData.userId}
+          />
+          <label>Image</label>
+          <input
+            type="text"
+            placeholder="image URL"
+            name="img"
+            id="img"
+            defaultValue={formData.img}
+          />
           {/* <button onClick={getFormData}>Create Blog</button> */}
         </form>
       </Modal>

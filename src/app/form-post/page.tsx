@@ -41,7 +41,7 @@ const FormPage = () => {
       <form action="" className={styles.form}>
         <input type="text" placeholder="title" name="title" id="title" />
         <input type="text" placeholder="desc" name="desc" id="desc" />
-        <input type="text" placeholder="slug" name="slug" id="slug" />
+        <input type="text" placeholder="path" name="slug" id="slug" />
         <input type="text" placeholder="userId" name="userId" id="userId" />
         <input type="text" placeholder="image URL" name="img" id="img" />
         <button onClick={getFormData}>Create Blog</button>
