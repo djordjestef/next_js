@@ -8,6 +8,7 @@ const BlogPage = async () => {
   // FETCH DATA WITH AN API
   const session = await auth();
   const posts = await getBlogs();
+  console.log('posts',posts)
 
   // const posts = await getPosts();
 

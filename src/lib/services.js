@@ -7,7 +7,7 @@ export const getBlogs = async () => {
     throw new Error("Something went wrong");
   }
 
-  return res.json();
+  return await res.json();
 };
 
 export const getBlog = async (slug) => {
@@ -16,7 +16,7 @@ export const getBlog = async (slug) => {
   if (!res.ok) {
     throw new Error("Single Post Error");
   }
-  return res.json();
+  return await res.json();
 };
 
 export async function postBlog(formData) {
@@ -45,6 +45,25 @@ export const deleteBlog = async (id) => {
     return await response.json();
   } catch (error) {
     console.error("Failed to delete blog:", error);
+    if (error instanceof Error) return { error: { message: error.message } };
+    return { data: null, error: { message: "Unknown error" } };
+  }
+};
+
+export const updateBlog = async (formData, postId) => {
+  try {
+    const response = await fetch("http://localhost:3000/api/blog", {
+      method: "PUT",
+      cache:'no-cache',
+      body: JSON.stringify({ formData, postId }),
+    });
+
+
+
+    console.log("AFTER BACKEND");
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to update blog:", error);
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
   }

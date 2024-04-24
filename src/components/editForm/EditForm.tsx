@@ -3,6 +3,7 @@ import React from "react";
 import { useState } from "react";
 import Modal from "react-modal";
 import styles from "./editForm.module.css";
+import { updateBlog } from "@/lib/services";
 
 const customStyles = {
   content: {
@@ -19,6 +20,7 @@ const customStyles = {
 
 const EditForm = ({ post }: any) => {
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [postId, setPostId] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     desc: "",
@@ -34,15 +36,9 @@ const EditForm = ({ post }: any) => {
       [name]: value,
     }));
   };
-
-  const getFormData = (event: any) => {
-    event.preventDefault();
-    console.log("get", formData);
-  };
-  // console.log('post FORM',post)
   function openModal(post: any) {
-    console.log("post", post);
     setIsOpen(true);
+    setPostId(post._id);
 
     setFormData({
       title: post.title,
@@ -61,6 +57,12 @@ const EditForm = ({ post }: any) => {
   function closeModal() {
     setIsOpen(false);
   }
+
+  const submitFormData = async (event: any) => {
+    event.preventDefault();
+
+    await updateBlog(formData, postId);
+  };
 
   return (
     <>
@@ -123,7 +125,7 @@ const EditForm = ({ post }: any) => {
             defaultValue={formData.img}
             onChange={handleChange}
           />
-          <button onClick={getFormData}>Create Blog</button>
+          <button onClick={submitFormData}>Edit Blog</button>
         </form>
       </Modal>
     </>

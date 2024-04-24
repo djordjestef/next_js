@@ -60,12 +60,12 @@ export const POST = async (req, res) => {
   }
 };
 
-export const DELETE = async (request) => {
+export const DELETE = async (req) => {
   try {
-    const req = await request.json();
-    const { id } = req;
-
     await connectToDb();
+    const data = await req.json();
+    const { id } = data;
+
     await Post.findByIdAndDelete(id);
     revalidatePath("/blog");
 
@@ -76,6 +76,29 @@ export const DELETE = async (request) => {
       }),
       {
         status: 200,
+      }
+    );
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const PUT = async (req) => {
+  try {
+    await connectToDb();
+    const data = await req.json();
+    const { formData, postId } = data;
+    await Post.findByIdAndUpdate(postId, formData);
+    revalidatePath(`/blog/${formData.slug}`);
+    revalidatePath(`/blog`);
+
+    return new Response(
+      JSON.stringify({
+        data: formData,
+        error: null,
+      }),
+      {
+        status: 201,
       }
     );
   } catch (error) {
