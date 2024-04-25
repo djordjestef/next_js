@@ -36,7 +36,7 @@ const FormPage = () => {
       if (res.error) {
         Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
       } else {
-        Alert(`Blog has been created successfully`, "Error");
+        Alert(`Blog has been created successfully`, "Success");
       }
     });
   };

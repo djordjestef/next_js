@@ -62,6 +62,7 @@ const EditForm = ({ post }: any) => {
     event.preventDefault();
 
     await updateBlog(formData, postId);
+    closeModal()
   };
 
   return (
