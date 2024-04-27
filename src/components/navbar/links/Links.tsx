@@ -28,7 +28,6 @@ const Links = ({ session }: any) => {
   const [open, setOpen] = useState(false);
   // console.log('session',session)
 
-  const isAdmin = true;
 
   return (
     <div className={styles.container}>

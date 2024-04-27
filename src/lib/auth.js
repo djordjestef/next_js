@@ -10,6 +10,8 @@ const login = async (credentials) => {
   try {
     await connectToDb();
     const user = await User.findOne({ username: credentials.username });
+
+    console.log('user',user)
     if (!user) {
       throw new Error("User not found");
     }

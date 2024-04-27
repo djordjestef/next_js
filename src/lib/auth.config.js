@@ -1,12 +1,13 @@
 export const authConfig = {
-    pages:{
-        signIn:'/login',
+  pages: {
+    signIn: "/login",
+  },
+  providers: [],
+  callbacks: {
+    authorized({ auth, request }) {
+      console.log("auth", auth);
+      if (auth) return true;
+      return false;
     },
-    providers:[],
-    callbacks:{
-        authorized({auth,request}){
-            console.log('auth', auth)
-            return false
-        }
-    }
-}
+  },
+};
