@@ -19,6 +19,7 @@ const PostCard = ({ post, session }: any) => {
       // Сonfirmation not confirmed
     }
   };
+  console.log('session',session)
   return (
     <div className={styles.container}>
       <div className={styles.top}>

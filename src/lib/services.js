@@ -54,13 +54,11 @@ export const updateBlog = async (formData, postId) => {
   try {
     const response = await fetch("http://localhost:3000/api/blog", {
       method: "PUT",
-      cache:'no-cache',
+      cache: "no-cache",
       body: JSON.stringify({ formData, postId }),
     });
 
-
-
-    console.log("AFTER BACKEND");
+    console.log("AFTER BACKEND", response);
     return await response.json();
   } catch (error) {
     console.error("Failed to update blog:", error);

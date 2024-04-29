@@ -2,7 +2,7 @@
 import { authConfig } from "./lib/auth.config";
 import NextAuth from "next-auth";
 
-export default NextAuth(authConfig).auth; //fn that call authConfig callback autorized fn, when it return false,mathcer blocks defined request
+export default NextAuth(authConfig).auth; //fn that call authConfig callback autorized fn, when it return false,mathcer blocks()allows defined request
 // If the authorized callback returns false, the request is blocked, and the middleware returns a response based on your matcher configuration in middleware.js.
 export const config = {
   matcher: [
