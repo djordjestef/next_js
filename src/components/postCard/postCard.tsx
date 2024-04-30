@@ -39,7 +39,7 @@ const PostCard = ({ post, session }: any) => {
           READ MORE
         </Link>
         {/* change condition for Admin only */}
-        {!session?.user.isAdmin && (
+        {session?.user.isAdmin && (
           <div className={styles.btnHolder}>
             <EditForm post={post} />
             <button

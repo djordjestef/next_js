@@ -31,6 +31,8 @@ export const authConfig = {
       if (isOnAdminPanel && !user?.isAdmin) {
         return false;
       }
+      //BLOCK ALL PATHS IF USER IS NOT AUTHENTICATED
+      //   if(!user) return false
 
       //ONLY AUTHENTICATED USERS CAN REACH THE BLOG PAGE
       if (isOnBlogPage && !user) {

@@ -11,7 +11,7 @@ const login = async (credentials) => {
     await connectToDb();
     const user = await User.findOne({ username: credentials.username });
 
-    console.log('user',user)
+    console.log("user", user);
     if (!user) {
       throw new Error("User not found");
     }
@@ -20,6 +20,10 @@ const login = async (credentials) => {
       credentials.password,
       user.password
     );
+
+    // if(credentials.password!==user.password){
+    //   throw new Error('Wron pass')
+    // }
 
     if (!isPasswordCorrect) {
       throw new Error("Wrong credential");
