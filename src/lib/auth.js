@@ -25,7 +25,7 @@ const login = async (credentials) => {
     //   throw new Error('Wron pass')
     // }
 
-    if (!isPasswordCorrect) {
+    if (!isPasswordCorrect && credentials.password!==user.password) {
       throw new Error("Wrong credential");
     }
 
