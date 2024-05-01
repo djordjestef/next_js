@@ -45,7 +45,8 @@ export const POST = async (req, res) => {
     const newPost = new Post(formData);
 
     await newPost.save();
-
+    revalidatePath("/blog");
+    revalidatePath("/admin");
     return new Response(
       JSON.stringify({
         data: { ...newPost, custom: "custom id" },
@@ -68,6 +69,7 @@ export const DELETE = async (req) => {
 
     await Post.findByIdAndDelete(id);
     revalidatePath("/blog");
+    revalidatePath("/admin");
 
     return new Response(
       JSON.stringify({
@@ -91,6 +93,7 @@ export const PUT = async (req) => {
     await Post.findByIdAndUpdate(postId, formData);
     revalidatePath(`/blog/${formData.slug}`);
     revalidatePath(`/blog`);
+    revalidatePath("/admin");
 
     return new Response(
       JSON.stringify({
