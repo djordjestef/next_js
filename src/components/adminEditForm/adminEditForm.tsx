@@ -2,7 +2,7 @@
 import React from "react";
 import { useState } from "react";
 import Modal from "react-modal";
-import styles from "./editForm.module.css";
+import styles from "./adminEditForm.module.css"
 import { updateBlog } from "@/lib/services";
 
 const customStyles = {
@@ -18,7 +18,7 @@ const customStyles = {
   },
 };
 
-const EditForm = ({ post }: any) => {
+const AdminEditForm = ({ post }: any) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState("");
   const [formData, setFormData] = useState({
@@ -133,4 +133,4 @@ const EditForm = ({ post }: any) => {
   );
 };
 
-export default EditForm;
+export default AdminEditForm;
