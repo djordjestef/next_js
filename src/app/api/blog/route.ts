@@ -1,9 +1,9 @@
 import { Post } from "@/lib/models";
 import { connectToDb } from "@/lib/utils";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 
-export const GET = async (req) => {
+export const GET = async (req: NextRequest) => {
   try {
     await connectToDb();
     const posts = await Post.find();
@@ -23,7 +23,7 @@ export const GET = async (req) => {
   }
 };
 
-export const POST = async (req, res) => {
+export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
     await connectToDb();
     const data = await req.json();
@@ -45,8 +45,8 @@ export const POST = async (req, res) => {
     const newPost = new Post(formData);
 
     await newPost.save();
-    revalidatePath("/blog");
-    revalidatePath("/admin");
+    // revalidatePath("/blog");
+    // revalidatePath("/admin");
     return new Response(
       JSON.stringify({
         data: { ...newPost, custom: "custom id" },
@@ -61,15 +61,15 @@ export const POST = async (req, res) => {
   }
 };
 
-export const DELETE = async (req) => {
+export const DELETE = async (req: NextRequest) => {
   try {
     await connectToDb();
     const data = await req.json();
     const { id } = data;
 
     await Post.findByIdAndDelete(id);
-    revalidatePath("/blog");
-    revalidatePath("/admin");
+    // revalidatePath("/blog");
+    // revalidatePath("/admin");
 
     return new Response(
       JSON.stringify({
@@ -85,15 +85,21 @@ export const DELETE = async (req) => {
   }
 };
 
-export const PUT = async (req) => {
+export const PUT = async (req: NextRequest) => {
   try {
     await connectToDb();
+    console.log("req", req);
     const data = await req.json();
+    console.log("data", data);
     const { formData, postId } = data;
+    const path = req.nextUrl.searchParams.get("path");
+
+    console.log("path", path);
+
     await Post.findByIdAndUpdate(postId, formData);
-    revalidatePath(`/blog/${formData.slug}`);
-    revalidatePath(`/blog`);
-    revalidatePath("/admin");
+    // revalidatePath(`/blog/${formData.slug}`);
+    // revalidatePath(`/blog`);
+    // revalidatePath("/admin");
 
     return new Response(
       JSON.stringify({

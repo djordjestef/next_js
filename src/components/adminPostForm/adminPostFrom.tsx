@@ -4,6 +4,7 @@ import { postBlog } from "@/lib/services";
 import styles from "./adminPostForm.module.css";
 import { Alert } from "react-st-modal";
 import { useState } from "react";
+import { useFormState } from "react-dom";
 
 const AdminPostForm = ({ userId }) => {
   const [formData, setFormData] = useState({
@@ -40,6 +41,8 @@ const AdminPostForm = ({ userId }) => {
       }
     });
   };
+  // const [state, formAction] = useFormState(getFormData, undefined);
+  // console.log('state',state)
 
   console.log("formData", formData);
   return (

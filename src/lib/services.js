@@ -30,6 +30,7 @@ export async function postBlog(formData) {
 
     return await response.json();
   } catch (error) {
+    console.log('USAO U CAr=tHC')
     console.error("Failed to generate blog:", error);
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
@@ -44,6 +45,7 @@ export const deleteBlog = async (id) => {
     });
     return await response.json();
   } catch (error) {
+
     console.error("Failed to delete blog:", error);
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
