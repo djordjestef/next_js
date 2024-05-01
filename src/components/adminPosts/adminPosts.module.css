@@ -1,0 +1,29 @@
+.post {
+  margin: 20px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.btnHolder {
+  text-align: right;
+  margin: 10px 0;
+}
+
+.deleteBtn {
+  padding: 10px 20px;
+  /* background-color: var(--btn); */
+  background-color: #ed4337;
+  color: var(--text);
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

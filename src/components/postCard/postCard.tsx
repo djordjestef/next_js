@@ -2,24 +2,9 @@
 import Image from "next/image";
 import styles from "./postCard.module.css";
 import Link from "next/link";
-import { deleteBlog } from "@/lib/services";
-import { Confirm } from "react-st-modal";
-import EditForm from "../editForm/EditForm";
 
 const PostCard = ({ post, session }: any) => {
-  const deleteOneBlog = async (id: any, title: any) => {
-    const result = await Confirm(
-      `Are you sure to delete ${title}`,
-      "Deleting Blog"
-    );
-
-    if (result) {
-      await deleteBlog(id);
-    } else {
-      // Сonfirmation not confirmed
-    }
-  };
-  console.log('session',session)
+  console.log("session", session);
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -38,18 +23,7 @@ const PostCard = ({ post, session }: any) => {
         <Link className={styles.link} href={`/blog/${post.slug}`}>
           READ MORE
         </Link>
-        {/* change condition for Admin only */}
-        {session?.user.isAdmin && (
-          <div className={styles.btnHolder}>
-            <EditForm post={post} />
-            <button
-              className={styles.deleteBtn}
-              onClick={() => deleteOneBlog(post._id, post.title)}
-            >
-              Delete
-            </button>
-          </div>
-        )}
+        change condition for Admin only
       </div>
     </div>
   );
