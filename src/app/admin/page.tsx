@@ -5,11 +5,12 @@ import AdminPostForm from "@/components/adminPostForm/adminPostFrom";
 import AdminUsers from "@/components/adminUsers/adminUsers";
 import AdminUserForm from "@/components/adminUserForm/adminUserFrom";
 import { auth } from "@/lib/auth";
-import { getBlogs } from "@/lib/services";
+import { getBlogs, getUsers } from "@/lib/services";
 
 const AdminPage = async () => {
   const session = await auth();
   const posts = await getBlogs();
+  const users = await getUsers();
 
   return (
     <div className={styles.container}>
@@ -26,7 +27,7 @@ const AdminPage = async () => {
       <div className={styles.row}>
         <div className={styles.col}>
           <Suspense fallback={<div>Loading...</div>}>
-            <AdminUsers />
+            <AdminUsers  userId={session?.user?.id} users={users}/>
           </Suspense>
         </div>
         <div className={styles.col}>

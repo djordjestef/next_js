@@ -1,6 +1,5 @@
-
 import styles from "./postUser.module.css";
-import { getUser, getUsers } from "@/lib/services";
+import { getUser } from "@/lib/services";
 import Image from "next/image";
 
 // FETCH DATA WITH AN API
@@ -17,15 +16,14 @@ import Image from "next/image";
 //   return res.json();
 // };
 const PostUser = async ({ userId }: any) => {
-  const users = await getUsers()
   const user = await getUser(userId);
-  console.log('user',user)
+  console.log("user", user);
 
   return (
     <div className={styles.container}>
       <Image
         className={styles.avatar}
-        src={user.img ? user.img : '/noavatar.png'}
+        src={user.img ? user.img : "/noavatar.png"}
         alt=""
         width={50}
         height={50}
