@@ -1,10 +1,23 @@
-'use client'
+"use client";
+import { Confirm } from "react-st-modal";
 import styles from "./adminUsers.module.css";
 import Image from "next/image";
+import { deleteUser } from "@/lib/services";
 
-const AdminUsers =  ({ userId, users }:any) => {
+const AdminUsers = ({ userId, users }: any) => {
+  const deleteOneUser = async (id: any, title: any) => {
+    const result = await Confirm(
+      `Are you sure to delete ${title}`,
+      "Deleting Blog"
+    );
 
-  console.log("users", users);
+    if (result) {
+      await deleteUser(id);
+    } else {
+      // Сonfirmation not confirmed
+    }
+  };
+
   return (
     <div className={styles.container}>
       <h1>Users</h1>
@@ -21,10 +34,12 @@ const AdminUsers =  ({ userId, users }:any) => {
               {user.username}
             </span>
           </div>
-          {/* <form action={deleteUser}>
-          <input type="hidden" name="id" value={user.id} />
-          <button className={styles.userButton}>Delete</button>
-        </form> */}
+          <button
+            className={styles.deleteBtn}
+            onClick={() => deleteOneUser(user._id, user.username)}
+          >
+            Delete
+          </button>
         </div>
       ))}
     </div>

@@ -30,7 +30,7 @@ export async function postBlog(formData) {
 
     return await response.json();
   } catch (error) {
-    console.log('USAO U CAr=tHC')
+    console.log("USAO U CAr=tHC");
     console.error("Failed to generate blog:", error);
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
@@ -45,7 +45,6 @@ export const deleteBlog = async (id) => {
     });
     return await response.json();
   } catch (error) {
-
     console.error("Failed to delete blog:", error);
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
@@ -86,4 +85,19 @@ export const getUser = async (id) => {
   }
 
   return res.json();
+};
+
+export const deleteUser = async (id) => {
+  console.log("id", id);
+  try {
+    const res = await fetch("http://localhost:3000/api/user", {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+    });
+    return res.json();
+  } catch (error) {
+    console.error("Failed to delete user:", error);
+    if (error instanceof Error) return { error: { message: error.message } };
+    return { data: null, error: { message: "Unknown error" } };
+  }
 };

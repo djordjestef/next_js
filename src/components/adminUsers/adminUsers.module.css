@@ -24,3 +24,14 @@
 .active {
   color: red;
 }
+
+.deleteBtn {
+  padding: 10px 20px;
+  /* background-color: var(--btn); */
+  background-color: #ed4337;
+  color: var(--text);
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -1,6 +1,6 @@
 import { User } from "@/lib/models";
 import { connectToDb } from "@/lib/utils";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
@@ -11,3 +11,13 @@ export const GET = async () => {
     console.log("error", error);
   }
 };
+
+export const DELETE = async (req:NextRequest, res:NextResponse)=>{
+  try {
+    await connectToDb()
+    const data = await req.json();
+    console.log('data',data)
+  } catch (error) {
+    
+  }
+}
