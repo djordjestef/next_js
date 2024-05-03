@@ -7,7 +7,7 @@
 
 .row {
   display: flex;
-  gap: 100px;
+  gap: 30%;
 }
 
 .row h1 {

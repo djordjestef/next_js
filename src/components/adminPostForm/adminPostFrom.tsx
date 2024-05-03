@@ -22,7 +22,7 @@ const AdminPostForm = ({ userId }) => {
       [name]: value,
     }));
   };
-  const getFormData = async (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
 
     if (
@@ -47,7 +47,7 @@ const AdminPostForm = ({ userId }) => {
   console.log("formData", formData);
   return (
     <div>
-      <h1 style={{marginBottom:20}}>Create Blog Form</h1>
+      <h1 style={{marginBottom:20}}>Add New Blog</h1>
       <form action="" className={styles.form}>
         <input
           type="text"
@@ -90,7 +90,7 @@ const AdminPostForm = ({ userId }) => {
           value={formData.img}
           onChange={handleChange}
         />
-        <button onClick={getFormData}>Create Blog</button>
+        <button onClick={handleSubmit}>Create Blog</button>
       </form>
     </div>
   );

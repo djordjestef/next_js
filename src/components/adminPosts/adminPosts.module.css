@@ -15,10 +15,11 @@
 .btnHolder {
   text-align: right;
   margin: 10px 0;
+  width: 115px;
 }
 
 .deleteBtn {
-  padding: 10px 20px;
+  padding: 5px 10px;
   /* background-color: var(--btn); */
   background-color: #ed4337;
   color: var(--text);
@@ -26,4 +27,5 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 10px;
 }

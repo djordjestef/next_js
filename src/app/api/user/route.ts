@@ -12,12 +12,21 @@ export const GET = async () => {
   }
 };
 
-export const DELETE = async (req:NextRequest, res:NextResponse)=>{
+export const DELETE = async (req: NextRequest, res: NextResponse) => {
   try {
-    await connectToDb()
+    await connectToDb();
     const data = await req.json();
-    console.log('data',data)
-  } catch (error) {
-    
-  }
-}
+    const { id } = data;
+    const deletedUser = await User.findByIdAndDelete(id);
+    return new Response(
+      JSON.stringify({
+        data: deletedUser,
+        error: null,
+      }),
+      {
+        status: 200,
+      }
+    );
+    console.log("data", data);
+  } catch (error) {}
+};

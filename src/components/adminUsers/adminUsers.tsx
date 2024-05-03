@@ -22,7 +22,7 @@ const AdminUsers = ({ userId, users }: any) => {
     <div className={styles.container}>
       <h1>Users</h1>
       {users.map((user: any) => (
-        <div className={styles.user} key={user.id}>
+        <div className={styles.user} key={user._id}>
           <div className={styles.detail}>
             <Image
               src={user.img ? user.img : "/noavatar.png"}

@@ -23,7 +23,6 @@ const PostCard = ({ post, session }: any) => {
         <Link className={styles.link} href={`/blog/${post.slug}`}>
           READ MORE
         </Link>
-        change condition for Admin only
       </div>
     </div>
   );
