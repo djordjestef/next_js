@@ -3,12 +3,14 @@
 import { useState } from "react";
 // import { addUser } from "@/lib/action";
 import styles from "./adminUserForm.module.css";
-
+import { createUser } from "../../lib/services";
+import { Alert } from "react-st-modal";
 
 const IS_ADMIN = [
-  { name: 'Yes', value: true },
-  { name: 'No', value: false },
-]
+  { name: "Select option", value: null, selected: true, disabled: true },
+  { name: "Yes", value: true, selected: false, disabled: false },
+  { name: "No", value: false, selected: false, disabled: false },
+];
 
 const AdminUserForm = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +21,7 @@ const AdminUserForm = () => {
     isAdmin: null,
   });
 
-  const handleChange = (e:any) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
 
     setFormData((prevState) => ({
@@ -28,7 +30,24 @@ const AdminUserForm = () => {
     }));
   };
 
-  console.log('formData',formData)
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    if (
+      formData.username === "" ||
+      formData.email === "" ||
+      formData.password === "" ||
+      formData.isAdmin === null
+    )
+      return Alert(`All inputs must be field`, "Error");
+
+    await createUser(formData).then((res) => {
+      if (res.error) {
+        Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
+      } else {
+        Alert(`User has been created successfully`, "Success");
+      }
+    });
+  };
 
   return (
     <form action="" className={styles.container}>
@@ -53,14 +72,18 @@ const AdminUserForm = () => {
       />
       <input type="text" name="img" placeholder="img" onChange={handleChange} />
       <select name="isAdmin" onChange={handleChange}>
-        {IS_ADMIN.map((admin)=>(
-           <option key={admin.name} value={admin.value}>{admin.name}</option>
+        {IS_ADMIN.map((admin) => (
+          <option
+            key={admin.name}
+            value={admin.value}
+            selected={admin.selected}
+            disabled={admin.disabled}
+          >
+            {admin.name}
+          </option>
         ))}
-        {/* <option value="false">Is Admin?</option>
-        <option value="false">No</option>
-        <option value="true">Yes</option> */}
       </select>
-      <button>Create User</button>
+      <button onClick={handleSubmit}>Create User</button>
       {/* {state?.error} */}
     </form>
   );

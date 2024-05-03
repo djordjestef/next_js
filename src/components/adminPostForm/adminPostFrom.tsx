@@ -1,6 +1,6 @@
 // @ts-nocheck
 "use client";
-import { postBlog } from "@/lib/services";
+import { createBlog } from "@/lib/services";
 import styles from "./adminPostForm.module.css";
 import { Alert } from "react-st-modal";
 import { useState } from "react";
@@ -33,7 +33,8 @@ const AdminPostForm = ({ userId }) => {
     )
       return Alert(`All inputs must be field`, "Error");
 
-    await postBlog(formData).then((res) => {
+    await createBlog(formData).then((res) => {
+      console.log("res.status", res.status);
       if (res.error) {
         Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
       } else {
@@ -47,7 +48,7 @@ const AdminPostForm = ({ userId }) => {
   console.log("formData", formData);
   return (
     <div>
-      <h1 style={{marginBottom:20}}>Add New Blog</h1>
+      <h1 style={{ marginBottom: 20 }}>Add New Blog</h1>
       <form action="" className={styles.form}>
         <input
           type="text"

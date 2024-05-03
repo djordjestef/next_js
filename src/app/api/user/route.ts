@@ -27,6 +27,43 @@ export const DELETE = async (req: NextRequest, res: NextResponse) => {
         status: 200,
       }
     );
-    console.log("data", data);
-  } catch (error) {}
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const POST = async (request: NextRequest) => {
+  try {
+    await connectToDb();
+    const data = await request.json();
+    const { formData } = data;
+    const { username, email } = formData;
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
+
+    if (existingUser) {
+      return new Response(
+        JSON.stringify({
+          error: "User with the same username or email has already exist",
+        }),
+        { status: 400 }
+      );
+    }
+
+    const newUser = new User(formData);
+    await newUser.save();
+    return new Response(
+      JSON.stringify({
+        data: newUser,
+
+        error: null,
+      }),
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.log("error", error);
+  }
 };

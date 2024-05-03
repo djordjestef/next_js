@@ -36,7 +36,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     if (existingBlog) {
       return new Response(
         JSON.stringify({
-          error: "A blog post with the same title or slug already exists",
+          error: "A blog post with the same title or slug has already exists",
         }),
         { status: 400 }
       );

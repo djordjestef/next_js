@@ -19,7 +19,7 @@ export const getBlog = async (slug) => {
   return await res.json();
 };
 
-export async function postBlog(formData) {
+export const createBlog = async (formData) => {
   const url = "http://localhost:3000/api/blog";
 
   try {
@@ -35,7 +35,7 @@ export async function postBlog(formData) {
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
   }
-}
+};
 
 export const deleteBlog = async (id) => {
   try {
@@ -88,11 +88,25 @@ export const getUser = async (id) => {
 };
 
 export const deleteUser = async (id) => {
-  console.log("id", id);
   try {
     const res = await fetch("http://localhost:3000/api/user", {
       method: "DELETE",
       body: JSON.stringify({ id }),
+    });
+    return res.json();
+  } catch (error) {
+    console.error("Failed to delete user:", error);
+    if (error instanceof Error) return { error: { message: error.message } };
+    return { data: null, error: { message: "Unknown error" } };
+  }
+};
+
+export const createUser = async (formData) => {
+  try {
+    console.log("formData", formData);
+    const res = await fetch("http://localhost:3000/api/user", {
+      method: "POST",
+      body: JSON.stringify({ formData }),
     });
     return res.json();
   } catch (error) {
