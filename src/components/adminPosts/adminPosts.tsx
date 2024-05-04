@@ -22,7 +22,7 @@ const AdminPosts = ({ posts }: any) => {
   return (
     <div className={styles.container}>
       <h1>Posts</h1>
-      {posts?.posts.map((post: any) => (
+      {posts?.data.map((post: any) => (
         <div className={styles.post} key={post._id}>
           <div className={styles.detail}>
             <Image

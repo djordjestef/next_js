@@ -7,13 +7,17 @@ export const GET = async (req: NextRequest) => {
   try {
     await connectToDb();
     const posts = await Post.find();
-    return new Response(
-      JSON.stringify({
-        posts,
-        error: null,
-      }),
+    return NextResponse.json(
+      {
+        sucess: true,
+        message: "List Data Blogs",
+        data: posts,
+      },
       {
         status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
     // return NextResponse.json(posts, { status: 200 });
@@ -101,11 +105,11 @@ export const PUT = async (req: NextRequest) => {
     // revalidatePath(`/blog`);
     // revalidatePath("/admin");
 
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         data: formData,
         error: null,
-      }),
+      },
       {
         status: 201,
       }

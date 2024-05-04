@@ -14,7 +14,7 @@ const BlogPage = async () => {
 
   return (
     <div className={styles.container}>
-      {posts.posts.map((post: any) => (
+      {posts.data.map((post: any) => (
         <div className={styles.post} key={post.id}>
           <PostCard post={post} session={session} />
         </div>
