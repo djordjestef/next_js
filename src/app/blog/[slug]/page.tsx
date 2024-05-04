@@ -16,28 +16,28 @@ const SinglePostPage = async ({ params }: any) => {
 
   return (
     <div className={styles.container}>
-      {post?.img! && (
+      {post?.data.img! && (
         <div className={styles.imgContainer}>
-          <Image src={post.img} alt="" fill className={styles.img} />
+          <Image src={post?.data.img} alt="" fill className={styles.img} />
         </div>
       )}
       <div className={styles.textContainer}>
-        <h1 className={styles.title}>{post?.title}</h1>
+        <h1 className={styles.title}>{post?.data.title}</h1>
         <div className={styles.detail}>
-          {post && (
+          {post.data && (
             <Suspense fallback={<div>Loading...</div>}>
-              <PostUser userId={post?.userId} />
+              <PostUser userId={post?.data.userId} />
             </Suspense>
           )}
 
           <div className={styles.detailText}>
             <div className={styles.detailTitle}>Published</div>
             <div className={styles.detailValue}>
-              {post?.createdAt.toString().slice(4, 16)}
+              {post?.data.createdAt.toString().slice(4, 16)}
             </div>
           </div>
         </div>
-        <div className={styles.content}>{post?.desc}</div>
+        <div className={styles.content}>{post?.data.desc}</div>
       </div>
       
     </div>

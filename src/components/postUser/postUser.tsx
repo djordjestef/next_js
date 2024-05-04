@@ -23,14 +23,14 @@ const PostUser = async ({ userId }: any) => {
     <div className={styles.container}>
       <Image
         className={styles.avatar}
-        src={user.img ? user.img : "/noavatar.png"}
+        src={user?.data?.img ? user?.data?.img : "/noavatar.png"}
         alt=""
         width={50}
         height={50}
       />
       <div className={styles.texts}>
         <div className={styles.title}>Author</div>
-        <div className={styles.username}>{user.username}</div>
+        <div className={styles.username}>{user?.data.username}</div>
       </div>
     </div>
   );

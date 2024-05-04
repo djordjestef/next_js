@@ -8,7 +8,19 @@ export const GET = async (request: NextRequest, { params }: any) => {
     await connectToDb();
     const user = await User.findById(id);
 
-    return NextResponse.json(user);
+    return NextResponse.json(
+      {
+        sucess: true,
+        message: "One User",
+        data: user,
+      },
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.log("error", error);
     return { error: "Something went wrong" };

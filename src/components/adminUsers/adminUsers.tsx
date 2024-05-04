@@ -21,7 +21,7 @@ const AdminUsers = ({ userId, users }: any) => {
   return (
     <div className={styles.container}>
       <h1>Users</h1>
-      {users.map((user: any) => (
+      {users?.data.map((user: any) => (
         <div className={styles.user} key={user._id}>
           <div className={styles.detail}>
             <Image

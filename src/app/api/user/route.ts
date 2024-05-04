@@ -6,7 +6,19 @@ export const GET = async () => {
   try {
     await connectToDb();
     const users = await User.find();
-    return NextResponse.json(users);
+    return NextResponse.json(
+      {
+        sucess: true,
+        message: "List Data Users",
+        data: users,
+      },
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.log("error", error);
   }

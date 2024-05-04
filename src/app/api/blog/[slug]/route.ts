@@ -7,7 +7,19 @@ export const GET = async (request: NextRequest, { params }: any) => {
   try {
     await connectToDb();
     const post = await Post.findOne({ slug });
-    return NextResponse.json(post);
+    return NextResponse.json(
+      {
+        sucess: true,
+        message: "One Blog",
+        data: post,
+      },
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.log("error", error);
     throw new Error("Failed to GET single POST");

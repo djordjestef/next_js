@@ -20,6 +20,11 @@ export const getBlog = async (slug) => {
   return await res.json();
 };
 
+
+
+
+
+
 export const createBlog = async (formData) => {
   const url = "http://localhost:3000/api/blog";
 
@@ -27,6 +32,9 @@ export const createBlog = async (formData) => {
     const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify({ formData: formData }),
+      // next:{
+      //   tags:['admin']
+      // }
     });
 
     return await response.json();
@@ -37,6 +45,12 @@ export const createBlog = async (formData) => {
     return { data: null, error: { message: "Unknown error" } };
   }
 };
+
+
+
+
+
+
 
 export const deleteBlog = async (id) => {
   try {
