@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const LoginForm = () => {
   const [state, formAction] = useFormState(login, undefined);
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <form action={formAction} className={styles.form}>

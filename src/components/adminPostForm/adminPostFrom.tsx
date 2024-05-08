@@ -4,9 +4,10 @@ import { createBlog } from "@/lib/services";
 import styles from "./adminPostForm.module.css";
 import { Alert } from "react-st-modal";
 import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useRouter } from "next/navigation";
 
 const AdminPostForm = ({ userId }) => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
     desc: "",
@@ -39,13 +40,11 @@ const AdminPostForm = ({ userId }) => {
         Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
       } else {
         Alert(`Blog has been created successfully`, "Success");
+        router.refresh();
       }
     });
   };
-  // const [state, formAction] = useFormState(getFormData, undefined);
-  // console.log('state',state)
 
-  console.log("formData", formData);
   return (
     <div>
       <h1 style={{ marginBottom: 20 }}>Add New Blog</h1>

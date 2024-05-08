@@ -7,7 +7,7 @@ export default NextAuth(authConfig).auth; //fn that call authConfig callback aut
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:sve osim ove koje pocinju sa navesdenim dole
+     * Match all request paths except for the ones starting with
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)

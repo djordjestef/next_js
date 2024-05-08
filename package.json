@@ -22,8 +22,9 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.3.1",
     "@types/react-dom": "^18",
+    "@types/react-modal": "^3.16.3",
     "autoprefixer": "^10.4.19",
     "babel-eslint": "^10.1.0",
     "daisyui": "^4.9.0",

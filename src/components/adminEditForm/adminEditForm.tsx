@@ -2,8 +2,9 @@
 import React from "react";
 import { useState } from "react";
 import Modal from "react-modal";
-import styles from "./adminEditForm.module.css"
+import styles from "./adminEditForm.module.css";
 import { updateBlog } from "@/lib/services";
+import { useRouter } from "next/navigation";
 
 const customStyles = {
   content: {
@@ -19,6 +20,7 @@ const customStyles = {
 };
 
 const AdminEditForm = ({ post }: any) => {
+  const router = useRouter();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState("");
   const [formData, setFormData] = useState({
@@ -49,11 +51,6 @@ const AdminEditForm = ({ post }: any) => {
     });
   }
 
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    // subtitle.style.color = '#f00';
-  }
-
   function closeModal() {
     setIsOpen(false);
   }
@@ -61,8 +58,8 @@ const AdminEditForm = ({ post }: any) => {
   const submitFormData = async (event: any) => {
     event.preventDefault();
 
-    await updateBlog(formData, postId);
-    closeModal()
+    await updateBlog(formData, postId).then(() => router.refresh());
+    closeModal();
   };
 
   return (
@@ -72,14 +69,13 @@ const AdminEditForm = ({ post }: any) => {
       </button>
       <Modal
         isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
         ariaHideApp={false}
         contentLabel="Example Modal"
       >
-        <button onClick={closeModal}>close</button>
-        <div>I am a modal</div>
+        <a onClick={closeModal} className={styles.close}></a>
+        <h3 style={{ marginBottom: 15 }}>Edit {post?.title}</h3>
         <form action="" className={styles.form}>
           <label>Title</label>
           <input

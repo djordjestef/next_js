@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-// import { addUser } from "@/lib/action";
 import styles from "./adminUserForm.module.css";
 import { createUser } from "../../lib/services";
 import { Alert } from "react-st-modal";
+import { useRouter } from "next/navigation";
 
 const IS_ADMIN = [
   { name: "Select option", value: null, selected: true, disabled: true },
@@ -13,6 +13,7 @@ const IS_ADMIN = [
 ];
 
 const AdminUserForm = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -45,6 +46,7 @@ const AdminUserForm = () => {
         Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
       } else {
         Alert(`User has been created successfully`, "Success");
+        router.refresh();
       }
     });
   };

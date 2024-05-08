@@ -1,12 +1,12 @@
 export const getBlogs = async () => {
   const res = await fetch("http://localhost:3000/api/blog", {
     cache: "no-store",
+    
   });
   if (!res.ok) {
     throw new Error("Something went wrong");
   }
-  const data = await res.json()
-  console.log('data',data)
+  const data = await res.json();
 
   return data;
 };
@@ -19,11 +19,6 @@ export const getBlog = async (slug) => {
   }
   return await res.json();
 };
-
-
-
-
-
 
 export const createBlog = async (formData) => {
   const url = "http://localhost:3000/api/blog";
@@ -45,12 +40,6 @@ export const createBlog = async (formData) => {
     return { data: null, error: { message: "Unknown error" } };
   }
 };
-
-
-
-
-
-
 
 export const deleteBlog = async (id) => {
   try {

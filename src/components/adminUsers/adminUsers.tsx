@@ -3,8 +3,10 @@ import { Confirm } from "react-st-modal";
 import styles from "./adminUsers.module.css";
 import Image from "next/image";
 import { deleteUser } from "@/lib/services";
+import { useRouter } from "next/navigation";
 
 const AdminUsers = ({ userId, users }: any) => {
+  const router = useRouter();
   const deleteOneUser = async (id: any, title: any) => {
     const result = await Confirm(
       `Are you sure to delete ${title}`,
@@ -12,7 +14,7 @@ const AdminUsers = ({ userId, users }: any) => {
     );
 
     if (result) {
-      await deleteUser(id);
+      await deleteUser(id).then(() => router.refresh());
     } else {
       // Сonfirmation not confirmed
     }

@@ -30,7 +30,7 @@ const PostUser = async ({ userId }: any) => {
       />
       <div className={styles.texts}>
         <div className={styles.title}>Author</div>
-        <div className={styles.username}>{user?.data.username}</div>
+        <div className={styles.username}>{user?.data?.username}</div>
       </div>
     </div>
   );

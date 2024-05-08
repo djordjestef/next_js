@@ -41,3 +41,28 @@
   margin-right: 10px;
   font-size: 10px;
 }
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.close:before,
+.close:after {
+  position: absolute;
+  left: 10px;
+  content: " ";
+  height: 20px;
+  width: 2px;
+  background-color: #ffffff;
+}
+.close:before {
+  transform: rotate(45deg);
+}
+.close:after {
+  transform: rotate(-45deg);
+}

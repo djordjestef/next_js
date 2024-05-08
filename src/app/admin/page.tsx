@@ -8,7 +8,7 @@ import { auth } from "@/lib/auth";
 import { getBlogs, getUsers } from "@/lib/services";
 
 const AdminPage = async () => {
-  const session = await auth();
+  const session: any = await auth();
   const posts = await getBlogs();
   const users = await getUsers();
 
@@ -27,7 +27,7 @@ const AdminPage = async () => {
       <div className={styles.row}>
         <div className={styles.col}>
           <Suspense fallback={<div>Loading...</div>}>
-            <AdminUsers  userId={session?.user?.id} users={users}/>
+            <AdminUsers userId={session?.user?.id} users={users} />
           </Suspense>
         </div>
         <div className={styles.col}>
