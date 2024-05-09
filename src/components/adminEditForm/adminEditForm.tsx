@@ -19,7 +19,7 @@ const customStyles = {
   },
 };
 
-const AdminEditForm = ({ post }: any) => {
+const AdminEditForm = ({ post, setLoading }: any) => {
   const router = useRouter();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState("");
@@ -57,6 +57,7 @@ const AdminEditForm = ({ post }: any) => {
 
   const submitFormData = async (event: any) => {
     event.preventDefault();
+    setLoading(true);
 
     await updateBlog(formData, postId).then(() => router.refresh());
     closeModal();

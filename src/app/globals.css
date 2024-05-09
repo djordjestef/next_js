@@ -36,3 +36,8 @@ a {
   flex-direction: column;
   justify-content: space-between;
 }
+
+.react-tabs__tab-panel--selected {
+  min-height: 60vh !important;
+  padding-top: 20px;
+}

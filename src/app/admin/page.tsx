@@ -1,20 +1,18 @@
 import { Suspense } from "react";
 import styles from "./admin.module.css";
-import AdminPosts from "@/components/adminPosts/adminPosts";
-import AdminPostForm from "@/components/adminPostForm/adminPostFrom";
-import AdminUsers from "@/components/adminUsers/adminUsers";
-import AdminUserForm from "@/components/adminUserForm/adminUserFrom";
 import { auth } from "@/lib/auth";
 import { getBlogs, getUsers } from "@/lib/services";
+import AdminTabs from "../../components/adminTabs/adminTabs";
 
 const AdminPage = async () => {
   const session: any = await auth();
   const posts = await getBlogs();
   const users = await getUsers();
-
+  
   return (
     <div className={styles.container}>
-      <div className={styles.row}>
+      <AdminTabs session={session} posts={posts} users={users}/>
+      {/* <div className={styles.row}>
         <div className={styles.col}>
           <Suspense fallback={<div>Loading...</div>}>
             <AdminPosts posts={posts} />
@@ -33,7 +31,7 @@ const AdminPage = async () => {
         <div className={styles.col}>
           <AdminUserForm />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
