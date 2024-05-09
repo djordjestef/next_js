@@ -40,6 +40,7 @@ const AdminPostForm = ({ userId }) => {
         Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
       } else {
         Alert(`Blog has been created successfully`, "Success");
+        setFormData({ title: "", desc: "", slug: "", userId: userId, img: "" });
         router.refresh();
       }
     });

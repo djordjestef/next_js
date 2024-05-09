@@ -7,7 +7,7 @@ import { Alert } from "react-st-modal";
 import { useRouter } from "next/navigation";
 
 const IS_ADMIN = [
-  { name: "Select option", value: null, selected: true, disabled: true },
+  { name: "Is Admin", value: "", selected: true, disabled: true },
   { name: "Yes", value: true, selected: false, disabled: false },
   { name: "No", value: false, selected: false, disabled: false },
 ];
@@ -19,7 +19,7 @@ const AdminUserForm = () => {
     email: "",
     password: "",
     img: "",
-    isAdmin: null,
+    isAdmin: "",
   });
 
   const handleChange = (e: any) => {
@@ -33,6 +33,7 @@ const AdminUserForm = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+
     if (
       formData.username === "" ||
       formData.email === "" ||
@@ -46,6 +47,13 @@ const AdminUserForm = () => {
         Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
       } else {
         Alert(`User has been created successfully`, "Success");
+        setFormData({
+          username: "",
+          email: "",
+          password: "",
+          img: "",
+          isAdmin: "",
+        });
         router.refresh();
       }
     });
@@ -58,22 +66,31 @@ const AdminUserForm = () => {
         type="text"
         name="username"
         placeholder="username"
+        value={formData.username}
         onChange={handleChange}
       />
       <input
-        type="text"
+        type="email"
         name="email"
         placeholder="email"
+        value={formData.email}
         onChange={handleChange}
       />
       <input
         type="password"
         name="password"
         placeholder="password"
+        value={formData.password}
         onChange={handleChange}
       />
-      <input type="text" name="img" placeholder="img" onChange={handleChange} />
-      <select name="isAdmin" onChange={handleChange}>
+      <input
+        type="text"
+        name="img"
+        placeholder="img"
+        value={formData.img}
+        onChange={handleChange}
+      />
+      <select name="isAdmin" value={formData.isAdmin} onChange={handleChange}>
         {IS_ADMIN.map((admin) => (
           <option
             key={admin.name}

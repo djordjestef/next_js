@@ -107,7 +107,6 @@ export const deleteUser = async (id) => {
 
 export const createUser = async (formData) => {
   try {
-    console.log("formData", formData);
     const res = await fetch("http://localhost:3000/api/user", {
       method: "POST",
       body: JSON.stringify({ formData }),

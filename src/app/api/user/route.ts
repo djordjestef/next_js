@@ -72,7 +72,7 @@ export const POST = async (request: NextRequest) => {
         error: null,
       }),
       {
-        status: 200,
+        status: 201,
       }
     );
   } catch (error) {
