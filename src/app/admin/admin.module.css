@@ -17,6 +17,7 @@
 
 .col {
   flex: 1;
+  position: relative;
 }
 
 .col img {

@@ -4,7 +4,7 @@ import styles from "./adminUsers.module.css";
 import Image from "next/image";
 import { deleteUser } from "@/lib/services";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AdminUsers = ({ userId, users }: any) => {
   const router = useRouter();
@@ -19,18 +19,23 @@ const AdminUsers = ({ userId, users }: any) => {
       setLoading(true);
       await deleteUser(id).then(() => {
         router.refresh();
-        setLoading(false);
       });
     } else {
       // Сonfirmation not confirmed
     }
   };
 
+  useEffect(() => {
+    if (users) {
+      setLoading(false);
+    }
+  }, [users]);
+
   return (
     <div className={styles.container}>
       <h1>Users</h1>
       {loading ? (
-        <div>Loading...</div>
+        <div className={styles.load}>Loading...</div>
       ) : (
         users?.data.map((user: any) => (
           <div className={styles.user} key={user._id}>

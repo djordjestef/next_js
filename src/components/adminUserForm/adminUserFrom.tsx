@@ -38,7 +38,7 @@ const AdminUserForm = () => {
       formData.username === "" ||
       formData.email === "" ||
       formData.password === "" ||
-      formData.isAdmin === null
+      formData.isAdmin === ""
     )
       return Alert(`All inputs must be field`, "Error");
 

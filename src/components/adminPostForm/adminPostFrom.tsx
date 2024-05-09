@@ -35,7 +35,6 @@ const AdminPostForm = ({ userId }) => {
       return Alert(`All inputs must be field`, "Error");
 
     await createBlog(formData).then((res) => {
-      console.log("res.status", res.status);
       if (res.error) {
         Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
       } else {
