@@ -2,6 +2,7 @@ import { Post } from "@/lib/models";
 import { connectToDb } from "@/lib/utils";
 import { NextResponse, NextRequest } from "next/server";
 
+
 export const GET = async (req: NextRequest) => {
   try {
     await connectToDb();
@@ -100,6 +101,9 @@ export const PUT = async (req: NextRequest) => {
       },
       {
         status: 201,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
   } catch (error) {

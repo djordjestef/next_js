@@ -1,3 +1,13 @@
-.tabsBody {
-    /* padding-top: 100px; */
+.tabs :global(.react-tabs__tab-panel--selected) {
+  min-height: 60vh !important;
+  padding-top: 20px;
+}
+
+.tabs :global(.react-tabs__tab):focus {
+  border-radius: 0;
+  border: none;
+}
+
+.tabs :global(.react-tabs__tab):focus::after {
+  height: 0;
 }

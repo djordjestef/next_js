@@ -11,7 +11,7 @@ import styles from "./adminTabs.module.css";
 const AdminTabs = ({ session, posts, users }: any) => {
   const [loading, setLoading] = useState(false);
   return (
-    <Tabs>
+    <Tabs className={styles.tabs}>
       <TabList>
         <Tab>Blog List</Tab>
         <Tab>Add Blog</Tab>
@@ -19,16 +19,16 @@ const AdminTabs = ({ session, posts, users }: any) => {
         <Tab>Add User</Tab>
       </TabList>
 
-      <TabPanel className={styles.tabsBody}>
+      <TabPanel >
         <AdminPosts posts={posts} loading={loading} setLoading={setLoading} />
       </TabPanel>
-      <TabPanel className={styles.tabsBody}>
+      <TabPanel >
         <AdminPostForm userId={session?.user?.id} />
       </TabPanel>
-      <TabPanel className={styles.tabsBody}>
+      <TabPanel >
         <AdminUsers userId={session?.user?.id} users={users} />
       </TabPanel>
-      <TabPanel className={styles.tabsBody}>
+      <TabPanel >
         <AdminUserForm />
       </TabPanel>
     </Tabs>
