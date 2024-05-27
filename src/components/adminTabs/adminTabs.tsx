@@ -5,11 +5,16 @@ import AdminPosts from "@/components/adminPosts/adminPosts";
 import AdminPostForm from "@/components/adminPostForm/adminPostFrom";
 import AdminUsers from "@/components/adminUsers/adminUsers";
 import AdminUserForm from "@/components/adminUserForm/adminUserFrom";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styles from "./adminTabs.module.css";
+import { MyContext } from "@/app/Store";
 
 const AdminTabs = ({ session, posts, users }: any) => {
+  const { state, dispatch } = useContext(MyContext);
   const [loading, setLoading] = useState(false);
+
+  console.log("state", state);
+
   return (
     <Tabs className={styles.tabs}>
       <TabList>
@@ -19,16 +24,16 @@ const AdminTabs = ({ session, posts, users }: any) => {
         <Tab>Add User</Tab>
       </TabList>
 
-      <TabPanel >
+      <TabPanel>
         <AdminPosts posts={posts} loading={loading} setLoading={setLoading} />
       </TabPanel>
-      <TabPanel >
+      <TabPanel>
         <AdminPostForm userId={session?.user?.id} />
       </TabPanel>
-      <TabPanel >
+      <TabPanel>
         <AdminUsers userId={session?.user?.id} users={users} />
       </TabPanel>
-      <TabPanel >
+      <TabPanel>
         <AdminUserForm />
       </TabPanel>
     </Tabs>

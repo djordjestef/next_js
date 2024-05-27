@@ -36,6 +36,7 @@ const AdminPostForm = ({ userId }) => {
 
     await createBlog(formData).then((res) => {
       if (res.error) {
+        console.log('ERROR FROM BACKEND',res.error)
         Alert(`${JSON.stringify(res.error).replaceAll('"', " ")}`, "Error");
       } else {
         Alert(`Blog has been created successfully`, "Success");
