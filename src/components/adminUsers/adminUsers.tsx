@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 const AdminUsers = ({ userId, users }: any) => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const deleteOneUser = async (id: any, title: any) => {
     const result = await Confirm(
       `Are you sure to delete ${title}`,
@@ -16,7 +16,7 @@ const AdminUsers = ({ userId, users }: any) => {
     );
 
     if (result) {
-      setLoading(true);
+      // setLoading(true);
       await deleteUser(id).then(() => {
         router.refresh();
       });
@@ -25,19 +25,19 @@ const AdminUsers = ({ userId, users }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (users) {
-      setLoading(false);
-    }
-  }, [users]);
+  // useEffect(() => {
+  //   if (users) {
+  //     setLoading(false);
+  //   }
+  // }, [users]);
 
   return (
     <div className={styles.container}>
       <h1>Users</h1>
-      {loading ? (
+      {users.loading ? (
         <div className={styles.load}>Loading...</div>
       ) : (
-        users?.data.map((user: any) => (
+        users.data?.map((user: any) => (
           <div className={styles.user} key={user._id}>
             <div className={styles.detail}>
               <Image

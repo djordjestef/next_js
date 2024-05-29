@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./links.module.css";
 import NavLink from "./navLink/navLink";
 import Image from "next/image";
 import { handleLogout } from "@/lib/action";
+import { MyContext } from "@/app/Store";
 
 const links = [
   {
@@ -26,8 +27,8 @@ const links = [
 
 const Links = ({ session }: any) => {
   const [open, setOpen] = useState(false);
-  // console.log('session',session)
-
+  const { state, dispatch } = useContext(MyContext);
+  console.log("state", state);
 
   return (
     <div className={styles.container}>
@@ -37,7 +38,9 @@ const Links = ({ session }: any) => {
         ))}
         {session?.user ? (
           <>
-            {session?.user.isAdmin && <NavLink item={{ title: "Admin", path: "/admin" }} />}
+            {session?.user.isAdmin && (
+              <NavLink item={{ title: "Admin", path: "/admin" }} />
+            )}
             <form action={handleLogout}>
               <button className={styles.logout}>Logout</button>
             </form>
