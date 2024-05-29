@@ -3,6 +3,14 @@
 @tailwind utilities; */
 
 :root {
+  --bg: #e9e6e6;
+  --bgSoft: #c9c9cd;
+  --text: rgb(4, 4, 4);
+  --textSoft: #5a5a5a;
+  --btn: #3673fd;
+}
+
+:root.dark {
   --bg: #0d0c22;
   --bgSoft: #2d2b42;
   --text: white;

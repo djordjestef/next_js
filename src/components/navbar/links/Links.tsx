@@ -4,7 +4,8 @@ import styles from "./links.module.css";
 import NavLink from "./navLink/navLink";
 import Image from "next/image";
 import { handleLogout } from "@/lib/action";
-import { MyContext } from "@/app/Store";
+import { ActionType, MyContext } from "@/app/Store";
+import Switch from "react-switch";
 
 const links = [
   {
@@ -28,10 +29,15 @@ const links = [
 const Links = ({ session }: any) => {
   const [open, setOpen] = useState(false);
   const { state, dispatch } = useContext(MyContext);
-  console.log("state", state);
+
+  const handleChangeTheme = (value: any) => {
+    dispatch({ type: ActionType.CHANGE_THEME, dark_theme: value });
+    document.documentElement.classList.toggle('dark');
+  };
 
   return (
     <div className={styles.container}>
+      <Switch onChange={handleChangeTheme} checked={state.theme.dark_theme} />
       <div className={styles.links}>
         {links.map((link) => (
           <NavLink item={link} key={link.title} />
