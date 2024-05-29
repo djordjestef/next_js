@@ -8,6 +8,16 @@
   padding: 10px;
   cursor: pointer;
   font-weight: bold;
+  color: white;
+  background-color: black;
+}
+
+.logoutDark {
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: rgb(11, 11, 11);
+  background-color: rgba(255, 255, 255, 0.699);
 }
 
 .mobileLinks,
