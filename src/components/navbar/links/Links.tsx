@@ -32,12 +32,16 @@ const Links = ({ session }: any) => {
 
   const handleChangeTheme = (value: any) => {
     dispatch({ type: ActionType.CHANGE_THEME, dark_theme: value });
-    document.documentElement.classList.toggle('dark');
+    document.documentElement.classList.toggle("dark");
   };
 
   return (
     <div className={styles.container}>
-      <Switch onChange={handleChangeTheme} checked={state.theme.dark_theme} />
+      <Switch
+        onChange={handleChangeTheme}
+        checked={state.theme.dark_theme}
+        className={styles.themeBtn}
+      />
       <div className={styles.links}>
         {links.map((link) => (
           <NavLink item={link} key={link.title} />
@@ -48,7 +52,13 @@ const Links = ({ session }: any) => {
               <NavLink item={{ title: "Admin", path: "/admin" }} />
             )}
             <form action={handleLogout}>
-              <button className={state.theme.dark_theme ? styles.logoutDark : styles.logout}>Logout</button>
+              <button
+                className={
+                  state.theme.dark_theme ? styles.logoutDark : styles.logout
+                }
+              >
+                Logout
+              </button>
             </form>
           </>
         ) : (

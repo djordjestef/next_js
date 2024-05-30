@@ -20,7 +20,7 @@
   padding: 5px 10px;
   /* background-color: var(--btn); */
   background-color: #ed4337;
-  color: var(--text);
+  color: var(--editDeleteBtn);
   font-weight: bold;
   border: none;
   border-radius: 5px;

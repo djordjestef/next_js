@@ -8,6 +8,7 @@
   --text: rgb(4, 4, 4);
   --textSoft: #5a5a5a;
   --btn: #3673fd;
+  --editDeleteBtn: #fff;
 }
 
 :root.dark {
@@ -16,6 +17,7 @@
   --text: white;
   --textSoft: #e5e5e5;
   --btn: #3673fd;
+  --editDeleteBtn: #fff;
 }
 
 * {

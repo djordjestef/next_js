@@ -33,7 +33,7 @@
 .editBtn {
   padding: 5px 10px;
   background-color: var(--btn);
-  color: var(--text);
+  color: var(--editDeleteBtn);
   font-weight: bold;
   border: none;
   border-radius: 5px;
