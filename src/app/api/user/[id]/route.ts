@@ -7,7 +7,8 @@ export const GET = async (request: NextRequest, { params }: any) => {
   try {
     await connectToDb();
     const user = await User.findById(id);
-    console.log("user API", user);
+    console.log('PRVO',user)
+    // console.log("user API", user);
     if (!user) {
       return NextResponse.json(
         {
@@ -37,20 +38,6 @@ export const GET = async (request: NextRequest, { params }: any) => {
       }
     );
   } catch (error) {
-    console.log("error", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Something went wrong",
-        error: error.message || "Unknown error",
-      },
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    // return { error: "Something went wrong" };
+    return { error: "Something went wrong" };
   }
 };

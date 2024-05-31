@@ -75,16 +75,18 @@ export const getUsers = async () => {
     throw new Error("Get UserS Error");
   }
 
-  return res.json();
+  return await res.json();
 };
 
 export const getUser = async (id) => {
   const res = await fetch(`http://localhost:3000/api/user/${id}`);
-  
+
   if (!res.ok) {
     throw new Error("Get User Error");
   }
-  return res.json();
+
+  console.log("PRETPOSLEDNJE")
+  return await res.json();
 };
 
 export const deleteUser = async (id) => {
@@ -93,7 +95,7 @@ export const deleteUser = async (id) => {
       method: "DELETE",
       body: JSON.stringify({ id }),
     });
-    return res.json();
+    return await res.json();
   } catch (error) {
     console.error("Failed to delete user:", error);
     if (error instanceof Error) return { error: { message: error.message } };
@@ -107,7 +109,7 @@ export const createUser = async (formData) => {
       method: "POST",
       body: JSON.stringify({ formData }),
     });
-    return res.json();
+    return await res.json();
   } catch (error) {
     console.error("Failed to delete user:", error);
     if (error instanceof Error) return { error: { message: error.message } };

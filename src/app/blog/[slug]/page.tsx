@@ -9,7 +9,6 @@ const SinglePostPage = async ({ params }: any) => {
   const { slug } = params;
 
   const post = await getBlog(slug);
-  console.log("post SINGLE PAGE", post);
 
   return (
     <div className={styles.container}>
@@ -21,11 +20,11 @@ const SinglePostPage = async ({ params }: any) => {
       <div className={styles.textContainer}>
         <h1 className={styles.title}>{post?.data?.title}</h1>
         <div className={styles.detail}>
-          {post.data && (
+          {/* {post.data && ( */}
             <Suspense fallback={<div>Loading.........</div>}>
               <PostUser userId={post?.data.userId} />
             </Suspense>
-          )}
+          {/* )} */}
 
           <div className={styles.detailText}>
             <div className={styles.detailTitle}>Published</div>
