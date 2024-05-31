@@ -27,7 +27,7 @@ const AdminTabs = ({ session, posts, users }: any) => {
         <AdminPostForm userId={session?.user?.id} />
       </TabPanel>
       <TabPanel>
-        <AdminUsers userId={session?.user?.id} users={users} />
+        <AdminUsers userId={session?.user?.id} users={users} loading={loading} setLoading={setLoading} />
       </TabPanel>
       <TabPanel>
         <AdminUserForm />

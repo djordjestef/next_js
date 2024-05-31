@@ -6,7 +6,7 @@ import { deleteUser } from "@/lib/services";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const AdminUsers = ({ userId, users }: any) => {
+const AdminUsers = ({ userId, users, loading, setLoading }: any) => {
   const router = useRouter();
   const deleteOneUser = async (id: any, title: any) => {
     const result = await Confirm(
@@ -15,6 +15,7 @@ const AdminUsers = ({ userId, users }: any) => {
     );
 
     if (result) {
+      setLoading(true);
       await deleteUser(id).then(() => {
         router.refresh();
       });
@@ -23,11 +24,11 @@ const AdminUsers = ({ userId, users }: any) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (users) {
-  //     setLoading(false);
-  //   }
-  // }, [users]);
+  useEffect(() => {
+    if (users) {
+      setLoading(false);
+    }
+  }, [users]);
 
   return (
     <div className={styles.container}>
