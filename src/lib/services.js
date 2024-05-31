@@ -80,7 +80,7 @@ export const getUsers = async () => {
 
 export const getUser = async (id) => {
   const res = await fetch(`http://localhost:3000/api/user/${id}`);
-
+  
   if (!res.ok) {
     throw new Error("Get User Error");
   }

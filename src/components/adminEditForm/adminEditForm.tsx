@@ -113,6 +113,7 @@ const AdminEditForm = ({ post, setLoading }: any) => {
             id="userId"
             defaultValue={formData.userId}
             onChange={handleChange}
+            disabled
           />
           <label>Image</label>
           <input

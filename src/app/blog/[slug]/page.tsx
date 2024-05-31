@@ -22,7 +22,7 @@ const SinglePostPage = async ({ params }: any) => {
         <h1 className={styles.title}>{post?.data?.title}</h1>
         <div className={styles.detail}>
           {post.data && (
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<div>Loading.........</div>}>
               <PostUser userId={post?.data.userId} />
             </Suspense>
           )}
