@@ -7,11 +7,11 @@ import AdminTabs from "../../components/adminTabs/adminTabs";
 const AdminPage = async () => {
   const session: any = await auth();
   const posts = await getBlogs();
-  // const users = await getUsers();
+  const users = await getUsers();
 
   return (
     <div className={styles.container}>
-      <AdminTabs session={session} posts={posts} />
+      <AdminTabs session={session} posts={posts} users={users} />
     </div>
   );
 };

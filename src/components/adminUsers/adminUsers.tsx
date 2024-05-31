@@ -4,11 +4,9 @@ import styles from "./adminUsers.module.css";
 import Image from "next/image";
 import { deleteUser } from "@/lib/services";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 const AdminUsers = ({ userId, users }: any) => {
   const router = useRouter();
-  // const [loading, setLoading] = useState(false);
   const deleteOneUser = async (id: any, title: any) => {
     const result = await Confirm(
       `Are you sure to delete ${title}`,
@@ -16,7 +14,6 @@ const AdminUsers = ({ userId, users }: any) => {
     );
 
     if (result) {
-      // setLoading(true);
       await deleteUser(id).then(() => {
         router.refresh();
       });
@@ -24,12 +21,6 @@ const AdminUsers = ({ userId, users }: any) => {
       // Сonfirmation not confirmed
     }
   };
-
-  // useEffect(() => {
-  //   if (users) {
-  //     setLoading(false);
-  //   }
-  // }, [users]);
 
   return (
     <div className={styles.container}>

@@ -5,24 +5,11 @@ import AdminPosts from "@/components/adminPosts/adminPosts";
 import AdminPostForm from "@/components/adminPostForm/adminPostFrom";
 import AdminUsers from "@/components/adminUsers/adminUsers";
 import AdminUserForm from "@/components/adminUserForm/adminUserFrom";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./adminTabs.module.css";
-import { MyContext, ActionType } from "@/app/Store";
-import { getUsers } from "@/lib/services";
 
-const AdminTabs = ({ session, posts }: any) => {
-  const { state, dispatch } = useContext(MyContext);
+const AdminTabs = ({ session, posts, users }: any) => {
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (state.users.data.length === 0) {
-      getUsers()
-        .then((res) => {
-          dispatch({ type: ActionType.FETCH_USERS_SUCCESS, payload: res.data });
-        })
-        .catch((error) => dispatch({ type: ActionType.FETCH_USERS_ERROR }));
-    }
-  }, [dispatch]);
 
   return (
     <Tabs className={styles.tabs}>
@@ -40,7 +27,7 @@ const AdminTabs = ({ session, posts }: any) => {
         <AdminPostForm userId={session?.user?.id} />
       </TabPanel>
       <TabPanel>
-        <AdminUsers userId={session?.user?.id} users={state.users} />
+        <AdminUsers userId={session?.user?.id} users={users} />
       </TabPanel>
       <TabPanel>
         <AdminUserForm />
