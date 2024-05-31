@@ -5,7 +5,6 @@ export const authConfig = {
   providers: [],
   callbacks: {
     async jwt({ token, user }) {
-      console.log('token',token)
       if (user) {
         token.id = user.id;
         token.isAdmin = user.isAdmin;
@@ -23,7 +22,6 @@ export const authConfig = {
 
     authorized({ auth, request }) {
       console.log("auth AUTH.CONFIG", auth);
-      console.log('---------------',auth.expires)
       const user = auth?.user;
       const isOnAdminPanel = request.nextUrl?.pathname.startsWith("/admin");
       const isOnBlogPage = request.nextUrl?.pathname.startsWith("/blog");

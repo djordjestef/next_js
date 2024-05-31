@@ -4,7 +4,6 @@ import styles from "./postCard.module.css";
 import Link from "next/link";
 
 const PostCard = ({ post, session }: any) => {
-  console.log("session", session);
   return (
     <div className={styles.container}>
       <div className={styles.top}>

@@ -15,7 +15,6 @@ const AdminTabs = ({ session, posts }: any) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log('USE EFFECT')
     if (state.users.data.length === 0) {
       getUsers()
         .then((res) => {
@@ -24,8 +23,6 @@ const AdminTabs = ({ session, posts }: any) => {
         .catch((error) => dispatch({ type: ActionType.FETCH_USERS_ERROR }));
     }
   }, [dispatch]);
-
-  console.log("state", state);
 
   return (
     <Tabs className={styles.tabs}>

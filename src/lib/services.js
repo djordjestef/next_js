@@ -1,7 +1,6 @@
 export const getBlogs = async () => {
   const res = await fetch("http://localhost:3000/api/blog", {
     cache: "no-store",
-    
   });
   if (!res.ok) {
     throw new Error("Something went wrong");
@@ -34,7 +33,6 @@ export const createBlog = async (formData) => {
 
     return await response.json();
   } catch (error) {
-    console.log("USAO U CAr=tHC");
     console.error("Failed to generate blog:", error);
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
@@ -63,7 +61,6 @@ export const updateBlog = async (formData, postId) => {
       body: JSON.stringify({ formData, postId }),
     });
 
-    console.log("AFTER BACKEND", response);
     return await response.json();
   } catch (error) {
     console.error("Failed to update blog:", error);
@@ -87,7 +84,6 @@ export const getUser = async (id) => {
   if (!res.ok) {
     throw new Error("Get User Error");
   }
-
   return res.json();
 };
 

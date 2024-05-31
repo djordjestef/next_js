@@ -16,8 +16,9 @@ import Image from "next/image";
 //   return res.json();
 // };
 const PostUser = async ({ userId }: any) => {
+  console.log('userId',userId)
   const user = await getUser(userId);
-  console.log("user", user);
+  console.log("PREV user", user);
 
   return (
     <div className={styles.container}>

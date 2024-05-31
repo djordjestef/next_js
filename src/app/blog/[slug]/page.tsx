@@ -8,21 +8,18 @@ import { getBlog } from "@/lib/services";
 const SinglePostPage = async ({ params }: any) => {
   const { slug } = params;
 
-  // FETCH DATA WITH AN API
   const post = await getBlog(slug);
-  console.log('post',post)
-  // const post: any = await getPost(slug);
-  // console.log("post", post);
+  console.log("post SINGLE PAGE", post);
 
   return (
     <div className={styles.container}>
-      {post?.data.img! && (
+      {post?.data?.img! && (
         <div className={styles.imgContainer}>
-          <Image src={post?.data.img} alt="" fill className={styles.img} />
+          <Image src={post?.data?.img} alt="" fill className={styles.img} />
         </div>
       )}
       <div className={styles.textContainer}>
-        <h1 className={styles.title}>{post?.data.title}</h1>
+        <h1 className={styles.title}>{post?.data?.title}</h1>
         <div className={styles.detail}>
           {post.data && (
             <Suspense fallback={<div>Loading...</div>}>
@@ -33,13 +30,12 @@ const SinglePostPage = async ({ params }: any) => {
           <div className={styles.detailText}>
             <div className={styles.detailTitle}>Published</div>
             <div className={styles.detailValue}>
-              {post?.data.createdAt.toString().slice(4, 16)}
+              {post?.data?.createdAt.toString().slice(4, 16)}
             </div>
           </div>
         </div>
-        <div className={styles.content}>{post?.data.desc}</div>
+        <div className={styles.content}>{post?.data?.desc}</div>
       </div>
-      
     </div>
   );
 };

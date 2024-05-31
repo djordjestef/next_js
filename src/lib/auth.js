@@ -11,7 +11,6 @@ const login = async (credentials) => {
     await connectToDb();
     const user = await User.findOne({ username: credentials.username });
 
-    console.log("user", user);
     if (!user) {
       throw new Error("User not found");
     }
@@ -47,7 +46,6 @@ export const {
     CredentialsProvider({
       async authorize(credentials) {
         try {
-          console.log("credentials", credentials);
           const user = await login(credentials);
           return user;
         } catch (error) {
@@ -60,9 +58,6 @@ export const {
   callbacks: {
     //login WITH GITHUB ACC
     async signIn({ user, account, profile }) {
-      console.log("user", user);
-      console.log("account", account);
-      console.log("profile", profile);
       if (account.provider === "github") {
         await connectToDb();
 
