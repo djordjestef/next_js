@@ -4,6 +4,7 @@ import styles from "./adminUsers.module.css";
 import Image from "next/image";
 import { deleteUser } from "@/lib/services";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const AdminUsers = ({ userId, users }: any) => {
   const router = useRouter();
@@ -21,6 +22,12 @@ const AdminUsers = ({ userId, users }: any) => {
       // Сonfirmation not confirmed
     }
   };
+
+  // useEffect(() => {
+  //   if (users) {
+  //     setLoading(false);
+  //   }
+  // }, [users]);
 
   return (
     <div className={styles.container}>
