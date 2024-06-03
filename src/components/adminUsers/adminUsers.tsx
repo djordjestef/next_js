@@ -33,7 +33,7 @@ const AdminUsers = ({ userId, users, loading, setLoading }: any) => {
   return (
     <div className={styles.container}>
       <h1>Users</h1>
-      {users.loading ? (
+      {loading ? (
         <div className={styles.load}>Loading...</div>
       ) : (
         users.data?.map((user: any) => (
