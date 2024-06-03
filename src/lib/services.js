@@ -87,7 +87,6 @@ export const getUser = async (id) => {
     throw new Error("Get User Error");
   }
 
-  console.log("PRETPOSLEDNJE");
   return await res.json();
 };
 
