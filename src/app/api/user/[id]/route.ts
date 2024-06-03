@@ -7,8 +7,6 @@ export const GET = async (request: NextRequest, { params }: any) => {
   try {
     await connectToDb();
     const user = await User.findById(id);
-    console.log('PRVO',user)
-    // console.log("user API", user);
     if (!user) {
       return NextResponse.json(
         {

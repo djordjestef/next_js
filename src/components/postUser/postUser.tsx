@@ -17,8 +17,6 @@ import Image from "next/image";
 // };
 const PostUser = async ({ userId }: any) => {
   const user = await getUser(userId);
-  console.log("POSLEDNJE PREV user", user);
- 
 
   return (
     <div className={styles.container}>

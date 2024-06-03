@@ -79,13 +79,15 @@ export const getUsers = async () => {
 };
 
 export const getUser = async (id) => {
-  const res = await fetch(`http://localhost:3000/api/user/${id}`);
+  const res = await fetch(`http://localhost:3000/api/user/${id}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Get User Error");
   }
 
-  console.log("PRETPOSLEDNJE")
+  console.log("PRETPOSLEDNJE");
   return await res.json();
 };
 
