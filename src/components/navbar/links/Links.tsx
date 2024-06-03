@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./links.module.css";
 import NavLink from "./navLink/navLink";
 import Image from "next/image";
@@ -33,7 +33,15 @@ const Links = ({ session }: any) => {
   const handleChangeTheme = (value: any) => {
     dispatch({ type: ActionType.CHANGE_THEME, dark_theme: value });
     document.documentElement.classList.toggle("dark");
+    localStorage.setItem("dark_theme", JSON.stringify(value));
   };
+
+  useEffect(() => {
+    console.log("state", state.theme.dark_theme);
+    if (state.theme.dark_theme) {
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
 
   return (
     <div className={styles.container}>
