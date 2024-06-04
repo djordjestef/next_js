@@ -11,7 +11,9 @@ export const getBlogs = async () => {
 };
 
 export const getBlog = async (slug) => {
-  const res = await fetch(`http://localhost:3000/api/blog/${slug}`);
+  const res = await fetch(`http://localhost:3000/api/blog/${slug}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Single Post Error");

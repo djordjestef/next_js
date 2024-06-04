@@ -7,6 +7,7 @@ import { getBlog } from "@/lib/services";
 const SinglePostPage = async ({ params }: any) => {
   const { slug } = params;
   const post = await getBlog(slug);
+  console.log('post',post)
 
   return (
     <div className={styles.container}>
