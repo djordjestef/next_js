@@ -9,42 +9,58 @@ import React, { useEffect, useState } from "react";
 import styles from "./adminTabs.module.css";
 import io from "socket.io-client";
 
-let socket;
-
+const socket = io('http://localhost:3000');
 const AdminTabs = ({ session, posts, users }: any) => {
   const [loading, setLoading] = useState(false);
 
-  //   useEffect(() => {
-  //     // Create a socket connection
-  //     const socket = io();
-  //     console.log('socket',socket)
 
-  //     // Listen for incoming messages
-  //     socket.on('message', (message) => {
-  //         // setMessages((prevMessages) => [...prevMessages, message]);
-  //     });
 
-  //     // Clean up the socket connection on unmount
-  //     return () => {
-  //         socket.disconnect();
-  //     };
+  const socketFn = async()=>{
+    await fetch('/api/socket',{
+      method: "POST",
+      body: 'lalalallalalalala',
+      // next:{
+      //   tags:['admin']
+      // })
+    })
+    // socket = io();
+
+    socket.on("receive-message", (data) => {
+     console.log('data',data)
+    });
+  }
+
+ 
+
+
+
+    useEffect(() => {
+        socket.on('message2', (data) => {
+            console.log("Recieved from SERVER ::", data)
+            // Execute any command
+        })
+    }, [socket]);
+  // useEffect(() => {
+  //   socketInitializer();
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
   // }, []);
 
-  // const socketInitializer = async () => {
+  // async function socketInitializer() {
   //   await fetch("/api/socket");
+
   //   socket = io();
 
-  //   socket.on("connect", () => {
-  //     console.log("connected");
+  //   socket.on("receive-message", (data) => {
+  //     // we get the data here
   //   });
-  // };
-
-  // const click = () => {
-  //   socketInitializer();
-  // };
+  // }
 
   return (
     <Tabs className={styles.tabs}>
+      <button onClick={socketFn}>click</button>
       <TabList>
         <Tab>Blog List</Tab>
         <Tab>Add Blog</Tab>
