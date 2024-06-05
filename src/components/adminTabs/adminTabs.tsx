@@ -5,11 +5,43 @@ import AdminPosts from "@/components/adminPosts/adminPosts";
 import AdminPostForm from "@/components/adminPostForm/adminPostFrom";
 import AdminUsers from "@/components/adminUsers/adminUsers";
 import AdminUserForm from "@/components/adminUserForm/adminUserFrom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./adminTabs.module.css";
+import io from "socket.io-client";
+
+let socket;
 
 const AdminTabs = ({ session, posts, users }: any) => {
   const [loading, setLoading] = useState(false);
+
+  //   useEffect(() => {
+  //     // Create a socket connection
+  //     const socket = io();
+  //     console.log('socket',socket)
+
+  //     // Listen for incoming messages
+  //     socket.on('message', (message) => {
+  //         // setMessages((prevMessages) => [...prevMessages, message]);
+  //     });
+
+  //     // Clean up the socket connection on unmount
+  //     return () => {
+  //         socket.disconnect();
+  //     };
+  // }, []);
+
+  // const socketInitializer = async () => {
+  //   await fetch("/api/socket");
+  //   socket = io();
+
+  //   socket.on("connect", () => {
+  //     console.log("connected");
+  //   });
+  // };
+
+  // const click = () => {
+  //   socketInitializer();
+  // };
 
   return (
     <Tabs className={styles.tabs}>
@@ -27,7 +59,12 @@ const AdminTabs = ({ session, posts, users }: any) => {
         <AdminPostForm userId={session?.user?.id} />
       </TabPanel>
       <TabPanel>
-        <AdminUsers userId={session?.user?.id} users={users} loading={loading} setLoading={setLoading} />
+        <AdminUsers
+          userId={session?.user?.id}
+          users={users}
+          loading={loading}
+          setLoading={setLoading}
+        />
       </TabPanel>
       <TabPanel>
         <AdminUserForm />

@@ -15,10 +15,7 @@ interface ContextType {
 
 const initialState = {
   theme: {
-    dark_theme:
-      localStorage.getItem("dark_theme") === null
-        ? false
-        : JSON.parse(localStorage.getItem("dark_theme")),
+    dark_theme: false,
   },
 };
 

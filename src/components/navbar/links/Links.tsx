@@ -36,10 +36,17 @@ const Links = ({ session }: any) => {
     localStorage.setItem("dark_theme", JSON.stringify(value));
   };
 
+  // console.log("Local Storeage", localStorage.getItem("dark_theme"));
+  // console.log("state", state.theme.dark_theme);
   useEffect(() => {
-    console.log("state", state.theme.dark_theme);
-    if (state.theme.dark_theme) {
-      document.documentElement.classList.add("dark");
+    if (typeof localStorage !== "undefined") {
+      if (JSON.parse(localStorage.getItem("dark_theme")!)) {
+        document.documentElement.classList.add("dark");
+        dispatch({
+          type: ActionType.CHANGE_THEME,
+          dark_theme: JSON.parse(localStorage.getItem("dark_theme")!),
+        });
+      }
     }
   }, []);
 
