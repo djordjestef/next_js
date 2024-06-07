@@ -25,9 +25,9 @@ const AdminTabs = ({ session, posts, users }: any) => {
     })
     // socket = io();
 
-    socket.on("receive-message", (data) => {
-     console.log('data',data)
-    });
+    // socket.on("receive-message", (data) => {
+    //  console.log('data',data)
+    // });
   }
 
  
