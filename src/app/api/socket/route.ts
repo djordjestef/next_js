@@ -4,6 +4,9 @@ import io from 'socket.io-client';
 const socket = io('http://localhost:3000');
 
 export async function POST(req, res) {
+    const data = await req.json();
+    
+
     try {
 
         // do something you need to do in the backend 
