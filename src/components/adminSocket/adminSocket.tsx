@@ -6,31 +6,37 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/naviga  tion";
 import io from "socket.io-client";
 
-
 const socket = io("http://localhost:3000");
 
 const AdminSocket = () => {
   //   const router = useRouter();
+  const [username, setUsername] = useState("");
   const [formData, setFormData] = useState({
     message: "",
-    user: "",
   });
+  const [allMessages, setAllMessages] = useState([]);
 
   const socketFn = async () => {
     await fetch("/api/socket", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify({ formData: formData }),
     });
     // socket = io();
 
     // socket.on("receive-message", (data) => {
     //  console.log('data',data)
     // });
+    socket.on("receive-message", (data) => {
+      console.log("data", data);
+      setAllMessages((pre) => [...pre, data]);
+    });
   };
 
   useEffect(() => {
-    socket.on("message2", (data) => {
+    socketFn();
+    socket.on("receive-message", (data) => {
       console.log("Recieved from SERVER ::", data);
+      //   setAllMessages((pre) => [...pre, data]);
       // Execute any command
     });
   }, [socket]);
@@ -45,10 +51,15 @@ const AdminSocket = () => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
-    if (formData.message === "" || formData.user === "")
+    if (formData.message === "")
       return Alert(`All inputs must be field`, "Error");
+    const { message } = formData;
+    socket.emit("send-message", {
+      username,
+      message,
+    });
 
-    await socketFn()
+    // await socketFn();
 
     // await createBlog(formData).then((res) => {
     //   if (res.error) {
@@ -62,24 +73,40 @@ const AdminSocket = () => {
     // });
   };
 
+  console.log("allMessages", allMessages);
+
   return (
     <div>
       <h1 style={{ marginBottom: 20 }}>Send Meessage</h1>
+      <h1>Enter a username</h1>
+
+      <input value={username} onChange={(e) => setUsername(e.target.value)} />
+
+      <br />
+      <br />
+
+      {allMessages.map(({ username, message }, index) => (
+        <div key={index}>
+          {username}: {message}
+        </div>
+      ))}
+
+      <br />
       <form action="" className={styles.form}>
-        <input
+        {/* <input
           type="text"
           placeholder="title"
           name="message"
           id="message"
           //   value={formData.message}
           onChange={handleChange}
-        />
+        /> */}
         <input
           type="text"
-          placeholder="desc"
-          name="user"
-          id="user"
-          //   value={formData.user}
+          placeholder="message"
+          name="message"
+          id="message"
+          value={formData.message}
           onChange={handleChange}
         />
 

@@ -17,9 +17,9 @@ app.prepare().then(async () => {
     io.on('connection', (socket) => {
         console.log('Client connected TO SOCKET');
 
-        socket.on('message1', (data) => {
-            console.log('Recieved from API ::', data)
-            io.emit('message2', data);
+        socket.on('send-message', (data) => {
+            console.log('Recieved from API SERVER SIDE ::', data)
+            io.emit('receive-message', data);
         })
     });
 
