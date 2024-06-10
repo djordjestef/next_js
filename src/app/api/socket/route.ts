@@ -4,8 +4,10 @@ import io from 'socket.io-client';
 const socket = io('http://localhost:3000');
 
 export async function POST(req, res) {
-    const data = await req.json();
-    
+    const data = await req.json()
+    const { formData } = data;
+    console.log('formData',formData)
+
 
     try {
 
