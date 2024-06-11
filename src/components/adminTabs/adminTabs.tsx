@@ -5,9 +5,8 @@ import AdminPosts from "@/components/adminPosts/adminPosts";
 import AdminPostForm from "@/components/adminPostForm/adminPostFrom";
 import AdminUsers from "@/components/adminUsers/adminUsers";
 import AdminUserForm from "@/components/adminUserForm/adminUserFrom";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./adminTabs.module.css";
-import AdminSocket from "../adminSocket/adminSocket";
 
 const AdminTabs = ({ session, posts, users }: any) => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +18,6 @@ const AdminTabs = ({ session, posts, users }: any) => {
         <Tab>Add Blog</Tab>
         <Tab>User List</Tab>
         <Tab>Add User</Tab>
-        <Tab>Socket Message</Tab>
       </TabList>
 
       <TabPanel>
@@ -38,9 +36,6 @@ const AdminTabs = ({ session, posts, users }: any) => {
       </TabPanel>
       <TabPanel>
         <AdminUserForm />
-      </TabPanel>
-      <TabPanel>
-        <AdminSocket />
       </TabPanel>
     </Tabs>
   );
