@@ -24,24 +24,29 @@ const links = [
     title: "Blog",
     path: "/blog",
   },
+  {
+    title: "Chat",
+    path: "/chat",
+  },
 ];
 
 const Links = ({ session }: any) => {
   const [open, setOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const { state, dispatch } = useContext(MyContext);
 
   const handleChangeTheme = (value: any) => {
     dispatch({ type: ActionType.CHANGE_THEME, dark_theme: value });
     document.documentElement.classList.toggle("dark");
+    setIsDark((prevState) => !prevState);
     localStorage.setItem("dark_theme", JSON.stringify(value));
   };
 
-  // console.log("Local Storeage", localStorage.getItem("dark_theme"));
-  // console.log("state", state.theme.dark_theme);
   useEffect(() => {
     if (typeof localStorage !== "undefined") {
       if (JSON.parse(localStorage.getItem("dark_theme")!)) {
         document.documentElement.classList.add("dark");
+        setIsDark(true);
         dispatch({
           type: ActionType.CHANGE_THEME,
           dark_theme: JSON.parse(localStorage.getItem("dark_theme")!),
@@ -49,6 +54,21 @@ const Links = ({ session }: any) => {
       }
     }
   }, []);
+
+  const hasSession = (
+    <>
+      {session?.user.isAdmin && (
+        <NavLink item={{ title: "Admin", path: "/admin" }} />
+      )}
+      <form action={handleLogout}>
+        <button
+          className={state.theme.dark_theme ? styles.logoutDark : styles.logout}
+        >
+          Logout
+        </button>
+      </form>
+    </>
+  );
 
   return (
     <div className={styles.container}>
@@ -62,27 +82,14 @@ const Links = ({ session }: any) => {
           <NavLink item={link} key={link.title} />
         ))}
         {session?.user ? (
-          <>
-            {session?.user.isAdmin && (
-              <NavLink item={{ title: "Admin", path: "/admin" }} />
-            )}
-            <form action={handleLogout}>
-              <button
-                className={
-                  state.theme.dark_theme ? styles.logoutDark : styles.logout
-                }
-              >
-                Logout
-              </button>
-            </form>
-          </>
+          hasSession
         ) : (
           <NavLink item={{ title: "Login", path: "/login" }} />
         )}
       </div>
       <Image
         className={styles.menuBtn}
-        src="/menu.png"
+        src={isDark ? "/menu.png" : "/light_menu.png"}
         alt=""
         width={30}
         height={30}
@@ -94,6 +101,11 @@ const Links = ({ session }: any) => {
           {links.map((link) => (
             <NavLink item={link} key={link.title} />
           ))}
+          {session?.user ? (
+            hasSession
+          ) : (
+            <NavLink item={{ title: "Login", path: "/login" }} />
+          )}
         </div>
       )}
     </div>

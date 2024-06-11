@@ -17,10 +17,10 @@ const AdminSocket = () => {
   const [allMessages, setAllMessages] = useState([]);
 
   const socketFn = async () => {
-    await fetch("/api/socket", {
-      method: "POST",
-      body: JSON.stringify({ formData: formData }),
-    });
+    // await fetch("/api/socket", {
+    //   method: "POST",
+    //   body: JSON.stringify({ formData: formData }),
+    // });
     // socket = io();
 
     // socket.on("receive-message", (data) => {

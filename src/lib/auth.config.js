@@ -26,18 +26,21 @@ export const authConfig = {
       const isOnAdminPanel = request.nextUrl?.pathname.startsWith("/admin");
       const isOnBlogPage = request.nextUrl?.pathname.startsWith("/blog");
       const isOnLoginPage = request.nextUrl?.pathname.startsWith("/login");
+      const isOnChatPage = request.nextUrl.pathname.startsWith("/chat");
 
       //ONLY ADMIN CAN REACH THE ADMIN DASHBOARD
       if (isOnAdminPanel && !user?.isAdmin) {
         return false;
       }
       //BLOCK ALL PATHS IF USER IS NOT AUTHENTICATED
-      //   if(!user) return false
+      // if(!user) return false
 
       //ONLY AUTHENTICATED USERS CAN REACH THE BLOG PAGE
       if (isOnBlogPage && !user) {
         return false;
       }
+      //ONLY AUTHENTICATED USERS CAN REACH THE CHAT PAGE
+      if (isOnChatPage && !user) return false;
 
       //ONLY AUTHENTICATED USERS CAN REACH THE LOGIN PAGE
       if (isOnLoginPage && user) {

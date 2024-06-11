@@ -14,7 +14,7 @@ export async function POST(req, res) {
         // do something you need to do in the backend 
         // (like database operations, etc.)
 
-        socket.emit('receive-message', formData);
+        // socket.emit('receive-message', formData);
 
         return NextResponse.json({ data: 'Success' }, { status: 200 });
 
