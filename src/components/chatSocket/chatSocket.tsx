@@ -10,12 +10,12 @@ const socket = io("http://localhost:3000");
 
 const ChatSocket = ({ user }) => {
   const { username } = user;
+  const [userName, setUserName] = useState('')
   const [messageObj, setMessageObj] = useState({
     message: "",
   });
   const [allMessages, setAllMessages] = useState([]);
 
-  console.log("allMessages", allMessages);
   const socketFn = async () => {
     // await fetch("/api/socket", {
     //   method: "POST",
@@ -28,15 +28,17 @@ const ChatSocket = ({ user }) => {
     // });
     socket.on("receive-message", (data) => {
       console.log("data", data);
+      setUserName(data.username)
       setAllMessages((pre) => [...pre, data]);
     });
   };
 
   useEffect(() => {
     socketFn();
-    socket.on("receive-message", (data) => {
-      console.log("Recieved from SERVER ::", data);
-    });
+    
+    return () => {
+      socket.disconnect();
+    };
   }, [socket]);
 
   const handleChange = (e) => {
@@ -58,6 +60,9 @@ const ChatSocket = ({ user }) => {
     });
     setMessageObj({ message: "" });
   };
+
+  console.log('username',username)
+  console.log('userName',userName)
 
   return (
     <div className={styles.container}>
