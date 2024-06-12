@@ -40,6 +40,7 @@
   flex-direction: column;
   width: 100px;
   gap: 20px;
+  border-right: 2px solid var(--bgSoft);
 }
 
 .chatContainer {
@@ -62,7 +63,35 @@
 .messageHolder {
   display: inline-block;
   vertical-align: top;
-  margin-top: 10px;
-  margin-left: 10px;
+  margin: 10px;
   width: 80%;
+}
+
+.messageHolderUser {
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px;
+  width: 97%;
+  text-align: right;
+}
+
+.user {
+  margin: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.offline {
+  width: 10px;
+  height: 10px;
+  background-color: gray;
+  border-radius: 50%;
 }

@@ -8,9 +8,9 @@ import Image from "next/image";
 
 const socket = io("http://localhost:3000");
 
-const ChatSocket = ({ user }) => {
+const ChatSocket = ({ user, users }) => {
   const { username } = user;
-  const [userName, setUserName] = useState("");
+  const [chatUserName, setChatUserName] = useState("");
   const [messageObj, setMessageObj] = useState({
     message: "",
   });
@@ -19,7 +19,6 @@ const ChatSocket = ({ user }) => {
   const socketFn = async () => {
     socket.on("receive-message", (data) => {
       console.log("data", data);
-      // setUserName(data.username);
       setAllMessages((pre) => [...pre, data]);
     });
   };
@@ -41,7 +40,7 @@ const ChatSocket = ({ user }) => {
   };
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    setUserName(username);
+    setChatUserName(username);
     if (messageObj.message === "")
       return Alert(`All inputs must be field`, "Error");
     const { message } = messageObj;
@@ -52,12 +51,28 @@ const ChatSocket = ({ user }) => {
     setMessageObj({ message: "" });
   };
 
-  console.log("userName", userName);
-  console.log("allMessages", allMessages);
+  console.log("chatUserName", chatUserName);
+  console.log("username", username);
+  console.log('allMessages',allMessages)
 
   return (
     <div className={styles.container}>
-      <div className={styles.chatList}>Side bar</div>
+      <div className={styles.chatList}>
+        {users.data?.map((user: any) => (
+          <div className={styles.user} key={user._id}>
+            <div className={styles.detail}>
+              <Image
+                src={user.img ? user.img : "/noavatar.png"}
+                alt=""
+                width={50}
+                height={50}
+              />
+              {user.username}
+              <span className={styles.offline}></span>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className={styles.chatContainer}>
         <h1 style={{ marginBottom: 10 }}>Chat App</h1>
@@ -65,7 +80,7 @@ const ChatSocket = ({ user }) => {
 
         {allMessages.map(({ message, username }, index) => (
           <div key={index} className={styles.messageContainer}>
-            {username !== userName && (
+            {username !== chatUserName && (
               <div className={styles.userHolder}>
                 <Image
                   src={user.img ? user.img : "/noavatar.png"}
@@ -78,7 +93,15 @@ const ChatSocket = ({ user }) => {
               </div>
             )}
 
-            <div className={styles.messageHolder}>{message}</div>
+            <div
+              className={
+                username !== chatUserName
+                  ? styles.messageHolder
+                  : styles.messageHolderUser
+              }
+            >
+              {message}
+            </div>
           </div>
         ))}
 
