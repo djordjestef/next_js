@@ -18,7 +18,10 @@ app.prepare().then(async () => {
     console.log("Client connected TO SOCKET");
 
     socket.on("send-message", (data) => {
-      console.log("Recieved from API SERVER SIDE ::", data);
+      console.log(
+        "Recieved from API SERVER SIDE :: DATA FROM SENDER ON RECIEVER",
+        data
+      );
       io.emit("receive-message", data);
     });
   });

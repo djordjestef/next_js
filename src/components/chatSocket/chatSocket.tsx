@@ -10,32 +10,23 @@ const socket = io("http://localhost:3000");
 
 const ChatSocket = ({ user }) => {
   const { username } = user;
-  const [userName, setUserName] = useState('')
+  const [userName, setUserName] = useState("");
   const [messageObj, setMessageObj] = useState({
     message: "",
   });
   const [allMessages, setAllMessages] = useState([]);
 
   const socketFn = async () => {
-    // await fetch("/api/socket", {
-    //   method: "POST",
-    //   body: JSON.stringify({ messageObj: messageObj }),
-    // });
-    // socket = io();
-
-    // socket.on("receive-message", (data) => {
-    //  console.log('data',data)
-    // });
     socket.on("receive-message", (data) => {
       console.log("data", data);
-      setUserName(data.username)
+      // setUserName(data.username);
       setAllMessages((pre) => [...pre, data]);
     });
   };
 
   useEffect(() => {
     socketFn();
-    
+
     return () => {
       socket.disconnect();
     };
@@ -50,7 +41,7 @@ const ChatSocket = ({ user }) => {
   };
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-
+    setUserName(username);
     if (messageObj.message === "")
       return Alert(`All inputs must be field`, "Error");
     const { message } = messageObj;
@@ -61,8 +52,8 @@ const ChatSocket = ({ user }) => {
     setMessageObj({ message: "" });
   };
 
-  console.log('username',username)
-  console.log('userName',userName)
+  console.log("userName", userName);
+  console.log("allMessages", allMessages);
 
   return (
     <div className={styles.container}>
@@ -72,18 +63,21 @@ const ChatSocket = ({ user }) => {
         <h1 style={{ marginBottom: 10 }}>Chat App</h1>
         <h1>User: {username}</h1>
 
-        {allMessages.map(({ message }, index) => (
+        {allMessages.map(({ message, username }, index) => (
           <div key={index} className={styles.messageContainer}>
-            <div className={styles.userHolder}>
-              <Image
-                src={user.img ? user.img : "/noavatar.png"}
-                alt=""
-                width={50}
-                height={50}
-              />
-              <br />
-              <strong>{username}</strong>
-            </div>
+            {username !== userName && (
+              <div className={styles.userHolder}>
+                <Image
+                  src={user.img ? user.img : "/noavatar.png"}
+                  alt=""
+                  width={50}
+                  height={50}
+                />
+                <br />
+                <strong>{username}</strong>
+              </div>
+            )}
+
             <div className={styles.messageHolder}>{message}</div>
           </div>
         ))}
