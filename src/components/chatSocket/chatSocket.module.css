@@ -103,3 +103,13 @@
   top: -7px;
   left: -7px;
 }
+
+.online {
+  width: 13px;
+  height: 13px;
+  background-color: green;
+  border-radius: 50%;
+  position: absolute;
+  top: -7px;
+  left: -7px;
+}

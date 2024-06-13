@@ -26,16 +26,23 @@ app.prepare().then(async () => {
       io.emit("receive-message", data);
     });
 
-    socket.on("login", function (data) {
+    socket.on("online", function (data) {
       console.log("a user " + data.userId + " connected");
       // saving userId to object with socket ID
       users['userId'] = data.userId;
       users["name"] = data.name;
       io.emit("connected-users", data);
     });
+
+    socket.on('disconnect', function(){
+      console.log('user ' + users[socket['userId']] + ' disconnected');
+      // remove saved socket from users object
+      delete users[socket['userId']];
+    });
+    console.log('users',users)
   });
 
-  console.log('users',users)
+ 
 
   server.all("*", (req, res) => {
     return handle(req, res);

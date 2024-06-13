@@ -11,24 +11,36 @@ const socket = io("http://localhost:3000");
 const ChatSocket = ({ user, users }) => {
   const { username, id } = user;
   const [chatUserName, setChatUserName] = useState("");
-  const [liveUsers,setLiveUsers] = useState([])
+  const [liveUsers, setLiveUsers] = useState([]);
   const [messageObj, setMessageObj] = useState({
     message: "",
   });
   const [allMessages, setAllMessages] = useState([]);
 
-  const filteredUsers = users?.data.filter((user: any) => id !== user._id);
+  const filteredUsers = users?.data
+    // .filter((user: any) => id === user._id)
+    .map((user, index) => {
+      if(index === liveUsers.findIndex(o => user._id === o.userId)){
+        return { ...user, online: true };
+      }else{
+        return { ...user, online: false };
+      }
+      
+    });
 
+ 
   const socketFn = async () => {
     socket.on("receive-message", (data) => {
       setAllMessages((pre) => [...pre, data]);
     });
     socket.emit("login", { userId: id, name: username });
     socket.on("connected-users", (data) => {
-      console.log("connected users", data);
-      setLiveUsers((prevState)=>[...prevState,data])
+      setLiveUsers((prevState) => [...prevState, data]);
     });
   };
+
+  console.log("liveUsers", liveUsers);
+  console.log("filteredUsers", filteredUsers);
 
   useEffect(() => {
     socketFn();
@@ -63,7 +75,7 @@ const ChatSocket = ({ user, users }) => {
   // console.log('allMessages',allMessages)
 
   return (
-    <div style={{minHeight:'70vh'}}>
+    <div style={{ minHeight: "70vh" }}>
       <h1 style={{ marginBottom: 10 }}>Chat App</h1>
       <div className={styles.container}>
         <div className={styles.chatList}>
@@ -77,14 +89,14 @@ const ChatSocket = ({ user, users }) => {
                   height={50}
                 />
                 {user.username}
-                <span className={styles.offline}></span>
+                <span className={user.online ? styles.online : styles.offline}></span>
               </div>
             </div>
           ))}
         </div>
 
         <div className={styles.chatContainer}>
-          {/* <h1>User: {username}</h1> */}
+          <h1>User: {username}</h1>
 
           {allMessages.map(({ message, username }, index) => (
             <div key={index} className={styles.messageContainer}>
