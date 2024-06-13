@@ -16,11 +16,12 @@ const ChatSocket = ({ user, users }) => {
     message: "",
   });
   const [allMessages, setAllMessages] = useState([]);
-
+  const liveUserIds = liveUsers.map((item)=>item.userId)
+console.log('liveUserIds',liveUserIds)
   const filteredUsers = users?.data
     // .filter((user: any) => id === user._id)
     .map((user, index) => {
-      if(index === liveUsers.findIndex(o => user._id === o.userId)){
+      if(liveUserIds.indexOf(user._id)>=0){
         return { ...user, online: true };
       }else{
         return { ...user, online: false };
@@ -33,7 +34,7 @@ const ChatSocket = ({ user, users }) => {
     socket.on("receive-message", (data) => {
       setAllMessages((pre) => [...pre, data]);
     });
-    socket.emit("login", { userId: id, name: username });
+    socket.emit("online", { userId: id, name: username });
     socket.on("connected-users", (data) => {
       setLiveUsers((prevState) => [...prevState, data]);
     });
@@ -70,9 +71,6 @@ const ChatSocket = ({ user, users }) => {
     setMessageObj({ message: "" });
   };
 
-  // console.log("chatUserName", chatUserName);
-  // console.log("username", username);
-  // console.log('allMessages',allMessages)
 
   return (
     <div style={{ minHeight: "70vh" }}>
