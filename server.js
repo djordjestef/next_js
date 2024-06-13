@@ -13,6 +13,7 @@ app.prepare().then(async () => {
   const server = express();
   const httpServer = http.createServer(server);
   const io = socketIO(httpServer);
+  const users = {};
 
   io.on("connection", (socket) => {
     console.log("Client connected TO SOCKET");
@@ -24,7 +25,17 @@ app.prepare().then(async () => {
       );
       io.emit("receive-message", data);
     });
+
+    socket.on("login", function (data) {
+      console.log("a user " + data.userId + " connected");
+      // saving userId to object with socket ID
+      users['userId'] = data.userId;
+      users["name"] = data.name;
+      io.emit("connected-users", data);
+    });
   });
+
+  console.log('users',users)
 
   server.all("*", (req, res) => {
     return handle(req, res);
