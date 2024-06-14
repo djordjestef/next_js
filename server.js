@@ -30,6 +30,7 @@ app.prepare().then(async () => {
     socket.on("private-message", ({ content, to, username }) => {
       console.log("content", content);
       console.log("to", to);
+      console.log('username',username)
       const recipient = onlineUsers.find((user) => user.userId === to);
       console.log("recipient", recipient);
       if (recipient) {

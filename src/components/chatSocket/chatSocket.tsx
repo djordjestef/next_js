@@ -61,6 +61,11 @@ const ChatSocket = ({ user, users }) => {
     console.log("okida se");
     event.preventDefault();
     setSender(username);
+    // socket.emit("send-message", {
+    //   id,
+    //   username,
+    //   message,
+    // });
     if (chatId) {
       socket.emit("private-message", {
         content: message,
