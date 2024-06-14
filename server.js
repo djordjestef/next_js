@@ -30,11 +30,23 @@ app.prepare().then(async () => {
     socket.on("new-user-add", function (data) {
       if (!onlineUsers.some((user) => user.userId === data.userId)) {
         console.log("IMA IH");
-        onlineUsers.push({ userId: data.userId, name: data.name });
+        onlineUsers.push({
+          userId: data.userId,
+          name: data.name,
+          socketId: socket.id,
+        });
       }
       console.log("a user TRIGGERED " + data + " connected");
 
       console.log("onlineUsers", onlineUsers);
+      io.emit("get-users", onlineUsers);
+    });
+
+    socket.on("offline", () => {
+      // remove user from active users
+      onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
+      console.log("user is offline", onlineUsers);
+      // send all online users to all users
       io.emit("get-users", onlineUsers);
     });
   });

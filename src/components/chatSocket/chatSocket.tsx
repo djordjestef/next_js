@@ -53,6 +53,7 @@ const ChatSocket = ({ user, users }) => {
 
 
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMessageObj((prevData) => ({
@@ -73,10 +74,17 @@ const ChatSocket = ({ user, users }) => {
     setMessageObj({ message: "" });
   };
 
+  const click =()=>{
+    socket.emit("offline")  
+     
+  }
+  console.log('liveUsers',liveUsers)
+
 
   return (
     <div style={{ minHeight: "70vh" }}>
       <h1 style={{ marginBottom: 10 }}>Chat App</h1>
+      <button onClick={click}>clcic</button>
       <div className={styles.container}>
         <div className={styles.chatList}>
           {filteredUsers.map((user: any) => (
