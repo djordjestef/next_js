@@ -30,7 +30,7 @@ const ChatSocket = ({ user, users }) => {
     console.log("sokect");
     socket.on("private-message", (data) => {
       console.log("data", data);
-      setAllMessages((pre) => [...pre, data]);
+      setAllMessages((prevState) => [...prevState, data]);
     });
     socket.emit("new-user-add", { userId: id, name: username });
     socket.on("get-users", (data) => {
@@ -72,7 +72,10 @@ const ChatSocket = ({ user, users }) => {
         to: chatId,
         username,
       });
-      setAllMessages((prevState) => [...prevState, { message, username }]);
+      setAllMessages((prevState) => [
+        ...prevState,
+        { content: message, username },
+      ]);
 
       setMessage("");
     } else {
