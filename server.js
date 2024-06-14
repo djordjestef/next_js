@@ -17,36 +17,31 @@ app.prepare().then(async () => {
   let onlineUsers = [];
 
   io.on("connection", (socket) => {
-    console.log("Client connected TO SOCKET");
+    // console.log("Client connected TO SOCKET");
 
     socket.on("send-message", (data) => {
-      console.log(
-        "Recieved from API SERVER SIDE :: DATA FROM SENDER ON RECIEVER",
-        data
-      );
+      // console.log(
+      //   "Recieved from API SERVER SIDE :: DATA FROM SENDER ON RECIEVER",
+      //   data
+      // );
       io.emit("receive-message", data);
     });
 
     socket.on("new-user-add", function (data) {
       if (!onlineUsers.some((user) => user.userId === data.userId)) {
-        console.log("IMA IH");
         onlineUsers.push({
           userId: data.userId,
           name: data.name,
           socketId: socket.id,
         });
       }
-      console.log("a user TRIGGERED " + data + " connected");
 
       console.log("onlineUsers", onlineUsers);
       io.emit("get-users", onlineUsers);
     });
 
     socket.on("offline", () => {
-      // remove user from active users
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
-      console.log("user is offline", onlineUsers);
-      // send all online users to all users
       io.emit("get-users", onlineUsers);
     });
   });

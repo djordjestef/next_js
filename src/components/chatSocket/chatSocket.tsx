@@ -30,24 +30,21 @@ const ChatSocket = ({ user, users }) => {
 
  
   const socketFn = async () => {
-    console.log('SOCKET FN')
     socket.on("receive-message", (data) => {
       setAllMessages((pre) => [...pre, data]);
     });
     socket.emit("new-user-add", { userId: id, name: username });
     socket.on("get-users", (data) => {
-      console.log('triggered CLIENT SIDE GET USERS', data)
+      // console.log('triggered CLIENT SIDE GET USERS', data)
       setLiveUsers(data);
     });
   };
 
-  // console.log("liveUsers", liveUsers);
 
   useEffect(() => {
     socketFn();
-    console.log('useEffect')
     return () => {
-      socket.disconnect();
+      socket.emit("offline")  
     };
   }, []);
 
@@ -74,17 +71,11 @@ const ChatSocket = ({ user, users }) => {
     setMessageObj({ message: "" });
   };
 
-  const click =()=>{
-    socket.emit("offline")  
-     
-  }
-  console.log('liveUsers',liveUsers)
 
 
   return (
     <div style={{ minHeight: "70vh" }}>
       <h1 style={{ marginBottom: 10 }}>Chat App</h1>
-      <button onClick={click}>clcic</button>
       <div className={styles.container}>
         <div className={styles.chatList}>
           {filteredUsers.map((user: any) => (
