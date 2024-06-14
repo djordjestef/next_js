@@ -12,25 +12,22 @@ const ChatSocket = ({ user, users }) => {
   const { username, id } = user;
   const [chatUserName, setChatUserName] = useState("");
   const [liveUsers, setLiveUsers] = useState([]);
-  const [messageObj, setMessageObj] = useState({
-    message: "",
-  });
+  const [message, setMessage] = useState();
   const [allMessages, setAllMessages] = useState([]);
-  const liveUserIds = liveUsers.map((item)=>item.userId)
+  const liveUserIds = liveUsers.map((item) => item.userId);
   const filteredUsers = users?.data
     .filter((user: any) => id !== user._id)
     .map((user, index) => {
-      if(liveUserIds.indexOf(user._id)>=0){
+      if (liveUserIds.indexOf(user._id) >= 0) {
         return { ...user, online: true };
-      }else{
+      } else {
         return { ...user, online: false };
       }
-      
     });
 
- 
   const socketFn = async () => {
     socket.on("receive-message", (data) => {
+      console.log("data", data);
       setAllMessages((pre) => [...pre, data]);
     });
     socket.emit("new-user-add", { userId: id, name: username });
@@ -40,38 +37,33 @@ const ChatSocket = ({ user, users }) => {
     });
   };
 
-
   useEffect(() => {
     socketFn();
     return () => {
-      socket.emit("offline")  
+      socket.emit("offline");
     };
   }, []);
 
-
-
+  const chooseChat = (chatId: string) => {
+    console.log("chatId", chatId);
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setMessageObj((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { value } = e.target;
+    setMessage(value);
   };
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     setChatUserName(username);
-    if (messageObj.message === "")
-      return Alert(`All inputs must be field`, "Error");
-    const { message } = messageObj;
+    if (message === "") return Alert(`All inputs must be field`, "Error");
+
     socket.emit("send-message", {
+      id,
       username,
       message,
     });
-    setMessageObj({ message: "" });
+    setMessage("");
   };
-
-
 
   return (
     <div style={{ minHeight: "70vh" }}>
@@ -80,16 +72,20 @@ const ChatSocket = ({ user, users }) => {
         <div className={styles.chatList}>
           {filteredUsers.map((user: any) => (
             <div className={styles.user} key={user._id}>
-              <div className={styles.detail}>
-                <Image
-                  src={user.img ? user.img : "/noavatar.png"}
-                  alt=""
-                  width={50}
-                  height={50}
-                />
-                {user.username}
-                <span className={user.online ? styles.online : styles.offline}></span>
-              </div>
+              <a href="javascript:void(0)" onClick={() => chooseChat(user._id)}>
+                <div className={styles.detail}>
+                  <Image
+                    src={user.img ? user.img : "/noavatar.png"}
+                    alt=""
+                    width={50}
+                    height={50}
+                  />
+                  {user.username}
+                  <span
+                    className={user.online ? styles.online : styles.offline}
+                  ></span>
+                </div>
+              </a>
             </div>
           ))}
         </div>
@@ -131,7 +127,7 @@ const ChatSocket = ({ user, users }) => {
               placeholder="message"
               name="message"
               id="message"
-              value={messageObj.message}
+              value={message}
               onChange={handleChange}
             />
 
