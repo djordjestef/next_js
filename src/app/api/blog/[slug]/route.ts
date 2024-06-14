@@ -9,7 +9,7 @@ export const GET = async (request: NextRequest, { params }: any) => {
     const post = await Post.findOne({ slug });
     return NextResponse.json(
       {
-        sucess: true,
+        success: true,
         message: "One Blog",
         data: post,
       },

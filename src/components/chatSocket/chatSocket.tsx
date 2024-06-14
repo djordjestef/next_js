@@ -17,9 +17,8 @@ const ChatSocket = ({ user, users }) => {
   });
   const [allMessages, setAllMessages] = useState([]);
   const liveUserIds = liveUsers.map((item)=>item.userId)
-console.log('liveUserIds',liveUserIds)
   const filteredUsers = users?.data
-    // .filter((user: any) => id === user._id)
+    .filter((user: any) => id !== user._id)
     .map((user, index) => {
       if(liveUserIds.indexOf(user._id)>=0){
         return { ...user, online: true };
@@ -31,25 +30,28 @@ console.log('liveUserIds',liveUserIds)
 
  
   const socketFn = async () => {
+    console.log('SOCKET FN')
     socket.on("receive-message", (data) => {
       setAllMessages((pre) => [...pre, data]);
     });
-    socket.emit("online", { userId: id, name: username });
-    socket.on("connected-users", (data) => {
-      setLiveUsers((prevState) => [...prevState, data]);
+    socket.emit("new-user-add", { userId: id, name: username });
+    socket.on("get-users", (data) => {
+      console.log('triggered CLIENT SIDE GET USERS', data)
+      setLiveUsers(data);
     });
   };
 
-  console.log("liveUsers", liveUsers);
-  console.log("filteredUsers", filteredUsers);
+  // console.log("liveUsers", liveUsers);
 
   useEffect(() => {
     socketFn();
-
+    console.log('useEffect')
     return () => {
       socket.disconnect();
     };
-  }, [socket]);
+  }, []);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

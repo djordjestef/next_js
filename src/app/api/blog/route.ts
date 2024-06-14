@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest) => {
 
     return NextResponse.json(
       {
-        sucess: true,
+        success: true,
         message: "List Data Blogs",
         data: posts,
       },

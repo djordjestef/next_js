@@ -8,7 +8,7 @@ export const GET = async () => {
     const users = await User.find();
     return NextResponse.json(
       {
-        sucess: true,
+        success: true,
         message: "List Data Users",
         data: users,
       },

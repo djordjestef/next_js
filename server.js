@@ -8,12 +8,13 @@ const handle = app.getRequestHandler();
 
 const http = require("http");
 const socketIO = require("socket.io");
+let onlineUsers = [];
 
 app.prepare().then(async () => {
   const server = express();
   const httpServer = http.createServer(server);
   const io = socketIO(httpServer);
-  const users = {};
+  let onlineUsers = [];
 
   io.on("connection", (socket) => {
     console.log("Client connected TO SOCKET");
@@ -26,23 +27,17 @@ app.prepare().then(async () => {
       io.emit("receive-message", data);
     });
 
-    socket.on("online", function (data) {
-      console.log("a user " + data.userId + " connected");
-      // saving userId to object with socket ID
-      users['userId'] = data.userId;
-      users["name"] = data.name;
-      io.emit("connected-users", data);
-    });
+    socket.on("new-user-add", function (data) {
+      if (!onlineUsers.some((user) => user.userId === data.userId)) {
+        console.log("IMA IH");
+        onlineUsers.push({ userId: data.userId, name: data.name });
+      }
+      console.log("a user TRIGGERED " + data + " connected");
 
-    socket.on('disconnect', function(){
-      console.log('user ' + users[socket['userId']] + ' disconnected');
-      // remove saved socket from users object
-      delete users[socket['userId']];
+      console.log("onlineUsers", onlineUsers);
+      io.emit("get-users", onlineUsers);
     });
-    console.log('users',users)
   });
-
- 
 
   server.all("*", (req, res) => {
     return handle(req, res);

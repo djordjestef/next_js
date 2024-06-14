@@ -24,7 +24,7 @@ export const GET = async (request: NextRequest, { params }: any) => {
 
     return NextResponse.json(
       {
-        sucess: true,
+        success: true,
         message: "One User",
         data: user,
       },
