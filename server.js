@@ -19,12 +19,26 @@ app.prepare().then(async () => {
   io.on("connection", (socket) => {
     // console.log("Client connected TO SOCKET");
 
-    socket.on("send-message", (data) => {
-      console.log(
-        "Recieved from API SERVER SIDE :: DATA FROM SENDER ON RECIEVER",
-        data
-      );
-      io.emit("receive-message", data);
+    // socket.on("send-message", (data) => {
+    //   console.log(
+    //     "Recieved from API SERVER SIDE :: DATA FROM SENDER ON RECIEVER",
+    //     data
+    //   );
+    //   io.emit("receive-message",data);
+    // });
+
+    socket.on("private-message", ({ content, to, username }) => {
+      console.log("content", content);
+      console.log("to", to);
+      const recipient = onlineUsers.find((user) => user.userId === to);
+      console.log("recipient", recipient);
+      if (recipient) {
+        io.to(recipient.socketId).emit("private-message", {
+          content,
+          from: socket.id,
+          username,
+        });
+      }
     });
 
     socket.on("new-user-add", function (data) {
@@ -35,6 +49,7 @@ app.prepare().then(async () => {
           socketId: socket.id,
         });
       }
+      socket.join(data.userId);
 
       console.log("onlineUsers", onlineUsers);
       io.emit("get-users", onlineUsers);

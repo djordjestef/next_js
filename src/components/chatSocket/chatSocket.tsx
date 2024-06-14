@@ -10,14 +10,15 @@ const socket = io("http://localhost:3000");
 
 const ChatSocket = ({ user, users }) => {
   const { username, id } = user;
-  const [chatUserName, setChatUserName] = useState("");
+  const [sender, setSender] = useState("");
+  const [chatId, setChatId] = useState("");
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState();
   const [allMessages, setAllMessages] = useState([]);
   const liveUserIds = liveUsers.map((item) => item.userId);
   const filteredUsers = users?.data
     .filter((user: any) => id !== user._id)
-    .map((user, index) => {
+    .map((user) => {
       if (liveUserIds.indexOf(user._id) >= 0) {
         return { ...user, online: true };
       } else {
@@ -26,7 +27,8 @@ const ChatSocket = ({ user, users }) => {
     });
 
   const socketFn = async () => {
-    socket.on("receive-message", (data) => {
+    console.log("sokect");
+    socket.on("private-message", (data) => {
       console.log("data", data);
       setAllMessages((pre) => [...pre, data]);
     });
@@ -46,23 +48,30 @@ const ChatSocket = ({ user, users }) => {
 
   const chooseChat = (chatId: string) => {
     console.log("chatId", chatId);
+    setChatId(chatId);
   };
 
+  console.log("allMessages", allMessages);
   const handleChange = (e) => {
     const { value } = e.target;
     setMessage(value);
   };
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    setChatUserName(username);
-    if (message === "") return Alert(`All inputs must be field`, "Error");
 
-    socket.emit("send-message", {
-      id,
-      username,
-      message,
-    });
-    setMessage("");
+  const handleSubmit = async (event) => {
+    console.log("okida se");
+    event.preventDefault();
+    setSender(username);
+    if (chatId) {
+      socket.emit("private-message", {
+        content: message,
+        to: chatId,
+        username,
+      });
+
+      setMessage("");
+    } else {
+      Alert(`Please select a user to chat with`, "Error");
+    }
   };
 
   return (
@@ -93,9 +102,9 @@ const ChatSocket = ({ user, users }) => {
         <div className={styles.chatContainer}>
           <h1>User: {username}</h1>
 
-          {allMessages.map(({ message, username }, index) => (
+          {allMessages.map(({ content, username }, index) => (
             <div key={index} className={styles.messageContainer}>
-              {username !== chatUserName && (
+              {username !== sender && (
                 <div className={styles.userHolder}>
                   <Image
                     src={user.img ? user.img : "/noavatar.png"}
@@ -110,12 +119,12 @@ const ChatSocket = ({ user, users }) => {
 
               <div
                 className={
-                  username !== chatUserName
+                  username !== sender
                     ? styles.messageHolder
                     : styles.messageHolderUser
                 }
               >
-                {message}
+                {content}
               </div>
             </div>
           ))}
