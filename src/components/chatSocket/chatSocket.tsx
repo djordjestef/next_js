@@ -72,6 +72,7 @@ const ChatSocket = ({ user, users }) => {
         to: chatId,
         username,
       });
+      setAllMessages((prevState) => [...prevState, { message, username }]);
 
       setMessage("");
     } else {
