@@ -8,7 +8,6 @@ const handle = app.getRequestHandler();
 
 const http = require("http");
 const socketIO = require("socket.io");
-let onlineUsers = [];
 
 app.prepare().then(async () => {
   const server = express();

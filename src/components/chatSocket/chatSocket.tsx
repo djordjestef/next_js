@@ -10,7 +10,9 @@ const socket = io("http://localhost:3000");
 
 const ChatSocket = ({ user, users }) => {
   const { username, id } = user;
+  const [isOpen, setIsOpen] = useState(false);
   const [sender, setSender] = useState("");
+  const [recipient, setRecipient] = useState("");
   const [chatId, setChatId] = useState("");
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState();
@@ -46,11 +48,6 @@ const ChatSocket = ({ user, users }) => {
     };
   }, []);
 
-  const chooseChat = (chatId: string) => {
-    console.log("chatId", chatId);
-    setChatId(chatId);
-  };
-
   console.log("allMessages", allMessages);
   const handleChange = (e) => {
     const { value } = e.target;
@@ -83,6 +80,13 @@ const ChatSocket = ({ user, users }) => {
     }
   };
 
+  const chooseChat = (chatId: string, username: string) => {
+    console.log("chatId", chatId);
+    setIsOpen(true);
+    setChatId(chatId);
+    setRecipient(username);
+  };
+
   return (
     <div style={{ minHeight: "70vh" }}>
       <h1 style={{ marginBottom: 10 }}>Chat App</h1>
@@ -90,7 +94,10 @@ const ChatSocket = ({ user, users }) => {
         <div className={styles.chatList}>
           {filteredUsers.map((user: any) => (
             <div className={styles.user} key={user._id}>
-              <a href="javascript:void(0)" onClick={() => chooseChat(user._id)}>
+              <a
+                href="javascript:void(0)"
+                onClick={() => chooseChat(user._id, user.username)}
+              >
                 <div className={styles.detail}>
                   <Image
                     src={user.img ? user.img : "/noavatar.png"}
@@ -109,48 +116,53 @@ const ChatSocket = ({ user, users }) => {
         </div>
 
         <div className={styles.chatContainer}>
-          <h1>User: {username}</h1>
+          <h1>Sender: {username}</h1>
+          {isOpen && (
+            <>
+              <h1> {recipient}</h1>
 
-          {allMessages.map(({ content, username }, index) => (
-            <div key={index} className={styles.messageContainer}>
-              {username !== sender && (
-                <div className={styles.userHolder}>
-                  <Image
-                    src={user.img ? user.img : "/noavatar.png"}
-                    alt=""
-                    width={50}
-                    height={50}
-                  />
-                  <br />
-                  <strong>{username}</strong>
+              {allMessages.map(({ content, username }, index) => (
+                <div key={index} className={styles.messageContainer}>
+                  {username !== sender && (
+                    <div className={styles.userHolder}>
+                      <Image
+                        src={user.img ? user.img : "/noavatar.png"}
+                        alt=""
+                        width={50}
+                        height={50}
+                      />
+                      <br />
+                      <strong>{username}</strong>
+                    </div>
+                  )}
+
+                  <div
+                    className={
+                      username !== sender
+                        ? styles.messageHolder
+                        : styles.messageHolderUser
+                    }
+                  >
+                    {content}
+                  </div>
                 </div>
-              )}
+              ))}
 
-              <div
-                className={
-                  username !== sender
-                    ? styles.messageHolder
-                    : styles.messageHolderUser
-                }
-              >
-                {content}
-              </div>
-            </div>
-          ))}
+              <br />
+              <form action="" className={styles.form}>
+                <input
+                  type="text"
+                  placeholder="message"
+                  name="message"
+                  id="message"
+                  value={message}
+                  onChange={handleChange}
+                />
 
-          <br />
-          <form action="" className={styles.form}>
-            <input
-              type="text"
-              placeholder="message"
-              name="message"
-              id="message"
-              value={message}
-              onChange={handleChange}
-            />
-
-            <button onClick={handleSubmit}>Send Message</button>
-          </form>
+                <button onClick={handleSubmit}>Send Message</button>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </div>
