@@ -28,10 +28,15 @@ const ChatSocket = ({ user, users }) => {
       }
     });
 
+  console.log("id", id);
+  console.log("sender", sender);
+  console.log("recipient", recipient);
+
   const socketFn = async () => {
     console.log("sokect");
     socket.on("private-message", (data) => {
       console.log("data", data);
+
       setAllMessages((prevState) => [...prevState, data]);
     });
     socket.emit("new-user-add", { userId: id, name: username });
@@ -40,6 +45,8 @@ const ChatSocket = ({ user, users }) => {
       setLiveUsers(data);
     });
   };
+
+  console.log("liveUsers", liveUsers);
 
   useEffect(() => {
     socketFn();
@@ -68,6 +75,7 @@ const ChatSocket = ({ user, users }) => {
         content: message,
         to: chatId,
         username,
+        fromTo:`${sender}-${recipient}`
       });
       setAllMessages((prevState) => [
         ...prevState,
@@ -80,11 +88,11 @@ const ChatSocket = ({ user, users }) => {
     }
   };
 
-  const chooseChat = (chatId: string, username: string) => {
+  const chooseChat = (chatId: string, recipientUsername: string) => {
     console.log("chatId", chatId);
     setIsOpen(true);
     setChatId(chatId);
-    setRecipient(username);
+    setRecipient(recipientUsername);
   };
 
   return (

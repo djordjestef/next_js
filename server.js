@@ -26,7 +26,7 @@ app.prepare().then(async () => {
     //   io.emit("receive-message",data);
     // });
 
-    socket.on("private-message", ({ content, to, username }) => {
+    socket.on("private-message", ({ content, to, username,fromTo }) => {
       console.log("content", content);
       console.log("to", to);
       console.log('username',username)
@@ -37,6 +37,7 @@ app.prepare().then(async () => {
           content,
           from: socket.id,
           username,
+          fromTo
         });
       }
     });
@@ -57,6 +58,7 @@ app.prepare().then(async () => {
 
     socket.on("offline", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
+      console.log('onlineUsers OFFLINE METHOSD',onlineUsers)
       io.emit("get-users", onlineUsers);
     });
   });
