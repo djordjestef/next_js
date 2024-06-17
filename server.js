@@ -27,11 +27,9 @@ app.prepare().then(async () => {
     // });
 
     socket.on("private-message", ({ content, to, username,fromTo }) => {
-      console.log("content", content);
-      console.log("to", to);
-      console.log('username',username)
+      console.log('fromTo',fromTo)
       const recipient = onlineUsers.find((user) => user.userId === to);
-      console.log("recipient", recipient);
+
       if (recipient) {
         io.to(recipient.socketId).emit("private-message", {
           content,

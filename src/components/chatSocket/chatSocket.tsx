@@ -5,6 +5,7 @@ import { Alert } from "react-st-modal";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
+import _ from 'lodash';
 
 const socket = io("http://localhost:3000");
 
@@ -29,10 +30,23 @@ const ChatSocket = ({ user, users }) => {
       }
     });
 
+    useEffect(()=>{
+      let groupByDate = _.groupBy(allMessages, (row) => row['fromTo'])
+      console.log('groupByDate',groupByDate)
+    },[allMessages])
+
   const socketFn = async () => {
     socket.on("private-message", (data) => {
       console.log("data", data);
-
+      // setAllMessages((prevState) => {
+      //   const newMessages = { ...prevState };
+      //   if (!newMessages[data.fromTo]) {
+      //     newMessages[data.fromTo] = [];
+      //   }
+      //   console.log('newMessages',newMessages)
+      //   newMessages[data.fromTo] = [...newMessages[data.fromTo], data];
+      //   return newMessages;
+      // });
       setAllMessages((prevState) => [...prevState, data]);
     });
     socket.emit("new-user-add", { userId: id, name: username });
@@ -68,7 +82,6 @@ const ChatSocket = ({ user, users }) => {
     //   message,
     // });
     if (chatId) {
-      const fromTo = `${sender}-${recipient}`;
       socket.emit("private-message", {
         content: message,
         to: chatId,
@@ -77,8 +90,16 @@ const ChatSocket = ({ user, users }) => {
       });
       setAllMessages((prevState) => [
         ...prevState,
-        { content: message, username },
+        { content: message, username,fromTo },
       ]);
+      // setAllMessages((prevState) => {
+      //   const newMessages = { ...prevState };
+      //   if (!newMessages[fromTo]) {
+      //     newMessages[fromTo] = [];
+      //   }
+      //   newMessages[fromTo] = [...newMessages[fromTo], { content: message, username }];
+      //   return newMessages;
+      // });
 
       setMessage("");
     } else {
@@ -93,6 +114,7 @@ const ChatSocket = ({ user, users }) => {
     setFromTo(`${recipientUsername}-${senderUsername}`)
   };
   console.log("recipient", recipient);
+  console.log('allMessages',allMessages)
 
   return (
     <div style={{ minHeight: "70vh" }}>
@@ -125,7 +147,7 @@ const ChatSocket = ({ user, users }) => {
             <>
               <h1> {recipient}</h1>
 
-              {allMessages.map(({ content, username }, index) => (
+              {allMessages?.map(({ content, username }, index) => (
                 <div key={index} className={styles.messageContainer}>
                   {username !== sender && (
                     <div className={styles.userHolder}>
