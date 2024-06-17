@@ -13,6 +13,7 @@ const ChatSocket = ({ user, users }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [sender, setSender] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [fromTo, setFromTo] = useState('')
   const [chatId, setChatId] = useState("");
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState();
@@ -28,12 +29,7 @@ const ChatSocket = ({ user, users }) => {
       }
     });
 
-  console.log("id", id);
-  console.log("sender", sender);
-  console.log("recipient", recipient);
-
   const socketFn = async () => {
-    console.log("sokect");
     socket.on("private-message", (data) => {
       console.log("data", data);
 
@@ -45,8 +41,9 @@ const ChatSocket = ({ user, users }) => {
       setLiveUsers(data);
     });
   };
+  console.log('fromTo',fromTo)
 
-  console.log("liveUsers", liveUsers);
+  // console.log("liveUsers", liveUsers);
 
   useEffect(() => {
     socketFn();
@@ -55,7 +52,7 @@ const ChatSocket = ({ user, users }) => {
     };
   }, []);
 
-  console.log("allMessages", allMessages);
+  // console.log("allMessages", allMessages);
   const handleChange = (e) => {
     const { value } = e.target;
     setMessage(value);
@@ -71,11 +68,12 @@ const ChatSocket = ({ user, users }) => {
     //   message,
     // });
     if (chatId) {
+      const fromTo = `${sender}-${recipient}`;
       socket.emit("private-message", {
         content: message,
         to: chatId,
         username,
-        fromTo:`${sender}-${recipient}`
+        fromTo,
       });
       setAllMessages((prevState) => [
         ...prevState,
@@ -88,12 +86,13 @@ const ChatSocket = ({ user, users }) => {
     }
   };
 
-  const chooseChat = (chatId: string, recipientUsername: string) => {
-    console.log("chatId", chatId);
+  const chooseChat = (chatId: string, recipientUsername: string, senderUsername:string) => {
     setIsOpen(true);
     setChatId(chatId);
     setRecipient(recipientUsername);
+    setFromTo(`${recipientUsername}-${senderUsername}`)
   };
+  console.log("recipient", recipient);
 
   return (
     <div style={{ minHeight: "70vh" }}>
@@ -102,10 +101,7 @@ const ChatSocket = ({ user, users }) => {
         <div className={styles.chatList}>
           {filteredUsers.map((user: any) => (
             <div className={styles.user} key={user._id}>
-              <a
-                href="javascript:void(0)"
-                onClick={() => chooseChat(user._id, user.username)}
-              >
+              <button className={styles.userListBtn} onClick={() => chooseChat(user._id, user.username, username)}>
                 <div className={styles.detail}>
                   <Image
                     src={user.img ? user.img : "/noavatar.png"}
@@ -118,7 +114,7 @@ const ChatSocket = ({ user, users }) => {
                     className={user.online ? styles.online : styles.offline}
                   ></span>
                 </div>
-              </a>
+              </button>
             </div>
           ))}
         </div>
