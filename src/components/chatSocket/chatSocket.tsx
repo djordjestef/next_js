@@ -36,14 +36,32 @@ const ChatSocket = ({ user, users }) => {
     setGroupByPriviteChat(_.groupBy(allMessages, (row) => row["fromTo"]));
   }, [allMessages]);
 
-  console.log("groupByPriviteChat", groupByPriviteChat);
-
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      console.log("data", data);
-      setFromTo(data.fromTo);
-      setSender(data.username);
-      setAllMessages((prevState) => [...prevState, data]);
+      const { content, from } = data;
+      // console.log("data", data);
+      // setFromTo(data.fromTo);
+      // setSender(data.username);
+      // setAllMessages((prevState) => [...prevState, data]);
+      setAllMessages((prevState) => [
+        ...prevState,
+        { fromUser: "admin", content, fromSelf: false }, //fromUser is not correct set
+      ]);
+      // let newMessages = {};
+      // for (let i = 0; i < liveUsers; i++) {
+      //   const user = liveUsers[i];
+      //   console.log("user", user);
+      //   if (user.userId === from) {
+      //     console.log("Iteration:", i);
+      //     newMessages = {
+      //       fromUser: liveUsers[i].name,
+      //       content,
+      //       fromSelf: false,
+      //     };
+      //     const messagesList = [...messages, newMessages];
+      //     setAllMessages(messagesList);
+      //   }
+      // }
     });
     socket.emit("new-user-add", { userId: id, name: username });
     socket.on("get-users", (data) => {
@@ -76,7 +94,7 @@ const ChatSocket = ({ user, users }) => {
       });
       setAllMessages((prevState) => [
         ...prevState,
-        { content: message, username, fromTo },
+        { content: message, toUser: recipient, fromSelf: true },
       ]);
 
       setMessage("");
@@ -85,7 +103,6 @@ const ChatSocket = ({ user, users }) => {
     }
   };
 
-  console.log("fromTo", fromTo);
   const chooseChat = (
     chatId: string,
     recipientUsername: string,
@@ -97,10 +114,7 @@ const ChatSocket = ({ user, users }) => {
     setFromTo(`${senderUsername}-${recipientUsername}`);
   };
 
-  console.log("recipient", recipient);
-  console.log("sender", sender);
-  // console.log('allMessages',allMessages)
-
+  console.log("allMessages", allMessages);
   return (
     <div style={{ minHeight: "70vh" }}>
       <h1 style={{ marginBottom: 10 }}>Chat App</h1>
@@ -135,32 +149,74 @@ const ChatSocket = ({ user, users }) => {
             <>
               <h1> {recipient}</h1>
 
-              {allMessages?.map(({ content, username }, index) => (
-                <div key={index} className={styles.messageContainer}>
-                  {username === recipient && (
-                    <div className={styles.userHolder}>
-                      <Image
-                        src={user.img ? user.img : "/noavatar.png"}
-                        alt=""
-                        width={50}
-                        height={50}
-                      />
-                      <br />
-                      <strong>{username}</strong>
-                    </div>
-                  )}
+              {allMessages?.map(
+                ({ content, username, fromSelf, toUser ,fromUser}, index) => {
+                  if (fromSelf === true && toUser === recipient)
+                    return (
+                      <div key={index} className={styles.messageContainer}>
+                        <div className={styles.userHolder}>
+                          <Image
+                            src={user.img ? user.img : "/noavatar.png"}
+                            alt=""
+                            width={50}
+                            height={50}
+                          />
+                          <br />
+                          <strong>{username}</strong>
+                        </div>
+                        <div
+                          className={
+                            username === recipient
+                              ? styles.messageHolder
+                              : styles.messageHolderUser
+                          }
+                        >
+                          {content}
+                        </div>
+                      </div>
+                    );
+                  if (fromSelf === false && fromUser === recipient)
+                    return (
+                      <div key={index} className={styles.messageContainer}>
+                        <div
+                          className={
+                            username === recipient
+                              ? styles.messageHolder
+                              : styles.messageHolderUser
+                          }
+                        >
+                          {content}
+                        </div>
+                      </div>
+                    );
+                }
+                // <div key={index} className={styles.messageContainer}>
 
-                  <div
-                    className={
-                      username === recipient
-                        ? styles.messageHolder
-                        : styles.messageHolderUser
-                    }
-                  >
-                    {content}
-                  </div>
-                </div>
-              ))}
+                //   {username === recipient &&
+                //     (
+                //     <div className={styles.userHolder}>
+                //       <Image
+                //         src={user.img ? user.img : "/noavatar.png"}
+                //         alt=""
+                //         width={50}
+                //         height={50}
+                //       />
+                //       <br />
+                //       <strong>{username}</strong>
+                //     </div>
+                //   )}
+
+                //   <div
+                //     className={
+                //       username === recipient
+                //         ? styles.messageHolder
+                //         : styles.messageHolderUser
+                //     }
+                //   >
+                //     {content}
+                //   </div>
+                // </div>
+              )}
 
               <br />
               <form action="" className={styles.form}>

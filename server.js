@@ -29,13 +29,13 @@ app.prepare().then(async () => {
     socket.on("private-message", ({ content, to, username,fromTo }) => {
       console.log('fromTo',fromTo)
       const recipient = onlineUsers.find((user) => user.userId === to);
-
+      console.log('recipient',recipient)
       if (recipient) {
         io.to(recipient.socketId).emit("private-message", {
           content,
           from: socket.id,
           username,
-          fromTo
+          fromTo:`${username}-${recipient.name}`
         });
       }
     });
