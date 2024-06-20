@@ -14,22 +14,13 @@ const ChatSocket = ({ user, users }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [sender, setSender] = useState("");
   const [recipient, setRecipient] = useState("");
-  const [fromTo, setFromTo] = useState("");
+  // const [fromTo, setFromTo] = useState("");
   const [chatId, setChatId] = useState("");
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState([]);
 
-
-
-
-
-
-  
-
-
   const liveUserIds = liveUsers.map((item) => item.userId);
-  const [groupByPriviteChat, setGroupByPriviteChat] = useState({});
 
   const filteredUsers = users?.data
     .filter((user: any) => id !== user._id)
@@ -41,25 +32,15 @@ const ChatSocket = ({ user, users }) => {
       }
     });
 
-  useEffect(() => {
-    setGroupByPriviteChat(_.groupBy(allMessages, (row) => row["fromTo"]));
-  }, [allMessages]);
-
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      const { content, from,username,recipient } = data;
-      console.log('onlineUsers',data.onlineUsers)
-   
-     
-      // setAllMessages((prevState) => [
-      //   ...prevState,
-      //   { fromUser: "admin", content, fromSelf: false }, //fromUser is not correct set
-      // ]);
+      const { content, username, recipient, onlineUsers } = data;
+
       let newMessages = {};
-      console.log('newMessages',newMessages)
-      data.onlineUsers.forEach((user) => {
+      console.log("newMessages", newMessages);
+      onlineUsers.forEach((user) => {
         console.log("user.userId", user.userId);
-        console.log('recipient',recipient)
+        console.log("recipient", recipient);
         if (user.userId !== recipient.userId) {
           console.log("User found:", user);
           newMessages = {
@@ -71,7 +52,7 @@ const ChatSocket = ({ user, users }) => {
         }
       });
       // for (let i = 0; i < data.onlineUsers; i++) {
-        
+
       //   const user = data.onlineUsers[i];
       //   console.log("user", user);
       //   if (user.userId === from) {
@@ -93,12 +74,12 @@ const ChatSocket = ({ user, users }) => {
   };
 
   useEffect(() => {
-    console.log('USE EFFECT')
+    console.log("USE EFFECT");
     socketFn();
     return () => {
       socket.emit("offline");
     };
-  }, [allMessages]);
+  }, []);
 
   const handleChange = (e) => {
     const { value } = e.target;
@@ -114,7 +95,7 @@ const ChatSocket = ({ user, users }) => {
         content: message,
         to: chatId,
         username,
-        fromTo,
+        // fromTo,
       });
       setAllMessages((prevState) => [
         ...prevState,
@@ -135,7 +116,7 @@ const ChatSocket = ({ user, users }) => {
     setIsOpen(true);
     setChatId(chatId);
     setRecipient(recipientUsername);
-    setFromTo(`${senderUsername}-${recipientUsername}`);
+    // setFromTo(`${senderUsername}-${recipientUsername}`);
   };
 
   console.log("allMessages", allMessages);
@@ -174,7 +155,7 @@ const ChatSocket = ({ user, users }) => {
               <h1> {recipient}</h1>
 
               {allMessages?.map(
-                ({ content, username, fromSelf, toUser ,fromUser}, index) => {
+                ({ content, username, fromSelf, toUser, fromUser }, index) => {
                   if (fromSelf === true && toUser === recipient)
                     return (
                       <div key={index} className={styles.messageContainer}>
@@ -214,32 +195,6 @@ const ChatSocket = ({ user, users }) => {
                       </div>
                     );
                 }
-                // <div key={index} className={styles.messageContainer}>
-
-                //   {username === recipient &&
-                //     (
-                //     <div className={styles.userHolder}>
-                //       <Image
-                //         src={user.img ? user.img : "/noavatar.png"}
-                //         alt=""
-                //         width={50}
-                //         height={50}
-                //       />
-                //       <br />
-                //       <strong>{username}</strong>
-                //     </div>
-                //   )}
-
-                //   <div
-                //     className={
-                //       username === recipient
-                //         ? styles.messageHolder
-                //         : styles.messageHolderUser
-                //     }
-                //   >
-                //     {content}
-                //   </div>
-                // </div>
               )}
 
               <br />
