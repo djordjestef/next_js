@@ -19,6 +19,15 @@ const ChatSocket = ({ user, users }) => {
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState([]);
+
+
+
+
+
+
+  
+
+
   const liveUserIds = liveUsers.map((item) => item.userId);
   const [groupByPriviteChat, setGroupByPriviteChat] = useState({});
 
@@ -38,23 +47,37 @@ const ChatSocket = ({ user, users }) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      const { content, from } = data;
-      // console.log("data", data);
-      // setFromTo(data.fromTo);
-      // setSender(data.username);
-      // setAllMessages((prevState) => [...prevState, data]);
-      setAllMessages((prevState) => [
-        ...prevState,
-        { fromUser: "admin", content, fromSelf: false }, //fromUser is not correct set
-      ]);
-      // let newMessages = {};
-      // for (let i = 0; i < liveUsers; i++) {
-      //   const user = liveUsers[i];
+      const { content, from,username,recipient } = data;
+      console.log('onlineUsers',data.onlineUsers)
+   
+     
+      // setAllMessages((prevState) => [
+      //   ...prevState,
+      //   { fromUser: "admin", content, fromSelf: false }, //fromUser is not correct set
+      // ]);
+      let newMessages = {};
+      console.log('newMessages',newMessages)
+      data.onlineUsers.forEach((user) => {
+        console.log("user.userId", user.userId);
+        console.log('recipient',recipient)
+        if (user.userId !== recipient.userId) {
+          console.log("User found:", user);
+          newMessages = {
+            fromUser: user.name,
+            content,
+            fromSelf: false,
+          };
+          setAllMessages((prevState) => [...prevState, newMessages]);
+        }
+      });
+      // for (let i = 0; i < data.onlineUsers; i++) {
+        
+      //   const user = data.onlineUsers[i];
       //   console.log("user", user);
       //   if (user.userId === from) {
       //     console.log("Iteration:", i);
       //     newMessages = {
-      //       fromUser: liveUsers[i].name,
+      //       fromUser: data.onlineUsers[i].name,
       //       content,
       //       fromSelf: false,
       //     };
@@ -70,11 +93,12 @@ const ChatSocket = ({ user, users }) => {
   };
 
   useEffect(() => {
+    console.log('USE EFFECT')
     socketFn();
     return () => {
       socket.emit("offline");
     };
-  }, []);
+  }, [allMessages]);
 
   const handleChange = (e) => {
     const { value } = e.target;

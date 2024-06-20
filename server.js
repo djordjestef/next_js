@@ -35,7 +35,9 @@ app.prepare().then(async () => {
           content,
           from: socket.id,
           username,
-          fromTo:`${username}-${recipient.name}`
+          fromTo:`${username}-${recipient.name}`,
+          onlineUsers,
+          recipient
         });
       }
     });

@@ -36,6 +36,7 @@ export function reducer(state: any, action: any) {
           dark_theme: !state.theme.dark_theme,
         },
       };
+      
     default: {
       return state;
     }
