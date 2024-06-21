@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./navLink.module.css";
-const mobileState = global.window.innerWidth <= 768;
 
+const mobileState = global.window.innerWidth <= 768;
 const NavLink = ({ item, setOpen }: any) => {
   const pathName = usePathname();
   const closeNav = () => {

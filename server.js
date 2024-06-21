@@ -16,40 +16,26 @@ app.prepare().then(async () => {
   let onlineUsers = [];
 
   io.on("connection", (socket) => {
-    // console.log("Client connected TO SOCKET");
-
-    // socket.on("send-message", (data) => {
-    //   console.log(
-    //     "Recieved from API SERVER SIDE :: DATA FROM SENDER ON RECIEVER",
-    //     data
-    //   );
-    //   io.emit("receive-message",data);
-    // });
-
-    socket.on("private-message", ({ content, to, username }) => {
-      const recipient = onlineUsers.find((user) => user.userId === to);
-      console.log('recipient',recipient)
+    socket.on("private-message", ({ content, from, to }) => {
+      const recipient = onlineUsers.find((user) => user.userID === to);
       if (recipient) {
-        io.to(recipient.socketId).emit("private-message", {
+        io.to(to).emit("private-message", {
           content,
-          // from: socket.id,
-          username,
-          // fromTo:`${username}-${recipient.name}`,
           onlineUsers,
-          recipient
+          from,
         });
       }
     });
 
     socket.on("new-user-add", function (data) {
-      if (!onlineUsers.some((user) => user.userId === data.userId)) {
+      if (!onlineUsers.some((user) => user.userID === data.userID)) {
         onlineUsers.push({
-          userId: data.userId,
+          userID: data.userID,
           name: data.name,
           socketId: socket.id,
         });
       }
-      socket.join(data.userId);
+      socket.join(data.userID);
 
       console.log("onlineUsers", onlineUsers);
       io.emit("get-users", onlineUsers);
@@ -57,7 +43,7 @@ app.prepare().then(async () => {
 
     socket.on("offline", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
-      console.log('onlineUsers OFFLINE METHOSD',onlineUsers)
+      console.log("onlineUsers OFFLINE METHOSD", onlineUsers);
       io.emit("get-users", onlineUsers);
     });
   });

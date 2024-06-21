@@ -57,26 +57,20 @@
   padding: 10px;
   background-color: var(--bgSoft);
   border-radius: 15px;
+  display: inline-block;
 }
 
-.userHolder {
+.messageContainerSelf {
+  padding: 10px;
+  background-color: var(--bgSoft);
+  border-radius: 15px;
   display: inline-block;
-  width: 15%;
-}
-
-.messageHolder {
-  display: inline-block;
-  vertical-align: top;
-  margin: 10px;
-  width: 80%;
-}
-
-.messageHolderUser {
-  display: inline-block;
-  vertical-align: top;
-  margin: 10px;
-  width: 97%;
   text-align: right;
+}
+
+.imageContainer {
+  display: inline-block;
+  width: 70px;
 }
 
 .user {

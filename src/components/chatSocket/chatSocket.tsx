@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 import styles from "./chatSocket.module.css";
 import { Alert } from "react-st-modal";
@@ -6,25 +5,23 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
-
 const socket = io("http://localhost:3000");
 
-const ChatSocket = ({ user, users }) => {
+const ChatSocket = ({ user, users }: any) => {
   const { username, id } = user;
   const [isOpen, setIsOpen] = useState(false);
-  const [sender, setSender] = useState("");
   const [recipient, setRecipient] = useState("");
-  // const [fromTo, setFromTo] = useState("");
   const [chatId, setChatId] = useState("");
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState("");
-  const [allMessages, setAllMessages] = useState([]);
+  const [allMessages, setAllMessages] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState(0)
 
-  const liveUserIds = liveUsers.map((item) => item.userId);
+  const liveUserIds = liveUsers.map((item: any) => item.userID);
 
   const filteredUsers = users?.data
     .filter((user: any) => id !== user._id)
-    .map((user) => {
+    .map((user: any) => {
       if (liveUserIds.indexOf(user._id) >= 0) {
         return { ...user, online: true };
       } else {
@@ -34,40 +31,23 @@ const ChatSocket = ({ user, users }) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      const { content, username, recipient, onlineUsers } = data;
+      const { content, onlineUsers, from } = data;
 
       let newMessages = {};
-      console.log("newMessages", newMessages);
-      onlineUsers.forEach((user) => {
-        console.log("user.userId", user.userId);
-        console.log("recipient", recipient);
-        if (user.userId !== recipient.userId) {
-          console.log("User found:", user);
+      onlineUsers.forEach((user: any) => {
+        if (user.userID === from) {
+          console.log("User FROM: ADMIR", user.name);
+          console.log("FROM: ADMIR", from);
           newMessages = {
             fromUser: user.name,
             content,
             fromSelf: false,
           };
-          setAllMessages((prevState) => [...prevState, newMessages]);
+          setAllMessages((prevState: any) => [...prevState, newMessages]);
         }
       });
-      // for (let i = 0; i < data.onlineUsers; i++) {
-
-      //   const user = data.onlineUsers[i];
-      //   console.log("user", user);
-      //   if (user.userId === from) {
-      //     console.log("Iteration:", i);
-      //     newMessages = {
-      //       fromUser: data.onlineUsers[i].name,
-      //       content,
-      //       fromSelf: false,
-      //     };
-      //     const messagesList = [...messages, newMessages];
-      //     setAllMessages(messagesList);
-      //   }
-      // }
     });
-    socket.emit("new-user-add", { userId: id, name: username });
+    socket.emit("new-user-add", { userID: id, name: username });
     socket.on("get-users", (data) => {
       setLiveUsers(data);
     });
@@ -81,21 +61,20 @@ const ChatSocket = ({ user, users }) => {
     };
   }, []);
 
-  const handleChange = (e) => {
-    const { value } = e.target;
+  const handleChange = (event: React.SyntheticEvent) => {
+    const { value }: any = event.target;
     setMessage(value);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    setSender(username);
 
     if (chatId) {
       socket.emit("private-message", {
         content: message,
-        to: chatId,
         username,
-        // fromTo,
+        from: id,
+        to: chatId,
       });
       setAllMessages((prevState) => [
         ...prevState,
@@ -108,18 +87,16 @@ const ChatSocket = ({ user, users }) => {
     }
   };
 
-  const chooseChat = (
-    chatId: string,
-    recipientUsername: string,
-    senderUsername: string
-  ) => {
+  const chooseChat = (chatId: string, recipientUsername: string) => {
     setIsOpen(true);
     setChatId(chatId);
     setRecipient(recipientUsername);
-    // setFromTo(`${senderUsername}-${recipientUsername}`);
   };
 
+  console.log("recipient", recipient);
+
   console.log("allMessages", allMessages);
+  console.log("----------------------------");
   return (
     <div style={{ minHeight: "70vh" }}>
       <h1 style={{ marginBottom: 10 }}>Chat App</h1>
@@ -129,7 +106,7 @@ const ChatSocket = ({ user, users }) => {
             <div className={styles.user} key={user._id}>
               <button
                 className={styles.userListBtn}
-                onClick={() => chooseChat(user._id, user.username, username)}
+                onClick={() => chooseChat(user._id, user.username)}
               >
                 <div className={styles.detail}>
                   <Image
@@ -155,42 +132,31 @@ const ChatSocket = ({ user, users }) => {
               <h1> {recipient}</h1>
 
               {allMessages?.map(
-                ({ content, username, fromSelf, toUser, fromUser }, index) => {
+                ({ content, fromSelf, toUser, fromUser }, index) => {
                   if (fromSelf === true && toUser === recipient)
                     return (
-                      <div key={index} className={styles.messageContainer}>
-                        <div className={styles.userHolder}>
-                          <Image
-                            src={user.img ? user.img : "/noavatar.png"}
-                            alt=""
-                            width={50}
-                            height={50}
-                          />
-                          <br />
-                          <strong>{username}</strong>
-                        </div>
-                        <div
-                          className={
-                            username === recipient
-                              ? styles.messageHolder
-                              : styles.messageHolderUser
-                          }
-                        >
+                      <div key={index} style={{ textAlign: "right" }}>
+                        <div className={styles.messageContainerSelf}>
                           {content}
                         </div>
                       </div>
                     );
                   if (fromSelf === false && fromUser === recipient)
                     return (
-                      <div key={index} className={styles.messageContainer}>
-                        <div
-                          className={
-                            username === recipient
-                              ? styles.messageHolder
-                              : styles.messageHolderUser
-                          }
-                        >
-                          {content}
+                      <div key={index}>
+                        <div className={styles.imageContainer}>
+                          <Image
+                            src={user.img ? user.img : "/noavatar.png"}
+                            alt=""
+                            width={50}
+                            height={50}
+                            style={{ borderRadius: "50%" }}
+                          />
+                        </div>
+                        <div key={index} className={styles.messageContainer}>
+                          <strong>{fromUser}</strong>
+
+                          <div>{content}</div>
                         </div>
                       </div>
                     );
