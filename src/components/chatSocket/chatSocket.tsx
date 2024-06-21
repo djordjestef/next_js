@@ -15,7 +15,7 @@ const ChatSocket = ({ user, users }: any) => {
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState<any[]>([]);
-  const [notifications, setNotifications] = useState(0)
+  const [notifications, setNotifications] = useState(0);
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -36,6 +36,7 @@ const ChatSocket = ({ user, users }: any) => {
       let newMessages = {};
       onlineUsers.forEach((user: any) => {
         if (user.userID === from) {
+          setNotifications((prevState) => prevState + 1);
           console.log("User FROM: ADMIR", user.name);
           console.log("FROM: ADMIR", from);
           newMessages = {
@@ -52,6 +53,8 @@ const ChatSocket = ({ user, users }: any) => {
       setLiveUsers(data);
     });
   };
+
+  console.log('notifications',notifications)
 
   useEffect(() => {
     console.log("USE EFFECT");
