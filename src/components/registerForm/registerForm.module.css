@@ -7,7 +7,7 @@
 
 .form input {
   padding: 20px;
-  background-color: var(--bg);
+  background-color: var(--inputBg);
   color: var(--textSoft);
   border: none;
   border-radius: 5px;

@@ -9,7 +9,7 @@
   border-radius: 5px;
   border: none;
   outline: none;
-  background-color: var(--bgSoft);
+  background-color: var(--inputBg);
   color: var(--text);
 }
 
@@ -94,8 +94,8 @@
   background-color: gray;
   border-radius: 50%;
   position: absolute;
-  top: -7px;
-  left: -7px;
+  bottom: -5px;
+  left: 42px;
 }
 
 .online {
@@ -104,8 +104,27 @@
   background-color: green;
   border-radius: 50%;
   position: absolute;
-  top: -7px;
-  left: -7px;
+  bottom: -5px;
+  left: 42px;
+}
+
+.notification {
+  width: 25px;
+  height: 25px;
+  background-color: rgb(183, 8, 8);
+  border-radius: 50%;
+  position: absolute;
+  left: -18px;
+  top: -14px;
+}
+
+.notificationNumber {
+  color: #fff;
+  font-size: 14px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .userListBtn {

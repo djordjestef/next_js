@@ -54,7 +54,7 @@ const ChatSocket = ({ user, users }: any) => {
     });
   };
 
-  console.log('notifications',notifications)
+  console.log("notifications", notifications);
 
   useEffect(() => {
     console.log("USE EFFECT");
@@ -122,6 +122,11 @@ const ChatSocket = ({ user, users }: any) => {
                   <span
                     className={user.online ? styles.online : styles.offline}
                   ></span>
+                  <span className={styles.notification}>
+                    <span className={styles.notificationNumber}>
+                      {notifications}
+                    </span>{" "}
+                  </span>
                 </div>
               </button>
             </div>

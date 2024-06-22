@@ -8,7 +8,7 @@
 .container textarea,
 .container select {
   padding: 20px;
-  background-color: var(--bgSoft);
+  background-color: var(--inputBg);
   border: none;
   border-radius: 5px;
   color: var(--textColor);

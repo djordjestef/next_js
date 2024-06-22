@@ -9,7 +9,7 @@
   border-radius: 5px;
   border: none;
   outline: none;
-  background-color: var(--bgSoft);
+  background-color: var(--inputBg);
   color: var(--text);
 }
 
