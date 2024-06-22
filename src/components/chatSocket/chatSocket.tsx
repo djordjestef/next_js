@@ -15,7 +15,8 @@ const ChatSocket = ({ user, users }: any) => {
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState<any[]>([]);
-  const [notifications, setNotifications] = useState(0);
+  const [numberNotifications, setNumberNotifications] = useState(0);
+  const [userNotification, setUserNotification] = useState("");
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -31,14 +32,15 @@ const ChatSocket = ({ user, users }: any) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      const { content, onlineUsers, from } = data;
+      const { content, onlineUsers, fromID, fromUserName } = data;
 
       let newMessages = {};
       onlineUsers.forEach((user: any) => {
-        if (user.userID === from) {
-          setNotifications((prevState) => prevState + 1);
+        if (user.userID === fromID) {
+          setNumberNotifications((prevState) => prevState + 1);
+          setUserNotification(fromUserName);
           console.log("User FROM: ADMIR", user.name);
-          console.log("FROM: ADMIR", from);
+          console.log("FROM: ADMIR", fromID);
           newMessages = {
             fromUser: user.name,
             content,
@@ -54,15 +56,22 @@ const ChatSocket = ({ user, users }: any) => {
     });
   };
 
-  console.log("notifications", notifications);
+  console.log("numberNotifications", numberNotifications);
+  console.log("filteredUsers", filteredUsers);
+  console.log("userNotification", userNotification);
+  console.log('isOpen',isOpen)
 
   useEffect(() => {
-    console.log("USE EFFECT");
     socketFn();
     return () => {
       socket.emit("offline");
     };
   }, []);
+
+  useEffect(()=>{
+    console.log("USE EFFECT RECEIPENT")
+    if(recipient===userNotification) setNumberNotifications(0)
+  },[recipient])
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
@@ -75,8 +84,8 @@ const ChatSocket = ({ user, users }: any) => {
     if (chatId) {
       socket.emit("private-message", {
         content: message,
-        username,
-        from: id,
+        fromUserName:username,
+        fromID: id,
         to: chatId,
       });
       setAllMessages((prevState) => [
@@ -122,11 +131,13 @@ const ChatSocket = ({ user, users }: any) => {
                   <span
                     className={user.online ? styles.online : styles.offline}
                   ></span>
-                  <span className={styles.notification}>
-                    <span className={styles.notificationNumber}>
-                      {notifications}
-                    </span>{" "}
-                  </span>
+                  {numberNotifications !== 0 && userNotification === user.username && (
+                    <span className={styles.notification}>
+                      <span className={styles.notificationNumber}>
+                        {numberNotifications}
+                      </span>{" "}
+                    </span>
+                  )}
                 </div>
               </button>
             </div>
