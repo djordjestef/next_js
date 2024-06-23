@@ -1,7 +1,7 @@
 "use client";
 import styles from "./chatSocket.module.css";
 import { Alert } from "react-st-modal";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
@@ -9,6 +9,7 @@ const socket = io("http://localhost:3000");
 
 const ChatSocket = ({ user, users }: any) => {
   const { username, id } = user;
+  const messageEl = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [recipient, setRecipient] = useState("");
   const [chatId, setChatId] = useState("");
@@ -17,6 +18,7 @@ const ChatSocket = ({ user, users }: any) => {
   const [allMessages, setAllMessages] = useState<any[]>([]);
   const [numberNotifications, setNumberNotifications] = useState(0);
   const [userNotification, setUserNotification] = useState("");
+  const [onReceiveMessage, setOnReceiveMessage] = useState(false);
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -39,6 +41,7 @@ const ChatSocket = ({ user, users }: any) => {
         if (user.userID === fromID) {
           setNumberNotifications((prevState) => prevState + 1);
           setUserNotification(fromUserName);
+          setOnReceiveMessage((prevState) => !prevState);
           console.log("User FROM: ADMIR", user.name);
           console.log("FROM: ADMIR", fromID);
           newMessages = {
@@ -56,22 +59,28 @@ const ChatSocket = ({ user, users }: any) => {
     });
   };
 
-  console.log("numberNotifications", numberNotifications);
-  console.log("filteredUsers", filteredUsers);
-  console.log("userNotification", userNotification);
-  console.log('isOpen',isOpen)
-
   useEffect(() => {
+    console.log("USE EFFECT SOCKET");
     socketFn();
     return () => {
       socket.emit("offline");
     };
   }, []);
 
-  useEffect(()=>{
-    console.log("USE EFFECT RECEIPENT")
-    if(recipient===userNotification) setNumberNotifications(0)
-  },[recipient])
+  useEffect(() => {
+    console.log("USE EFFECT RECEIPENT");
+    if (recipient === userNotification && isOpen) setNumberNotifications(0);
+  }, [recipient, onReceiveMessage]);
+
+  useEffect(() => {
+    console.log('messageEl',messageEl)
+    if (messageEl) {
+      messageEl?.current?.addEventListener('DOMNodeInserted', event => {
+        const { currentTarget: target } = event;
+        target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+      });
+    }
+  }, [])
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
@@ -81,10 +90,10 @@ const ChatSocket = ({ user, users }: any) => {
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    if (chatId) {
+    if (chatId && message!=='') {
       socket.emit("private-message", {
         content: message,
-        fromUserName:username,
+        fromUserName: username,
         fromID: id,
         to: chatId,
       });
@@ -95,7 +104,7 @@ const ChatSocket = ({ user, users }: any) => {
 
       setMessage("");
     } else {
-      Alert(`Please select a user to chat with`, "Error");
+      Alert(`Type something`, "Error");
     }
   };
 
@@ -104,6 +113,16 @@ const ChatSocket = ({ user, users }: any) => {
     setChatId(chatId);
     setRecipient(recipientUsername);
   };
+
+  // if (messageEl) {
+  //   messageEl.current.addEventListener('DOMNodeInserted', event => {
+  //     const { currentTarget: target } = event;
+  //     target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+  //   });
+  // }
+
+  console.log("isOpen", isOpen);
+  console.log("onReceiveMessage", onReceiveMessage);
 
   console.log("recipient", recipient);
 
@@ -131,13 +150,14 @@ const ChatSocket = ({ user, users }: any) => {
                   <span
                     className={user.online ? styles.online : styles.offline}
                   ></span>
-                  {numberNotifications !== 0 && userNotification === user.username && (
-                    <span className={styles.notification}>
-                      <span className={styles.notificationNumber}>
-                        {numberNotifications}
-                      </span>{" "}
-                    </span>
-                  )}
+                  {numberNotifications !== 0 &&
+                    userNotification === user.username && (
+                      <span className={styles.notification}>
+                        <span className={styles.notificationNumber}>
+                          {numberNotifications}
+                        </span>{" "}
+                      </span>
+                    )}
                 </div>
               </button>
             </div>
@@ -149,38 +169,39 @@ const ChatSocket = ({ user, users }: any) => {
           {isOpen && (
             <>
               <h1> {recipient}</h1>
+              <div className={styles.scrollableContainer} ref={messageEl}>
+                {allMessages?.map(
+                  ({ content, fromSelf, toUser, fromUser }, index) => {
+                    if (fromSelf === true && toUser === recipient)
+                      return (
+                        <div key={index} style={{ textAlign: "right" }}>
+                          <div className={styles.messageContainerSelf}>
+                            {content}
+                          </div>
+                        </div>
+                      );
+                    if (fromSelf === false && fromUser === recipient)
+                      return (
+                        <div key={index}>
+                          <div className={styles.imageContainer}>
+                            <Image
+                              src={user.img ? user.img : "/noavatar.png"}
+                              alt=""
+                              width={50}
+                              height={50}
+                              style={{ borderRadius: "50%" }}
+                            />
+                          </div>
+                          <div key={index} className={styles.messageContainer}>
+                            <strong>{fromUser}</strong>
 
-              {allMessages?.map(
-                ({ content, fromSelf, toUser, fromUser }, index) => {
-                  if (fromSelf === true && toUser === recipient)
-                    return (
-                      <div key={index} style={{ textAlign: "right" }}>
-                        <div className={styles.messageContainerSelf}>
-                          {content}
+                            <div>{content}</div>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  if (fromSelf === false && fromUser === recipient)
-                    return (
-                      <div key={index}>
-                        <div className={styles.imageContainer}>
-                          <Image
-                            src={user.img ? user.img : "/noavatar.png"}
-                            alt=""
-                            width={50}
-                            height={50}
-                            style={{ borderRadius: "50%" }}
-                          />
-                        </div>
-                        <div key={index} className={styles.messageContainer}>
-                          <strong>{fromUser}</strong>
-
-                          <div>{content}</div>
-                        </div>
-                      </div>
-                    );
-                }
-              )}
+                      );
+                  }
+                )}
+              </div>
 
               <br />
               <form action="" className={styles.form}>
@@ -192,8 +213,9 @@ const ChatSocket = ({ user, users }: any) => {
                   value={message}
                   onChange={handleChange}
                 />
-
-                <button onClick={handleSubmit}>Send Message</button>
+                <button onClick={handleSubmit}>
+                  <Image src={"/send.svg"} width={30} height={30} alt={""} />
+                </button>
               </form>
             </>
           )}
