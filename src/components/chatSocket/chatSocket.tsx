@@ -80,7 +80,7 @@ const ChatSocket = ({ user, users }: any) => {
         target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
       });
     }
-  }, [])
+  }, [allMessages])
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
