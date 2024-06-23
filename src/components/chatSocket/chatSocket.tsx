@@ -73,14 +73,14 @@ const ChatSocket = ({ user, users }: any) => {
   }, [recipient, onReceiveMessage]);
 
   useEffect(() => {
-    console.log('messageEl',messageEl)
+    console.log("messageEl", messageEl);
     if (messageEl) {
-      messageEl?.current?.addEventListener('DOMNodeInserted', event => {
+      messageEl?.current?.addEventListener("DOMNodeInserted", (event) => {
         const { currentTarget: target } = event;
-        target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+        target.scroll({ top: target.scrollHeight, behavior: "smooth" });
       });
     }
-  }, [allMessages])
+  }, [allMessages]);
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
@@ -90,7 +90,7 @@ const ChatSocket = ({ user, users }: any) => {
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    if (chatId && message!=='') {
+    if (chatId && message !== "") {
       socket.emit("private-message", {
         content: message,
         fromUserName: username,
@@ -113,13 +113,6 @@ const ChatSocket = ({ user, users }: any) => {
     setChatId(chatId);
     setRecipient(recipientUsername);
   };
-
-  // if (messageEl) {
-  //   messageEl.current.addEventListener('DOMNodeInserted', event => {
-  //     const { currentTarget: target } = event;
-  //     target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
-  //   });
-  // }
 
   console.log("isOpen", isOpen);
   console.log("onReceiveMessage", onReceiveMessage);
