@@ -9,7 +9,7 @@ const socket = io("http://localhost:3000");
 
 const ChatSocket = ({ user, users }: any) => {
   const { username, id } = user;
-  const messageEl = useRef(null);
+  const messageEl = useRef<any>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [recipient, setRecipient] = useState("");
   const [chatId, setChatId] = useState("");
@@ -74,8 +74,8 @@ const ChatSocket = ({ user, users }: any) => {
 
   useEffect(() => {
     console.log("messageEl", messageEl);
-    if (messageEl) {
-      messageEl?.current?.addEventListener("DOMNodeInserted", (event) => {
+    if (messageEl) {//recipient === userNotification && isOpen possible solution for preventing scroll
+      messageEl?.current?.addEventListener("DOMNodeInserted", (event:any) => {
         const { currentTarget: target } = event;
         target.scroll({ top: target.scrollHeight, behavior: "smooth" });
       });
