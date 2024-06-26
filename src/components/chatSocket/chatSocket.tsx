@@ -54,7 +54,7 @@ const ChatSocket = ({ user, users }: any) => {
       });
     });
     socket.on("display", (data) => {
-      console.log("data", data);
+      // console.log("data", data);
       if (data.typing == true) {
         setIsTyping(true);
         setUserNotification(data.user);
@@ -212,7 +212,7 @@ const ChatSocket = ({ user, users }: any) => {
               <form action="" className={styles.form}>
                 {isTyping && username === userNotification && (
                   <p className={styles.isTyping}>
-                    {userNotification} is typing...
+                    <strong>{userNotification}</strong> is typing...
                   </p>
                 )}
                 <input
