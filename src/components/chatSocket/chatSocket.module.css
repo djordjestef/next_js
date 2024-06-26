@@ -15,18 +15,11 @@
 }
 
 .form input::placeholder {
-  color: black;
+  color: rgb(85, 84, 84);
   opacity: 1; /* Firefox */
 }
 
 .form button {
-  /* padding: 20px;
-  background-color: var(--btn);
-  color: var(--text);
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer; */
   all: unset;
   position: absolute;
   right: 20px;

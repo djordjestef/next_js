@@ -11,7 +11,7 @@ const ChatSocket = ({ user, users }: any) => {
   const { username, id } = user;
   const messageEl = useRef<any>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [recipient, setRecipient] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
   const [chatId, setChatId] = useState("");
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState("");
@@ -54,6 +54,7 @@ const ChatSocket = ({ user, users }: any) => {
       });
     });
     socket.on("display", (data) => {
+      console.log("data", data);
       if (data.typing == true) {
         setIsTyping(true);
         setUserNotification(data.user);
@@ -76,13 +77,12 @@ const ChatSocket = ({ user, users }: any) => {
   }, []);
 
   useEffect(() => {
-    if (recipient === userNotification && isOpen) setNumberNotifications(0);
-  }, [recipient, onReceiveMessage]);
+    if (selectedUser === userNotification && isOpen) setNumberNotifications(0);
+  }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
-    // console.log("messageEl", messageEl);
     if (messageEl) {
-      //recipient === userNotification && isOpen possible solution for preventing scroll
+      //selectedUser === userNotification && isOpen possible solution for preventing scroll
       messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
         target.scroll({ top: target.scrollHeight, behavior: "smooth" });
@@ -92,7 +92,7 @@ const ChatSocket = ({ user, users }: any) => {
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-
+    setIsTyping(false);
     if (chatId && message !== "") {
       socket.emit("private-message", {
         content: message,
@@ -102,7 +102,7 @@ const ChatSocket = ({ user, users }: any) => {
       });
       setAllMessages((prevState) => [
         ...prevState,
-        { content: message, toUser: recipient, fromSelf: true },
+        { content: message, toUser: selectedUser, fromSelf: true },
       ]);
 
       setMessage("");
@@ -111,19 +111,24 @@ const ChatSocket = ({ user, users }: any) => {
     }
   };
 
-  const chooseChat = (chatId: string, recipientUsername: string) => {
+  const chooseChat = (chatId: string, selectedUserUsername: string) => {
     setIsOpen(true);
     setChatId(chatId);
-    setRecipient(recipientUsername);
+    setSelectedUser(selectedUserUsername);
   };
+
+  console.log("selectedUser", selectedUser);
+  console.log("username", username);
+  console.log("userNotification", userNotification);
+  console.log("--------------");
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
 
     setMessage(value);
-    socket.emit("typing", { user: username, typing: true });
+    socket.emit("typing", { user: selectedUser, typing: true });
     setTimeout(() => {
-      socket.emit("typing", { user: username, typing: false });
+      socket.emit("typing", { user: selectedUser, typing: false }); //bug!!!!!!!!!//useDebounce
     }, 2000);
   };
 
@@ -167,11 +172,11 @@ const ChatSocket = ({ user, users }: any) => {
           <h1>Sender: {username}</h1>
           {isOpen && (
             <>
-              <h1> {recipient}</h1>
+              <h1> {selectedUser}</h1>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {allMessages?.map(
                   ({ content, fromSelf, toUser, fromUser }, index) => {
-                    if (fromSelf === true && toUser === recipient)
+                    if (fromSelf === true && toUser === selectedUser)
                       return (
                         <div key={index} style={{ textAlign: "right" }}>
                           <div className={styles.messageContainerSelf}>
@@ -179,7 +184,7 @@ const ChatSocket = ({ user, users }: any) => {
                           </div>
                         </div>
                       );
-                    if (fromSelf === false && fromUser === recipient)
+                    if (fromSelf === false && fromUser === selectedUser)
                       return (
                         <div key={index}>
                           <div className={styles.imageContainer}>
@@ -205,12 +210,11 @@ const ChatSocket = ({ user, users }: any) => {
               <br />
 
               <form action="" className={styles.form}>
-                {isTyping &&
-                  username !== userNotification && ( //nije dobro
-                    <p className={styles.isTyping}>
-                      {userNotification} is typing...
-                    </p>
-                  )}
+                {isTyping && username === userNotification && (
+                  <p className={styles.isTyping}>
+                    {userNotification} is typing...
+                  </p>
+                )}
                 <input
                   type="text"
                   placeholder="message"
