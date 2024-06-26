@@ -69,7 +69,12 @@
 .scrollableContainer {
   /* overflow: scroll; */
   overflow-y: auto;
-  height: 300px;
+  height: 200px;
+}
+
+.isTyping {
+  position: absolute;
+  top: -30px;
 }
 
 .messageContainer {

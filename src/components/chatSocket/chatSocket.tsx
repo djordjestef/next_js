@@ -19,6 +19,7 @@ const ChatSocket = ({ user, users }: any) => {
   const [numberNotifications, setNumberNotifications] = useState(0);
   const [userNotification, setUserNotification] = useState("");
   const [onReceiveMessage, setOnReceiveMessage] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -42,8 +43,7 @@ const ChatSocket = ({ user, users }: any) => {
           setNumberNotifications((prevState) => prevState + 1);
           setUserNotification(fromUserName);
           setOnReceiveMessage((prevState) => !prevState);
-          console.log("User FROM: ADMIR", user.name);
-          console.log("FROM: ADMIR", fromID);
+
           newMessages = {
             fromUser: user.name,
             content,
@@ -53,6 +53,15 @@ const ChatSocket = ({ user, users }: any) => {
         }
       });
     });
+    socket.on("display", (data) => {
+      if (data.typing == true) {
+        setIsTyping(true);
+        setUserNotification(data.user);
+      } else {
+        console.log("NOT TYPING");
+        setIsTyping(false);
+      }
+    });
     socket.emit("new-user-add", { userID: id, name: username });
     socket.on("get-users", (data) => {
       setLiveUsers(data);
@@ -60,7 +69,6 @@ const ChatSocket = ({ user, users }: any) => {
   };
 
   useEffect(() => {
-    console.log("USE EFFECT SOCKET");
     socketFn();
     return () => {
       socket.emit("offline");
@@ -68,24 +76,19 @@ const ChatSocket = ({ user, users }: any) => {
   }, []);
 
   useEffect(() => {
-    console.log("USE EFFECT RECEIPENT");
     if (recipient === userNotification && isOpen) setNumberNotifications(0);
   }, [recipient, onReceiveMessage]);
 
   useEffect(() => {
-    console.log("messageEl", messageEl);
-    if (messageEl) {//recipient === userNotification && isOpen possible solution for preventing scroll
-      messageEl?.current?.addEventListener("DOMNodeInserted", (event:any) => {
+    // console.log("messageEl", messageEl);
+    if (messageEl) {
+      //recipient === userNotification && isOpen possible solution for preventing scroll
+      messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
         target.scroll({ top: target.scrollHeight, behavior: "smooth" });
       });
     }
   }, [allMessages]);
-
-  const handleChange = (event: React.SyntheticEvent) => {
-    const { value }: any = event.target;
-    setMessage(value);
-  };
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -114,13 +117,16 @@ const ChatSocket = ({ user, users }: any) => {
     setRecipient(recipientUsername);
   };
 
-  console.log("isOpen", isOpen);
-  console.log("onReceiveMessage", onReceiveMessage);
+  const handleChange = (event: React.SyntheticEvent) => {
+    const { value }: any = event.target;
 
-  console.log("recipient", recipient);
+    setMessage(value);
+    socket.emit("typing", { user: username, typing: true });
+    setTimeout(() => {
+      socket.emit("typing", { user: username, typing: false });
+    }, 2000);
+  };
 
-  console.log("allMessages", allMessages);
-  console.log("----------------------------");
   return (
     <div style={{ minHeight: "70vh" }}>
       <h1 style={{ marginBottom: 10 }}>Chat App</h1>
@@ -197,7 +203,14 @@ const ChatSocket = ({ user, users }: any) => {
               </div>
 
               <br />
+
               <form action="" className={styles.form}>
+                {isTyping &&
+                  username !== userNotification && ( //nije dobro
+                    <p className={styles.isTyping}>
+                      {userNotification} is typing...
+                    </p>
+                  )}
                 <input
                   type="text"
                   placeholder="message"

@@ -28,6 +28,14 @@ app.prepare().then(async () => {
       }
     });
 
+    socket.on('typing', (data)=>{
+      console.log('data',data)
+      if(data.typing==true)
+         io.emit('display', data)
+      else
+         io.emit('display', data)
+    })
+
     socket.on("new-user-add", function (data) {
       if (!onlineUsers.some((user) => user.userID === data.userID)) {
         onlineUsers.push({
