@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import styles from "./links.module.css";
-import NavLink from "./navLink/navLink";
+import NavLink from "./navLink/Link";
 import Image from "next/image";
 import { handleLogout } from "@/lib/action";
 import { ActionType, MyContext } from "@/app/Store";

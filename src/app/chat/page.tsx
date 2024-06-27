@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import ChatSocket from "@/components/chatSocket/chatSocket";
+import ChatSocket from "@/components/chatSocket/Chat";
 import { getUsers } from "@/lib/services";
 
 const ChatPage = async () => {

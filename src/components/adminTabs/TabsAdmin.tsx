@@ -1,10 +1,10 @@
 "use client";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import AdminPosts from "@/components/adminPosts/adminPosts";
+import AdminPosts from "@/components/adminPosts/PostsAdmin";
 import AdminPostForm from "@/components/adminPostForm/adminPostFrom";
-import AdminUsers from "@/components/adminUsers/adminUsers";
-import AdminUserForm from "@/components/adminUserForm/adminUserFrom";
+import AdminUsers from "@/components/adminUsers/UsersAdmin";
+import AdminUserForm from "@/components/adminUserForm/UserFromAdmin";
 import React, { useState } from "react";
 import styles from "./adminTabs.module.css";
 

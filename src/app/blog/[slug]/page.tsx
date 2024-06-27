@@ -1,6 +1,6 @@
 import Image from "next/image";
 import styles from "./singlePost.module.css";
-import PostUser from "@/components/postUser/postUser";
+import PostUser from "@/components/postUser/UserPost";
 import { Suspense } from "react";
 import { getBlog } from "@/lib/services";
 

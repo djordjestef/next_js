@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import styles from "./admin.module.css";
 import { auth } from "@/lib/auth";
 import { getBlogs, getUsers } from "@/lib/services";
-import AdminTabs from "../../components/adminTabs/adminTabs";
+import AdminTabs from "../../components/adminTabs/TabsAdmin";
 
 const AdminPage = async () => {
   const session: any = await auth();

@@ -3,7 +3,7 @@ import styles from "./adminPosts.module.css";
 import Image from "next/image";
 import { deleteBlog } from "@/lib/services";
 import { Confirm } from "react-st-modal";
-import AdminEditForm from "../adminEditForm/adminEditForm";
+import AdminEditForm from "../adminEditForm/EditFormAdmin";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
