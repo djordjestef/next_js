@@ -72,6 +72,11 @@ const Links = ({ session }: any) => {
 
   return (
     <div className={styles.container}>
+      {session && (
+        <div className={styles.username}>
+          Hi <strong>{session?.user.username}</strong>
+        </div>
+      )}
       <Switch
         onChange={handleChangeTheme}
         checked={state.theme.dark_theme}

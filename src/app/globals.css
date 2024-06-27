@@ -11,6 +11,7 @@
   --btn: #3673fd;
   --editDeleteBtn: #fff;
   --inputBg: #fff;
+  --chatBg: #fff;
 }
 
 :root.dark {
@@ -22,6 +23,7 @@
   --btn: #3673fd;
   --editDeleteBtn: #fff;
   --inputBg: #838383;
+  --chatBg: #5c5aaa;
 }
 
 * {

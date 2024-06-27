@@ -5,7 +5,13 @@ import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
+
 const socket = io("http://localhost:3000");
+
+const debounceFunction = _.debounce((emitFunction) => {
+  console.log("triggered");
+  emitFunction();
+}, 2000);
 
 const ChatSocket = ({ user, users }: any) => {
   const { username, id } = user;
@@ -54,12 +60,11 @@ const ChatSocket = ({ user, users }: any) => {
       });
     });
     socket.on("display", (data) => {
-      // console.log("data", data);
       if (data.typing == true) {
         setIsTyping(true);
         setUserNotification(data.user);
       } else {
-        console.log("NOT TYPING");
+        console.log("USAO JE")
         setIsTyping(false);
       }
     });
@@ -82,7 +87,6 @@ const ChatSocket = ({ user, users }: any) => {
 
   useEffect(() => {
     if (messageEl) {
-      //selectedUser === userNotification && isOpen possible solution for preventing scroll
       messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
         target.scroll({ top: target.scrollHeight, behavior: "smooth" });
@@ -92,7 +96,8 @@ const ChatSocket = ({ user, users }: any) => {
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    setIsTyping(false);
+
+    // setIsTyping(false);
     if (chatId && message !== "") {
       socket.emit("private-message", {
         content: message,
@@ -117,26 +122,35 @@ const ChatSocket = ({ user, users }: any) => {
     setSelectedUser(selectedUserUsername);
   };
 
-  console.log("selectedUser", selectedUser);
-  console.log("username", username);
-  console.log("userNotification", userNotification);
-  console.log("--------------");
+  // console.log("selectedUser", selectedUser);
+  // console.log("username", username);
+  // console.log("userNotification", userNotification);
+  // console.log("--------------");
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
-
     setMessage(value);
     socket.emit("typing", { user: selectedUser, typing: true });
-    setTimeout(() => {
-      socket.emit("typing", { user: selectedUser, typing: false }); //bug!!!!!!!!!//useDebounce
-    }, 2000);
+    debounceFunction(() =>
+      socket.emit("typing", { user: selectedUser, typing: false })
+    );
   };
+
+  if(isTyping && username === userNotification){
+    console.log('prikazano je')
+  }else {
+    console.log("PREKINNUTO")
+  }
+  console.log('isTyping',isTyping)
+  console.log('username',username)
+  console.log('userNotification',userNotification)
+  // console.log(username === userNotification)
 
   return (
     <div style={{ minHeight: "70vh" }}>
-      <h1 style={{ marginBottom: 10 }}>Chat App</h1>
       <div className={styles.container}>
         <div className={styles.chatList}>
+          <h3 className={styles.listTitle}>Users List</h3>
           {filteredUsers.map((user: any) => (
             <div className={styles.user} key={user._id}>
               <button
@@ -169,10 +183,10 @@ const ChatSocket = ({ user, users }: any) => {
         </div>
 
         <div className={styles.chatContainer}>
-          <h1>Sender: {username}</h1>
+          <h3 className={styles.messageTitle}>Messages</h3>
           {isOpen && (
             <>
-              <h1> {selectedUser}</h1>
+              <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {allMessages?.map(
                   ({ content, fromSelf, toUser, fromUser }, index) => {
@@ -219,11 +233,11 @@ const ChatSocket = ({ user, users }: any) => {
                   type="text"
                   placeholder="message"
                   name="message"
-                  id="message"
+                  id="Message..."
                   value={message}
                   onChange={handleChange}
                 />
-                <button onClick={handleSubmit}>
+                <button type="submit" onClick={handleSubmit}>
                   <Image src={"/send.svg"} width={30} height={30} alt={""} />
                 </button>
               </form>
