@@ -10,7 +10,7 @@ const socket = io("http://localhost:3000");
 
 const debounceFunction = _.debounce((emitFunction) => {
   emitFunction();
-}, 2000);
+}, 500);
 
 const ChatSocket = ({ user, users }: any) => {
   const { username, id } = user;
@@ -57,18 +57,14 @@ const ChatSocket = ({ user, users }: any) => {
           setAllMessages((prevState: any) => [...prevState, newMessages]);
         }
       });
-      // setSeenStatus(false);
     });
     socket.on("display-typing", (data) => {
-      if (data.typing == true) {
+      if (data.typing == true && data.selectedUser === username) {
         setIsTyping(true);
-       setUserNotification(data.sender);
+        setUserNotification(data.userTyping);
       } else {
         setIsTyping(false);
       }
-    });
-    socket.on("status", (data) => {
-      // console.log("data", data);
     });
 
     socket.emit("new-user-add", { userID: id, name: username });
@@ -101,7 +97,7 @@ const ChatSocket = ({ user, users }: any) => {
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-
+    setIsTyping(false);
     if (chatId && message !== "") {
       socket.emit("private-message", {
         content: message,
@@ -120,29 +116,35 @@ const ChatSocket = ({ user, users }: any) => {
     }
   };
 
-
   const chooseChat = (chatId: string, selectedUserUsername: string) => {
     setIsOpen(true);
     setChatId(chatId);
     setSelectedUser(selectedUserUsername);
-   
-    socket.emit("seen", { status: true });
   };
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
     setMessage(value);
-    socket.emit("typing", { user: selectedUser,sender:username, typing: true });
+    socket.emit("typing", {
+      selectedUser: selectedUser,
+      userTyping: username,
+      typing: true,
+    });
     debounceFunction(() =>
-      socket.emit("typing", { user: selectedUser,sender:username, typing: false })
+      socket.emit("typing", {
+        selectedUser: selectedUser,
+        userTyping: username,
+        typing: false,
+      })
     );
   };
 
   // console.log('isTyping',isTyping)
-  console.log('username',username)
-  console.log('userNotification',userNotification)
-console.log('selectedUser',selectedUser)
-console.log('------------------------')
+  console.log("username", username);
+  console.log("------------------------");
+  console.log("userNotification", userNotification);
+  console.log("selectedUser", selectedUser);
+  console.log("------------------------");
   return (
     <div style={{ minHeight: "70vh" }}>
       <div className={styles.container}>
@@ -226,7 +228,7 @@ console.log('------------------------')
               <br />
 
               <form action="" className={styles.form}>
-                {isTyping && (selectedUser === userNotification)  && (
+                {isTyping && selectedUser === userNotification && (
                   <p className={styles.isTyping}>
                     <strong>{userNotification}</strong> is typing...
                   </p>

@@ -30,13 +30,13 @@ app.prepare().then(async () => {
 
     socket.on("typing", (data) => {
       console.log("data", data);
-      if (data.typing == true) io.emit("display-typing", data);
-      else io.emit("display-typing", data);
+      if (data.typing == true){
+        io.emit("display-typing", data);
+      } 
+      else{
+        io.emit("display-typing", data);
+      } 
     });
-
-    // socket.on('seen',(data)=>{
-    //   socket.emit('status',data)
-    // })
 
     socket.on("new-user-add", function (data) {
       if (!onlineUsers.some((user) => user.userID === data.userID)) {
@@ -52,9 +52,9 @@ app.prepare().then(async () => {
       io.emit("get-users", onlineUsers);
     });
 
-    socket.on('seen',(data)=>{
-      socket.emit('status',data)
-    })
+    socket.on("seen", (data) => {
+      socket.emit("status", data);
+    });
 
     socket.on("offline", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
