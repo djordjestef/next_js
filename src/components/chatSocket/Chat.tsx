@@ -42,7 +42,6 @@ const ChatSocket = ({ user, users }: any) => {
   const socketFn = async () => {
     socket.on("private-message", (data) => {
       const { content, onlineUsers, fromID, fromUserName } = data;
-
       let newMessages = {};
       onlineUsers.forEach((user: any) => {
         if (user.userID === fromID) {
@@ -63,15 +62,15 @@ const ChatSocket = ({ user, users }: any) => {
     socket.on("display-typing", (data) => {
       if (data.typing == true) {
         setIsTyping(true);
-        // console.log('data.user DJORDJE HASH',data.user)
-        setUserNotification(data.user);
+       setUserNotification(data.sender);
       } else {
-        // console.log("USAO JE")
         setIsTyping(false);
       }
     });
-    // socket.emit('seen',{seen:true})
-   
+    socket.on("status", (data) => {
+      // console.log("data", data);
+    });
+
     socket.emit("new-user-add", { userID: id, name: username });
     socket.on("get-users", (data) => {
       setLiveUsers(data);
@@ -85,13 +84,9 @@ const ChatSocket = ({ user, users }: any) => {
     };
   }, []);
 
-
-
   useEffect(() => {
-   
     if (selectedUser === userNotification && isOpen) {
       setNumberNotifications(0);
- 
     }
   }, [selectedUser, onReceiveMessage]);
 
@@ -102,13 +97,6 @@ const ChatSocket = ({ user, users }: any) => {
         target.scroll({ top: target.scrollHeight, behavior: "smooth" });
       });
     }
-    allMessages.map((message)=>{
-      if(message.fromSelf===true){
-        setSeenStatus(true)
-      }else {
-        setSeenStatus(false)
-      }
-    })
   }, [allMessages]);
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -125,7 +113,6 @@ const ChatSocket = ({ user, users }: any) => {
         ...prevState,
         { toUser: selectedUser, content: message, fromSelf: true },
       ]);
-      // setSeenStatus(true)
 
       setMessage("");
     } else {
@@ -133,38 +120,29 @@ const ChatSocket = ({ user, users }: any) => {
     }
   };
 
-  console.log('seenStatus',seenStatus)
 
   const chooseChat = (chatId: string, selectedUserUsername: string) => {
     setIsOpen(true);
     setChatId(chatId);
     setSelectedUser(selectedUserUsername);
-    // socket.on('status',(data)=>{
-    //   console.log('data',data)
-    // })
-
+   
+    socket.emit("seen", { status: true });
   };
-
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
     setMessage(value);
-    socket.emit("typing", { user: selectedUser, typing: true });
+    socket.emit("typing", { user: selectedUser,sender:username, typing: true });
     debounceFunction(() =>
-      socket.emit("typing", { user: selectedUser, typing: false })
+      socket.emit("typing", { user: selectedUser,sender:username, typing: false })
     );
   };
 
   // console.log('isTyping',isTyping)
-  // console.log('username',username)
-  // console.log('userNotification',userNotification)
-  // console.log(username === userNotification)
-  // console.log("allMessages", allMessages);
-  // console.log("seenStatus", seenStatus);
-
-
-
-
+  console.log('username',username)
+  console.log('userNotification',userNotification)
+console.log('selectedUser',selectedUser)
+console.log('------------------------')
   return (
     <div style={{ minHeight: "70vh" }}>
       <div className={styles.container}>
@@ -248,7 +226,7 @@ const ChatSocket = ({ user, users }: any) => {
               <br />
 
               <form action="" className={styles.form}>
-                {isTyping && username === userNotification && (
+                {isTyping && (selectedUser === userNotification)  && (
                   <p className={styles.isTyping}>
                     <strong>{userNotification}</strong> is typing...
                   </p>

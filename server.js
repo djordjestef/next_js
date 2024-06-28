@@ -52,6 +52,10 @@ app.prepare().then(async () => {
       io.emit("get-users", onlineUsers);
     });
 
+    socket.on('seen',(data)=>{
+      socket.emit('status',data)
+    })
+
     socket.on("offline", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
       console.log("onlineUsers OFFLINE METHOSD", onlineUsers);
