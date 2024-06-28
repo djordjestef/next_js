@@ -16,25 +16,27 @@ app.prepare().then(async () => {
   let onlineUsers = [];
 
   io.on("connection", (socket) => {
-    socket.on("private-message", ({ content, fromUserName, to ,fromID}) => {
+    socket.on("private-message", ({ content, fromUserName, to, fromID }) => {
       const recipient = onlineUsers.find((user) => user.userID === to);
       if (recipient) {
         io.to(to).emit("private-message", {
           content,
           onlineUsers,
           fromID,
-          fromUserName
+          fromUserName,
         });
       }
     });
 
-    socket.on('typing', (data)=>{
-      console.log('data',data)
-      if(data.typing==true)
-         io.emit('display', data)
-      else
-         io.emit('display', data)
-    })
+    socket.on("typing", (data) => {
+      console.log("data", data);
+      if (data.typing == true) io.emit("display-typing", data);
+      else io.emit("display-typing", data);
+    });
+
+    // socket.on('seen',(data)=>{
+    //   socket.emit('status',data)
+    // })
 
     socket.on("new-user-add", function (data) {
       if (!onlineUsers.some((user) => user.userID === data.userID)) {

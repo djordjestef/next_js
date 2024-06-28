@@ -9,7 +9,6 @@ import _ from "lodash";
 const socket = io("http://localhost:3000");
 
 const debounceFunction = _.debounce((emitFunction) => {
-  console.log("triggered");
   emitFunction();
 }, 2000);
 
@@ -26,6 +25,7 @@ const ChatSocket = ({ user, users }: any) => {
   const [userNotification, setUserNotification] = useState("");
   const [onReceiveMessage, setOnReceiveMessage] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [seenStatus, setSeenStatus] = useState(false);
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -47,7 +47,7 @@ const ChatSocket = ({ user, users }: any) => {
       onlineUsers.forEach((user: any) => {
         if (user.userID === fromID) {
           setNumberNotifications((prevState) => prevState + 1);
-          setUserNotification(fromUserName);
+          setUserNotification(fromUserName); //admin
           setOnReceiveMessage((prevState) => !prevState);
 
           newMessages = {
@@ -58,16 +58,20 @@ const ChatSocket = ({ user, users }: any) => {
           setAllMessages((prevState: any) => [...prevState, newMessages]);
         }
       });
+      // setSeenStatus(false);
     });
-    socket.on("display", (data) => {
+    socket.on("display-typing", (data) => {
       if (data.typing == true) {
         setIsTyping(true);
+        // console.log('data.user DJORDJE HASH',data.user)
         setUserNotification(data.user);
       } else {
-        console.log("USAO JE")
+        // console.log("USAO JE")
         setIsTyping(false);
       }
     });
+    // socket.emit('seen',{seen:true})
+   
     socket.emit("new-user-add", { userID: id, name: username });
     socket.on("get-users", (data) => {
       setLiveUsers(data);
@@ -81,8 +85,14 @@ const ChatSocket = ({ user, users }: any) => {
     };
   }, []);
 
+
+
   useEffect(() => {
-    if (selectedUser === userNotification && isOpen) setNumberNotifications(0);
+   
+    if (selectedUser === userNotification && isOpen) {
+      setNumberNotifications(0);
+ 
+    }
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
@@ -92,12 +102,18 @@ const ChatSocket = ({ user, users }: any) => {
         target.scroll({ top: target.scrollHeight, behavior: "smooth" });
       });
     }
+    allMessages.map((message)=>{
+      if(message.fromSelf===true){
+        setSeenStatus(true)
+      }else {
+        setSeenStatus(false)
+      }
+    })
   }, [allMessages]);
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    // setIsTyping(false);
     if (chatId && message !== "") {
       socket.emit("private-message", {
         content: message,
@@ -107,8 +123,9 @@ const ChatSocket = ({ user, users }: any) => {
       });
       setAllMessages((prevState) => [
         ...prevState,
-        { content: message, toUser: selectedUser, fromSelf: true },
+        { toUser: selectedUser, content: message, fromSelf: true },
       ]);
+      // setSeenStatus(true)
 
       setMessage("");
     } else {
@@ -116,16 +133,18 @@ const ChatSocket = ({ user, users }: any) => {
     }
   };
 
+  console.log('seenStatus',seenStatus)
+
   const chooseChat = (chatId: string, selectedUserUsername: string) => {
     setIsOpen(true);
     setChatId(chatId);
     setSelectedUser(selectedUserUsername);
+    // socket.on('status',(data)=>{
+    //   console.log('data',data)
+    // })
+
   };
 
-  // console.log("selectedUser", selectedUser);
-  // console.log("username", username);
-  // console.log("userNotification", userNotification);
-  // console.log("--------------");
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
@@ -136,15 +155,15 @@ const ChatSocket = ({ user, users }: any) => {
     );
   };
 
-  if(isTyping && username === userNotification){
-    console.log('prikazano je')
-  }else {
-    console.log("PREKINNUTO")
-  }
-  console.log('isTyping',isTyping)
-  console.log('username',username)
-  console.log('userNotification',userNotification)
+  // console.log('isTyping',isTyping)
+  // console.log('username',username)
+  // console.log('userNotification',userNotification)
   // console.log(username === userNotification)
+  // console.log("allMessages", allMessages);
+  // console.log("seenStatus", seenStatus);
+
+
+
 
   return (
     <div style={{ minHeight: "70vh" }}>
@@ -196,8 +215,13 @@ const ChatSocket = ({ user, users }: any) => {
                           <div className={styles.messageContainerSelf}>
                             {content}
                           </div>
+                          <p>seen</p>
                         </div>
                       );
+                    // if (fromSelf && seenStatus) {
+                    //   console.log('SEEEN')
+                    // };
+
                     if (fromSelf === false && fromUser === selectedUser)
                       return (
                         <div key={index}>
