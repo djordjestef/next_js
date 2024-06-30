@@ -25,6 +25,7 @@ const ChatSocket = ({ user, users }: any) => {
   const [userNotification, setUserNotification] = useState("");
   const [onReceiveMessage, setOnReceiveMessage] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [userIsTyping,setUserIsTyping] = useState('')
   const [seenStatus, setSeenStatus] = useState(false);
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
@@ -61,7 +62,7 @@ const ChatSocket = ({ user, users }: any) => {
     socket.on("display-typing", (data) => {
       if (data.typing == true && data.selectedUser === username) {
         setIsTyping(true);
-        setUserNotification(data.userTyping);
+        setUserIsTyping(data.userTyping);
         setSeenStatus(true)
       } else {
         setIsTyping(false);
@@ -231,9 +232,9 @@ const ChatSocket = ({ user, users }: any) => {
               <br />
 
               <form action="" className={styles.form}>
-                {isTyping && selectedUser === userNotification && (
+                {isTyping && selectedUser === userIsTyping && (
                   <p className={styles.isTyping}>
-                    <strong>{userNotification}</strong> is typing...
+                    <strong>{userIsTyping}</strong> is typing...
                   </p>
                 )}
                 <input
