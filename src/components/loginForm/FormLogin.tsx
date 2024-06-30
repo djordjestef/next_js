@@ -2,8 +2,6 @@
 import { useFormState } from "react-dom";
 import styles from "./loginForm.module.css";
 import { login } from "@/lib/action";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import Link from "next/link";
 
 const LoginForm = () => {

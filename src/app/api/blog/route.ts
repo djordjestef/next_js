@@ -2,7 +2,6 @@ import { Post } from "@/lib/models";
 import { connectToDb } from "@/lib/utils";
 import { NextResponse, NextRequest } from "next/server";
 
-
 export const GET = async (req: NextRequest) => {
   try {
     await connectToDb();
@@ -94,11 +93,13 @@ export const PUT = async (req: NextRequest) => {
     const { formData, postId } = data;
     await Post.findByIdAndUpdate(postId, formData);
 
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
+        success: true,
         data: formData,
         error: null,
-      },
+      }),
+
       {
         status: 201,
         headers: {

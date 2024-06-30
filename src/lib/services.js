@@ -62,7 +62,6 @@ export const updateBlog = async (formData, postId) => {
       cache: "no-cache",
       body: JSON.stringify({ formData, postId }),
     });
-
     return await response.json();
   } catch (error) {
     console.error("Failed to update blog:", error);
