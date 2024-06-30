@@ -62,6 +62,7 @@ const ChatSocket = ({ user, users }: any) => {
       if (data.typing == true && data.selectedUser === username) {
         setIsTyping(true);
         setUserNotification(data.userTyping);
+        setSeenStatus(true)
       } else {
         setIsTyping(false);
       }
@@ -72,6 +73,8 @@ const ChatSocket = ({ user, users }: any) => {
       setLiveUsers(data);
     });
   };
+
+  console.log('seenStatus',seenStatus)
 
   useEffect(() => {
     socketFn();
