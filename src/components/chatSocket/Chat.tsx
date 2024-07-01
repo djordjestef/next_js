@@ -21,8 +21,16 @@ const ChatSocket = ({ user, users }: any) => {
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState<any[]>([]);
+
+
   const [numberNotifications, setNumberNotifications] = useState(0);
   const [userNotification, setUserNotification] = useState("");
+  const [djordje, setDjordje]= useState([])
+
+
+
+
+
   const [onReceiveMessage, setOnReceiveMessage] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [userIsTyping,setUserIsTyping] = useState('')
@@ -44,8 +52,14 @@ const ChatSocket = ({ user, users }: any) => {
     socket.on("private-message", (data) => {
       const { content, onlineUsers, fromID, fromUserName } = data;
       let newMessages = {};
+      
       onlineUsers.forEach((user: any) => {
         if (user.userID === fromID) {
+
+
+
+
+
           setNumberNotifications((prevState) => prevState + 1);
           setUserNotification(fromUserName); //admin
           setOnReceiveMessage((prevState) => !prevState);
@@ -75,19 +89,24 @@ const ChatSocket = ({ user, users }: any) => {
     });
   };
 
-  console.log('seenStatus',seenStatus)
 
   useEffect(() => {
     socketFn();
+    
     return () => {
       socket.emit("offline");
     };
   }, []);
 
+  console.log('djordje',djordje)
+
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
       setNumberNotifications(0);
     }
+
+    setDjordje((prev)=>[...prev,{userNotification, numberNotifications}])
+    console.log('numberNotifications',numberNotifications)
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
@@ -144,11 +163,11 @@ const ChatSocket = ({ user, users }: any) => {
   };
 
   // console.log('isTyping',isTyping)
-  console.log("username", username);
-  console.log("------------------------");
-  console.log("userNotification", userNotification);
-  console.log("selectedUser", selectedUser);
-  console.log("------------------------");
+  // console.log("username", username);
+  // console.log("------------------------");
+  // console.log("userNotification", userNotification);
+  // console.log("selectedUser", selectedUser);
+  // console.log("------------------------");
   return (
     <div style={{ minHeight: "70vh" }}>
       <div className={styles.container}>
