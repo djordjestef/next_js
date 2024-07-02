@@ -21,21 +21,17 @@ app.prepare().then(async () => {
       if (recipient) {
         io.to(to).emit("private-message", {
           content,
-          onlineUsers,
-          fromID,
           fromUserName,
         });
       }
     });
 
     socket.on("typing", (data) => {
-      console.log("data", data);
-      if (data.typing == true){
+      if (data.typing == true) {
         io.emit("display-typing", data);
-      } 
-      else{
+      } else {
         io.emit("display-typing", data);
-      } 
+      }
     });
 
     socket.on("new-user-add", function (data) {

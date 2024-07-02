@@ -21,15 +21,14 @@ const ChatSocket = ({ user, users }: any) => {
   const [liveUsers, setLiveUsers] = useState([]);
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState<any[]>([]);
-
-  const [numberNotifications, setNumberNotifications] = useState(0);
   const [userNotification, setUserNotification] = useState("");
-  const [djordje, setDjordje] = useState<object[]>([]);
-
   const [onReceiveMessage, setOnReceiveMessage] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [userIsTyping, setUserIsTyping] = useState("");
-  const [seenStatus, setSeenStatus] = useState(false);
+  // const [seenStatus, setSeenStatus] = useState(false);
+  const [notifications, setNotifications] = useState<{ [key: string]: number }>(
+    {}
+  );
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -45,29 +44,30 @@ const ChatSocket = ({ user, users }: any) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      const { content, onlineUsers, fromID, fromUserName } = data;
+      // let count =0
+      const { content, fromUserName } = data;
       let newMessages = {};
+      setNotifications((prev) => ({
+        ...prev,
+        [fromUserName]: (prev[fromUserName] || 0) + 1,
+      }));
 
-      onlineUsers.forEach((user: any) => {
-        if (user.userID === fromID) {
-          setNumberNotifications((prevState) => prevState + 1);
-          setUserNotification(fromUserName); //admin
-          setOnReceiveMessage((prevState) => !prevState);
+      setUserNotification(fromUserName);
+      setOnReceiveMessage((prevState) => !prevState);
 
-          newMessages = {
-            fromUser: user.name,
-            content,
-            fromSelf: false,
-          };
-          setAllMessages((prevState: any) => [...prevState, newMessages]);
-        }
-      });
+      newMessages = {
+        fromUser: fromUserName,
+        content,
+        fromSelf: false,
+      };
+      setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
+
     socket.on("display-typing", (data) => {
       if (data.typing == true && data.selectedUser === username) {
         setIsTyping(true);
         setUserIsTyping(data.userTyping);
-        setSeenStatus(true);
+        // setSeenStatus(true);
       } else {
         setIsTyping(false);
       }
@@ -87,26 +87,23 @@ const ChatSocket = ({ user, users }: any) => {
     };
   }, []);
 
-  console.log("djordje", djordje);
+  console.log("notifications", notifications);
 
   useEffect(() => {
+    // if (selectedUser === userNotification && isOpen) {
+    //   setNumberNotifications(0);
+    // }
+    console.log('selectedUser',selectedUser)
+    console.log('userNotification',userNotification)
+    console.log('isOpen',isOpen)
+
     if (selectedUser === userNotification && isOpen) {
-      setNumberNotifications(0);
+      console.log("usao je ovde");
+      setNotifications((prev) => ({
+        ...prev,
+        [selectedUser]: 0,
+      }));
     }
-
-    setDjordje((prev)=>{
-      const exists = prev?.find((notification) => notification[userNotification] !== undefined);
-      console.log('exists',exists)
-      if (!exists) {
-        return [...prev, { [userNotification]: numberNotifications }];
-      }
-    
-      // If it does exist, return the previous state unchanged
-      return {[userNotification]:numberNotifications};
-    }
-      // [...prev,{ [userNotification]: numberNotifications}]
-  )
-
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
@@ -125,7 +122,7 @@ const ChatSocket = ({ user, users }: any) => {
       socket.emit("private-message", {
         content: message,
         fromUserName: username,
-        fromID: id,
+        // fromID: id,
         to: chatId,
       });
       setAllMessages((prevState) => [
@@ -190,14 +187,15 @@ const ChatSocket = ({ user, users }: any) => {
                   <span
                     className={user.online ? styles.online : styles.offline}
                   ></span>
-                  {numberNotifications !== 0 &&
-                    userNotification === user.username && (
-                      <span className={styles.notification}>
-                        <span className={styles.notificationNumber}>
-                          {numberNotifications}
-                        </span>{" "}
-                      </span>
-                    )}
+                  {/* {numberNotifications !== 0 &&
+                    userNotification === user.username && ( */}
+                  {notifications[user.username] > 0 && (
+                    <span className={styles.notification}>
+                      <span className={styles.notificationNumber}>
+                        {notifications[user.username]}
+                      </span>{" "}
+                    </span>
+                  )}
                 </div>
               </button>
             </div>
