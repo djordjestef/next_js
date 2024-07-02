@@ -97,7 +97,7 @@ const ChatSocket = ({ user, users }: any) => {
     console.log('userNotification',userNotification)
     console.log('isOpen',isOpen)
 
-    if (selectedUser === userNotification && isOpen) {
+    if (selectedUser === userNotification && isOpen) {//here is issue because userNotification stay selected to old Sender
       console.log("usao je ovde");
       setNotifications((prev) => ({
         ...prev,
