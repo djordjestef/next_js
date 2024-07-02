@@ -22,18 +22,13 @@ const ChatSocket = ({ user, users }: any) => {
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState<any[]>([]);
 
-
   const [numberNotifications, setNumberNotifications] = useState(0);
   const [userNotification, setUserNotification] = useState("");
-  const [djordje, setDjordje]= useState([])
-
-
-
-
+  const [djordje, setDjordje] = useState<object[]>([]);
 
   const [onReceiveMessage, setOnReceiveMessage] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [userIsTyping,setUserIsTyping] = useState('')
+  const [userIsTyping, setUserIsTyping] = useState("");
   const [seenStatus, setSeenStatus] = useState(false);
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
@@ -52,14 +47,9 @@ const ChatSocket = ({ user, users }: any) => {
     socket.on("private-message", (data) => {
       const { content, onlineUsers, fromID, fromUserName } = data;
       let newMessages = {};
-      
+
       onlineUsers.forEach((user: any) => {
         if (user.userID === fromID) {
-
-
-
-
-
           setNumberNotifications((prevState) => prevState + 1);
           setUserNotification(fromUserName); //admin
           setOnReceiveMessage((prevState) => !prevState);
@@ -77,7 +67,7 @@ const ChatSocket = ({ user, users }: any) => {
       if (data.typing == true && data.selectedUser === username) {
         setIsTyping(true);
         setUserIsTyping(data.userTyping);
-        setSeenStatus(true)
+        setSeenStatus(true);
       } else {
         setIsTyping(false);
       }
@@ -89,24 +79,34 @@ const ChatSocket = ({ user, users }: any) => {
     });
   };
 
-
   useEffect(() => {
     socketFn();
-    
+
     return () => {
       socket.emit("offline");
     };
   }, []);
 
-  console.log('djordje',djordje)
+  console.log("djordje", djordje);
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
       setNumberNotifications(0);
     }
 
-    setDjordje((prev)=>[...prev,{userNotification, numberNotifications}])
-    console.log('numberNotifications',numberNotifications)
+    setDjordje((prev)=>{
+      const exists = prev?.find((notification) => notification[userNotification] !== undefined);
+      console.log('exists',exists)
+      if (!exists) {
+        return [...prev, { [userNotification]: numberNotifications }];
+      }
+    
+      // If it does exist, return the previous state unchanged
+      return {[userNotification]:numberNotifications};
+    }
+      // [...prev,{ [userNotification]: numberNotifications}]
+  )
+
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
