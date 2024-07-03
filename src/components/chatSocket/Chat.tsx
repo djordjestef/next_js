@@ -44,7 +44,6 @@ const ChatSocket = ({ user, users }: any) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      // let count =0
       const { content, fromUserName } = data;
       let newMessages = {};
       setNotifications((prev) => ({
@@ -90,15 +89,7 @@ const ChatSocket = ({ user, users }: any) => {
   console.log("notifications", notifications);
 
   useEffect(() => {
-    // if (selectedUser === userNotification && isOpen) {
-    //   setNumberNotifications(0);
-    // }
-    console.log('selectedUser',selectedUser)
-    console.log('userNotification',userNotification)
-    console.log('isOpen',isOpen)
-
-    if (selectedUser === userNotification && isOpen) {//here is issue because userNotification stay selected to old Sender
-      console.log("usao je ovde");
+    if (selectedUser === userNotification && isOpen) {
       setNotifications((prev) => ({
         ...prev,
         [selectedUser]: 0,
@@ -140,6 +131,7 @@ const ChatSocket = ({ user, users }: any) => {
     setIsOpen(true);
     setChatId(chatId);
     setSelectedUser(selectedUserUsername);
+    setUserNotification(selectedUserUsername); //because in case more than one user texted to one user, to know what notification should be reset
   };
 
   const handleChange = (event: React.SyntheticEvent) => {
@@ -159,12 +151,6 @@ const ChatSocket = ({ user, users }: any) => {
     );
   };
 
-  // console.log('isTyping',isTyping)
-  // console.log("username", username);
-  // console.log("------------------------");
-  // console.log("userNotification", userNotification);
-  // console.log("selectedUser", selectedUser);
-  // console.log("------------------------");
   return (
     <div style={{ minHeight: "70vh" }}>
       <div className={styles.container}>
