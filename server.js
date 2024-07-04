@@ -16,10 +16,10 @@ app.prepare().then(async () => {
   let onlineUsers = [];
 
   io.on("connection", (socket) => {
-    socket.on("private-message", ({ content, fromUserName, to, fromID }) => {
-      const recipient = onlineUsers.find((user) => user.userID === to);
+    socket.on("private-message", ({ content, fromUserName, toID, fromID }) => {
+      const recipient = onlineUsers.find((user) => user.userID === toID);
       if (recipient) {
-        io.to(to).emit("private-message", {
+        io.to(toID).emit("private-message", {
           content,
           fromUserName,
         });
@@ -48,9 +48,18 @@ app.prepare().then(async () => {
       io.emit("get-users", onlineUsers);
     });
 
-    socket.on("seen", (data) => {
-      socket.emit("status", data);
+    socket.on('message-seen', ({ messageId, senderUserName,fromID }) => {
+      
+    
+      // Find the sender's socket and notify them
+      const senderSocket = onlineUsers.find(user => user.userID === fromID);
+      if (senderSocket) {
+        io.to(fromID).emit('message-seen', { messageId,senderUserName });
+      }
     });
+
+
+
 
     socket.on("offline", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);

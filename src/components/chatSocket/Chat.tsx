@@ -25,7 +25,7 @@ const ChatSocket = ({ user, users }: any) => {
   const [onReceiveMessage, setOnReceiveMessage] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [userIsTyping, setUserIsTyping] = useState("");
-  // const [seenStatus, setSeenStatus] = useState(false);
+  const [seenStatus, setSeenStatus] = useState(false);
   const [notifications, setNotifications] = useState<{ [key: string]: number }>(
     {}
   );
@@ -58,6 +58,8 @@ const ChatSocket = ({ user, users }: any) => {
         fromUser: fromUserName,
         content,
         fromSelf: false,
+        id:Math.random()
+
       };
       setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
@@ -86,10 +88,86 @@ const ChatSocket = ({ user, users }: any) => {
     };
   }, []);
 
-  console.log("notifications", notifications);
+
+
+
+  // useEffect(() => {
+  //   if (isChatOpen && selectedUser === userNotification) {
+  //     allMessages.forEach(message => {
+  //       if (!message.seen && message.fromUser === selectedUser) {
+  //         markAsSeen(message.id, message.fromUserId);
+  //       }
+  //     });
+  //   }
+  // }, [isChatOpen, selectedUser, userNotification, allMessages]);
+
+
+
+
+
+  useEffect(() => {
+ 
+    if (isOpen && selectedUser === userNotification) {
+      allMessages.forEach(message => {
+        console.log('message.fromUser',message.fromUser)
+        if ( message.fromUser === selectedUser) {
+          console.log('OVDE  JE', message.fromUser)
+          socket.emit('message-seen',{messageId:message.id, senderUserName:message.fromUser, fromID: chatId,});
+          // socket.emit('message-seen', { messageId, senderId });
+        }
+      });
+    }
+  }, [isOpen, selectedUser, userNotification, allMessages]);
+
+
+
+console.log('allMessages',allMessages)
+
+
+  useEffect(() => {
+    socket.on('message-seen', ({ messageId,senderUserName }) => {
+
+      console.log('seen SOCKET',senderUserName)
+      if(senderUserName===username){
+        setSeenStatus(true)
+      }else {
+        seenStatus(false)
+      }
+      // setAllMessages((prevMessages) =>
+      //   prevMessages.map((msg) =>
+      //     msg.id === messageId ? { ...msg, seen: true } : msg
+      //   )
+      // );
+    });
+  
+    // return () => {
+    //   socket.off('message-seen');
+    // };
+  }, [selectedUser, isOpen]);
+
+
+
+
+console.log('seenStatus',seenStatus)
+
+
+
+
+  
+
+
+
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
+
+
+     
+
+
+
+
+
       setNotifications((prev) => ({
         ...prev,
         [selectedUser]: 0,
@@ -114,11 +192,11 @@ const ChatSocket = ({ user, users }: any) => {
         content: message,
         fromUserName: username,
         // fromID: id,
-        to: chatId,
+        toID: chatId,
       });
       setAllMessages((prevState) => [
         ...prevState,
-        { toUser: selectedUser, content: message, fromSelf: true },
+        { toUser: selectedUser, content: message, fromSelf: true, id:Math.random() },
       ]);
 
       setMessage("");
