@@ -48,19 +48,20 @@ app.prepare().then(async () => {
       io.emit("get-users", onlineUsers);
     });
 
-    socket.on('message-seen', ({  senderUserName,fromID,seen }) => {
+    socket.on('message-seen', ({  senderUserName,toID,seen }) => {
       
       // console.log('seen',seen)
       console.log('senderUserName',senderUserName)
       
       // Find the sender's socket and notify them
-      const senderSocket = onlineUsers.find(user => user.userID === fromID);
-      console.log('senderSocket',senderSocket)
-      console.log('fromID',fromID)
+      const senderSocket = onlineUsers.find(user => user.userID === toID);
+      // console.log('senderSocket',senderSocket)
+      // console.log('toID',toID)
+      console.log('seen',seen)
       console.log('----------')
       if (senderSocket) {
-        console.log('fromID',fromID)
-        io.to(fromID).emit('message-seen', { senderUserName,seen });
+        // console.log('toID',toID)
+        io.to(toID).emit('message-seen', { senderUserName,seen });
       }
     });
 

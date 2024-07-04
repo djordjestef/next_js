@@ -30,7 +30,7 @@ const ChatSocket = ({ user, users }: any) => {
     {}
   );
 
-  const [djordje, setDjordje] = useState('')
+  const [userSeenMessage, setUserSeenMessage] = useState("");
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -56,13 +56,12 @@ const ChatSocket = ({ user, users }: any) => {
       setUserNotification(fromUserName);
       setOnReceiveMessage((prevState) => !prevState);
 
-      setDjordje(fromUserName)
+      setUserSeenMessage(fromUserName);
 
       newMessages = {
         fromUser: fromUserName,
         content,
         fromSelf: false,
-        // id:Math.random()
       };
       setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
@@ -71,7 +70,6 @@ const ChatSocket = ({ user, users }: any) => {
       if (data.typing == true && data.selectedUser === username) {
         setIsTyping(true);
         setUserIsTyping(data.userTyping);
-        // setSeenStatus(true);
       } else {
         setIsTyping(false);
       }
@@ -105,60 +103,46 @@ const ChatSocket = ({ user, users }: any) => {
 
   useEffect(() => {
     if (isOpen && selectedUser === userNotification) {
-      console.log("selectedUser EMIT", selectedUser);
-      console.log("userNotification EMIT", userNotification);
       // allMessages.forEach((message) => {
-        console.log("message.fromUser", message.fromUser);
-        console.log('djordje',djordje)
-        if (djordje === selectedUser && isOpen) {
-          // console.log("EMIT", message.fromUser);
-          // console.log('EMIT',userNotification)
-          // console.log('---------------------')
 
-          socket.emit("message-seen", {
-            senderUserName: djordje,
-            fromID: chatId,
-            seen: true,
-          });
-          // socket.emit('message-seen', { messageId, senderId });
-        } else {
-          socket.emit("message-seen", {
-            senderUserName:djordje,
-            fromID: chatId,
-            seen: false,
-          });
-        }
+      console.log("userSeenMessage", userSeenMessage);
+      if (userSeenMessage === selectedUser && isOpen) {
+        // console.log("EMIT okida se na SOCKET kada vidi poruku")
+        socket.emit("message-seen", {
+          senderUserName: userSeenMessage,
+          toID: chatId,
+          seen: true,
+        });
+      } else {
+        console.log('EMIT FALSE')
+        socket.emit("message-seen", {
+          senderUserName: userSeenMessage,
+          toID: chatId,
+          seen: false,
+        });
+      }
       // });
     }
   }, [isOpen, selectedUser, userNotification, allMessages]);
 
-  // console.log("allMessages", allMessages);
-
   useEffect(() => {
+    console.log(' //ovaj use effect samo slusa onaj koji je selectovan')
     socket.on("message-seen", ({ senderUserName, seen }) => {
-      // console.log(" ONNNNNNNNNNNNN SOCKET", senderUserName);
-      // console.log("selectedUser ON", selectedUser);
-      // console.log("userNotification ON", userNotification);
-      // console.log("seen", seen);
-      // console.log("-------------");
+      console.log(' //ovaj use effect samo slusa onaj koji je selectovan')
+      // console.log('senderUserName OKIDA SE NA OBE STRANE',senderUserName)
+      console.log('seen',seen)
       if (senderUserName === username) {
         setSeenStatus(seen);
-      } else {
-        setSeenStatus(seen);
       }
-      // setAllMessages((prevMessages) =>
-      //   prevMessages.map((msg) =>
-      //     msg.id === messageId ? { ...msg, seen: true } : msg
-      //   )
-      // );
     });
 
     // return () => {
-    //   socket.off('message-seen');
+    //   socket.off("message-seen");
     // };
   }, [selectedUser, isOpen]);
 
   useEffect(() => {
+  
     if (selectedUser === userNotification && isOpen) {
       setNotifications((prev) => ({
         ...prev,
@@ -192,6 +176,7 @@ const ChatSocket = ({ user, users }: any) => {
       ]);
 
       setMessage("");
+      // setSeenStatus(false)
     } else {
       Alert(`Type something`, "Error");
     }
