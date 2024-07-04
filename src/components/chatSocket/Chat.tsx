@@ -30,6 +30,8 @@ const ChatSocket = ({ user, users }: any) => {
     {}
   );
 
+  const [djordje, setDjordje] = useState('')
+
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
   const filteredUsers = users?.data
@@ -53,6 +55,8 @@ const ChatSocket = ({ user, users }: any) => {
 
       setUserNotification(fromUserName);
       setOnReceiveMessage((prevState) => !prevState);
+
+      setDjordje(fromUserName)
 
       newMessages = {
         fromUser: fromUserName,
@@ -97,52 +101,46 @@ const ChatSocket = ({ user, users }: any) => {
   //   }
   // }, [isChatOpen, selectedUser, userNotification, allMessages]);
 
-
-
-
-
-
-
-
-
-console.log('allMessages',allMessages)
+  // console.log("allMessages", allMessages);
 
   useEffect(() => {
-
     if (isOpen && selectedUser === userNotification) {
-      allMessages.forEach((message) => {
-        // console.log("message.fromUser", message.fromUser);
-        if (message.fromUser === selectedUser && isOpen) {
-          console.log("EMIT", message.fromUser);
-          console.log('EMIT',userNotification)
-          console.log('---------------------')
-  
+      console.log("selectedUser EMIT", selectedUser);
+      console.log("userNotification EMIT", userNotification);
+      // allMessages.forEach((message) => {
+        console.log("message.fromUser", message.fromUser);
+        console.log('djordje',djordje)
+        if (djordje === selectedUser && isOpen) {
+          // console.log("EMIT", message.fromUser);
+          // console.log('EMIT',userNotification)
+          // console.log('---------------------')
 
           socket.emit("message-seen", {
-            senderUserName: message.fromUser,
+            senderUserName: djordje,
             fromID: chatId,
-            seen:true
+            seen: true,
           });
           // socket.emit('message-seen', { messageId, senderId });
-        }else {
-
+        } else {
           socket.emit("message-seen", {
-            senderUserName: message.fromUser,
+            senderUserName:djordje,
             fromID: chatId,
-            seen:false
+            seen: false,
           });
         }
-      });
+      // });
     }
   }, [isOpen, selectedUser, userNotification, allMessages]);
 
   // console.log("allMessages", allMessages);
 
   useEffect(() => {
-    socket.on("message-seen", ({ senderUserName , seen}) => {
-      console.log(" ONNNNNNNNNNNNN SOCKET", senderUserName);
-      console.log('seen',seen)
-      console.log('-------------')
+    socket.on("message-seen", ({ senderUserName, seen }) => {
+      // console.log(" ONNNNNNNNNNNNN SOCKET", senderUserName);
+      // console.log("selectedUser ON", selectedUser);
+      // console.log("userNotification ON", userNotification);
+      // console.log("seen", seen);
+      // console.log("-------------");
       if (senderUserName === username) {
         setSeenStatus(seen);
       } else {
@@ -159,24 +157,6 @@ console.log('allMessages',allMessages)
     //   socket.off('message-seen');
     // };
   }, [selectedUser, isOpen]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
@@ -292,7 +272,7 @@ console.log('allMessages',allMessages)
                           <div className={styles.messageContainerSelf}>
                             {content}
                           </div>
-                          <p>{seenStatus ? 'seen' : 'delivered'}</p>
+                          <p>{seenStatus ? "seen" : "delivered"}</p>
                         </div>
                       );
                     // if (fromSelf && seenStatus) {
