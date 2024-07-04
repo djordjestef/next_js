@@ -58,8 +58,7 @@ const ChatSocket = ({ user, users }: any) => {
         fromUser: fromUserName,
         content,
         fromSelf: false,
-        id:Math.random()
-
+        // id:Math.random()
       };
       setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
@@ -88,9 +87,6 @@ const ChatSocket = ({ user, users }: any) => {
     };
   }, []);
 
-
-
-
   // useEffect(() => {
   //   if (isChatOpen && selectedUser === userNotification) {
   //     allMessages.forEach(message => {
@@ -105,33 +101,52 @@ const ChatSocket = ({ user, users }: any) => {
 
 
 
-  useEffect(() => {
- 
-    if (isOpen && selectedUser === userNotification) {
-      allMessages.forEach(message => {
-        console.log('message.fromUser',message.fromUser)
-        if ( message.fromUser === selectedUser) {
-          console.log('OVDE  JE', message.fromUser)
-          socket.emit('message-seen',{messageId:message.id, senderUserName:message.fromUser, fromID: chatId,});
-          // socket.emit('message-seen', { messageId, senderId });
-        }
-      });
-    }
-  }, [isOpen, selectedUser, userNotification, allMessages]);
+
 
 
 
 console.log('allMessages',allMessages)
 
+  useEffect(() => {
+
+    if (isOpen && selectedUser === userNotification) {
+      allMessages.forEach((message) => {
+        // console.log("message.fromUser", message.fromUser);
+        if (message.fromUser === selectedUser && isOpen) {
+          console.log("EMIT", message.fromUser);
+          console.log('EMIT',userNotification)
+          console.log('---------------------')
+  
+
+          socket.emit("message-seen", {
+            senderUserName: message.fromUser,
+            fromID: chatId,
+            seen:true
+          });
+          // socket.emit('message-seen', { messageId, senderId });
+        }else {
+
+          socket.emit("message-seen", {
+            senderUserName: message.fromUser,
+            fromID: chatId,
+            seen:false
+          });
+        }
+      });
+    }
+  }, [isOpen, selectedUser, userNotification, allMessages]);
+
+  // console.log("allMessages", allMessages);
 
   useEffect(() => {
-    socket.on('message-seen', ({ messageId,senderUserName }) => {
-
-      console.log('seen SOCKET',senderUserName)
-      if(senderUserName===username){
-        setSeenStatus(true)
-      }else {
-        seenStatus(false)
+    socket.on("message-seen", ({ senderUserName , seen}) => {
+      console.log(" ONNNNNNNNNNNNN SOCKET", senderUserName);
+      console.log('seen',seen)
+      console.log('-------------')
+      if (senderUserName === username) {
+        setSeenStatus(seen);
+      } else {
+        setSeenStatus(seen);
       }
       // setAllMessages((prevMessages) =>
       //   prevMessages.map((msg) =>
@@ -139,7 +154,7 @@ console.log('allMessages',allMessages)
       //   )
       // );
     });
-  
+
     // return () => {
     //   socket.off('message-seen');
     // };
@@ -148,26 +163,23 @@ console.log('allMessages',allMessages)
 
 
 
-console.log('seenStatus',seenStatus)
 
 
 
 
-  
+
+
+
+
+
+
+
 
 
 
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
-
-
-     
-
-
-
-
-
       setNotifications((prev) => ({
         ...prev,
         [selectedUser]: 0,
@@ -196,7 +208,7 @@ console.log('seenStatus',seenStatus)
       });
       setAllMessages((prevState) => [
         ...prevState,
-        { toUser: selectedUser, content: message, fromSelf: true, id:Math.random() },
+        { toUser: selectedUser, content: message, fromSelf: true },
       ]);
 
       setMessage("");
@@ -280,7 +292,7 @@ console.log('seenStatus',seenStatus)
                           <div className={styles.messageContainerSelf}>
                             {content}
                           </div>
-                          <p>seen</p>
+                          <p>{seenStatus ? 'seen' : 'delivered'}</p>
                         </div>
                       );
                     // if (fromSelf && seenStatus) {

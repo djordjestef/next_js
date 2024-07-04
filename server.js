@@ -34,7 +34,7 @@ app.prepare().then(async () => {
       }
     });
 
-    socket.on("new-user-add", function (data) {
+    socket.on("new-user-add", (data)=> {
       if (!onlineUsers.some((user) => user.userID === data.userID)) {
         onlineUsers.push({
           userID: data.userID,
@@ -44,17 +44,23 @@ app.prepare().then(async () => {
       }
       socket.join(data.userID);
 
-      console.log("onlineUsers", onlineUsers);
+      // console.log("onlineUsers", onlineUsers);
       io.emit("get-users", onlineUsers);
     });
 
-    socket.on('message-seen', ({ messageId, senderUserName,fromID }) => {
+    socket.on('message-seen', ({  senderUserName,fromID,seen }) => {
       
-    
+      // console.log('seen',seen)
+      console.log('senderUserName',senderUserName)
+      
       // Find the sender's socket and notify them
       const senderSocket = onlineUsers.find(user => user.userID === fromID);
+      console.log('senderSocket',senderSocket)
+      console.log('fromID',fromID)
+      console.log('----------')
       if (senderSocket) {
-        io.to(fromID).emit('message-seen', { messageId,senderUserName });
+        console.log('fromID',fromID)
+        io.to(fromID).emit('message-seen', { senderUserName,seen });
       }
     });
 
