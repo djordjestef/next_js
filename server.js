@@ -55,6 +55,7 @@ app.prepare().then(async () => {
       
       // Find the sender's socket and notify them
       const senderSocket = onlineUsers.find(user => user.userID === toID);
+      console.log('toID',toID)
       // console.log('senderSocket',senderSocket)
       // console.log('toID',toID)
       console.log('seen',seen)
@@ -62,6 +63,7 @@ app.prepare().then(async () => {
       if (senderSocket) {
         // console.log('toID',toID)
         io.to(toID).emit('message-seen', { senderUserName,seen });
+        socket.broadcast.emit("message-seen", { senderUserName, seen });
       }
     });
 

@@ -109,14 +109,14 @@ const ChatSocket = ({ user, users }: any) => {
       if (userSeenMessage === selectedUser && isOpen) {
         // console.log("EMIT okida se na SOCKET kada vidi poruku")
         socket.emit("message-seen", {
-          senderUserName: userSeenMessage,
+          senderUserName: selectedUser,
           toID: chatId,
           seen: true,
         });
       } else {
-        console.log('EMIT FALSE')
+        console.log("EMIT FALSE");
         socket.emit("message-seen", {
-          senderUserName: userSeenMessage,
+          senderUserName: selectedUser,
           toID: chatId,
           seen: false,
         });
@@ -126,11 +126,11 @@ const ChatSocket = ({ user, users }: any) => {
   }, [isOpen, selectedUser, userNotification, allMessages]);
 
   useEffect(() => {
-    console.log(' //ovaj use effect samo slusa onaj koji je selectovan')
+    console.log(" //ovaj use effect samo slusa onaj koji je selectovan");
     socket.on("message-seen", ({ senderUserName, seen }) => {
-      console.log(' //ovaj use effect samo slusa onaj koji je selectovan')
+      console.log(" //ovaj use effect samo slusa onaj koji je selectovan");
       // console.log('senderUserName OKIDA SE NA OBE STRANE',senderUserName)
-      console.log('seen',seen)
+      console.log("seen", seen);
       if (senderUserName === username) {
         setSeenStatus(seen);
       }
@@ -142,7 +142,6 @@ const ChatSocket = ({ user, users }: any) => {
   }, [selectedUser, isOpen]);
 
   useEffect(() => {
-  
     if (selectedUser === userNotification && isOpen) {
       setNotifications((prev) => ({
         ...prev,
@@ -250,14 +249,17 @@ const ChatSocket = ({ user, users }: any) => {
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {allMessages?.map(
-                  ({ content, fromSelf, toUser, fromUser }, index) => {
+                  ({ content, fromSelf, toUser, fromUser }, index, arr) => {
                     if (fromSelf === true && toUser === selectedUser)
                       return (
                         <div key={index} style={{ textAlign: "right" }}>
                           <div className={styles.messageContainerSelf}>
                             {content}
                           </div>
-                          <p>{seenStatus ? "seen" : "delivered"}</p>
+                          {index == arr.length - 1 && (
+                            <p>{seenStatus===true ? "seen" : "delivered"}</p>
+                          )}
+                          {/* <p>{seenStatus ? "seen" : "delivered"}</p> */}
                         </div>
                       );
                     // if (fromSelf && seenStatus) {
