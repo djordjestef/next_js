@@ -89,56 +89,37 @@ const ChatSocket = ({ user, users }: any) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (isChatOpen && selectedUser === userNotification) {
-  //     allMessages.forEach(message => {
-  //       if (!message.seen && message.fromUser === selectedUser) {
-  //         markAsSeen(message.id, message.fromUserId);
-  //       }
-  //     });
-  //   }
-  // }, [isChatOpen, selectedUser, userNotification, allMessages]);
-
-  // console.log("allMessages", allMessages);
-
   useEffect(() => {
-    if (isOpen && selectedUser === userNotification) {
-      // allMessages.forEach((message) => {
+    // allMessages.forEach((message) => {
 
-      console.log("userSeenMessage", userSeenMessage);
-      if (userSeenMessage === selectedUser && isOpen) {
-        // console.log("EMIT okida se na SOCKET kada vidi poruku")
-        socket.emit("message-seen", {
-          senderUserName: selectedUser,
-          toID: chatId,
-          seen: true,
-        });
-      } else {
-        console.log("EMIT FALSE");
-        socket.emit("message-seen", {
-          senderUserName: selectedUser,
-          toID: chatId,
-          seen: false,
-        });
-      }
-      // });
+    console.log("userSeenMessage", userSeenMessage);
+    if (userSeenMessage === selectedUser && isOpen) {
+      socket.emit("message-seen", {
+        senderUserName: selectedUser,
+        toID: chatId,
+        seen: true,
+      });
+    } else {
+      console.log("EMIT FALSE");
+      socket.emit("message-seen", {
+        senderUserName: selectedUser,
+        toID: chatId,
+        seen: false,
+      });
     }
+    // });
   }, [isOpen, selectedUser, userNotification, allMessages]);
 
   useEffect(() => {
-    console.log(" //ovaj use effect samo slusa onaj koji je selectovan");
     socket.on("message-seen", ({ senderUserName, seen }) => {
       console.log(" //ovaj use effect samo slusa onaj koji je selectovan");
-      // console.log('senderUserName OKIDA SE NA OBE STRANE',senderUserName)
-      console.log("seen", seen);
-      if (senderUserName === username) {
-        setSeenStatus(seen);
-      }
+      setSeenStatus(seen);
+      // if (senderUserName === username) {
+      //   setSeenStatus(seen);
+      // }else {
+      //   setSeenStatus(seen)
+      // }
     });
-
-    // return () => {
-    //   socket.off("message-seen");
-    // };
   }, [selectedUser, isOpen]);
 
   useEffect(() => {
@@ -159,6 +140,8 @@ const ChatSocket = ({ user, users }: any) => {
     }
   }, [allMessages]);
 
+  console.log("seenStatus", seenStatus);
+
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setIsTyping(false);
@@ -175,7 +158,6 @@ const ChatSocket = ({ user, users }: any) => {
       ]);
 
       setMessage("");
-      // setSeenStatus(false)
     } else {
       Alert(`Type something`, "Error");
     }
@@ -227,8 +209,7 @@ const ChatSocket = ({ user, users }: any) => {
                   <span
                     className={user.online ? styles.online : styles.offline}
                   ></span>
-                  {/* {numberNotifications !== 0 &&
-                    userNotification === user.username && ( */}
+
                   {notifications[user.username] > 0 && (
                     <span className={styles.notification}>
                       <span className={styles.notificationNumber}>
@@ -257,14 +238,10 @@ const ChatSocket = ({ user, users }: any) => {
                             {content}
                           </div>
                           {index == arr.length - 1 && (
-                            <p>{seenStatus===true ? "seen" : "delivered"}</p>
+                            <p>{seenStatus === false ? "delivered" : "seen"}</p>
                           )}
-                          {/* <p>{seenStatus ? "seen" : "delivered"}</p> */}
                         </div>
                       );
-                    // if (fromSelf && seenStatus) {
-                    //   console.log('SEEEN')
-                    // };
 
                     if (fromSelf === false && fromUser === selectedUser)
                       return (
