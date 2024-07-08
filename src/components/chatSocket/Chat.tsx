@@ -92,21 +92,12 @@ const ChatSocket = ({ user, users }: any) => {
   useEffect(() => {
     // allMessages.forEach((message) => {
 
-    console.log("userSeenMessage", userSeenMessage);
-    if (userSeenMessage === selectedUser && isOpen) {
-      socket.emit("message-seen", {
-        senderUserName: selectedUser,
-        toID: chatId,
-        seen: true,
-      });
-    } else {
-      console.log("EMIT FALSE");
-      socket.emit("message-seen", {
-        senderUserName: selectedUser,
-        toID: chatId,
-        seen: false,
-      });
-    }
+    socket.emit("message-seen", {
+      senderUserName: selectedUser,
+      toID: chatId,
+      seen: userSeenMessage === selectedUser && isOpen ? true : false,
+    });
+
     // });
   }, [isOpen, selectedUser, userNotification, allMessages]);
 
