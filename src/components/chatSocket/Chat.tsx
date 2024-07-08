@@ -103,13 +103,15 @@ const ChatSocket = ({ user, users }: any) => {
 
   useEffect(() => {
     socket.on("message-seen", ({ senderUserName, seen }) => {
-      console.log(" //ovaj use effect samo slusa onaj koji je selectovan");
-      setSeenStatus(seen);
-      // if (senderUserName === username) {
-      //   setSeenStatus(seen);
-      // }else {
-      //   setSeenStatus(seen)
-      // }
+      console.log(" //ovaj use effect samo slusa onaj koji je selectovan");//resenje ako je senderUserName!==username setSeen(false) na submit message
+      console.log('senderUserName',senderUserName)
+      // setSeenStatus(seen);
+      if (senderUserName === username) {
+        setSeenStatus(seen);
+      }else if(allMessages.length!==0){
+        setSeenStatus(true)
+      }
+      
     });
   }, [selectedUser, isOpen]);
 
@@ -123,6 +125,7 @@ const ChatSocket = ({ user, users }: any) => {
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
+    console.log('allMessages',allMessages)
     if (messageEl) {
       messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
@@ -131,7 +134,6 @@ const ChatSocket = ({ user, users }: any) => {
     }
   }, [allMessages]);
 
-  console.log("seenStatus", seenStatus);
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
