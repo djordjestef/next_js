@@ -48,7 +48,7 @@ app.prepare().then(async () => {
       io.emit("get-users", onlineUsers);
     });
 
-    socket.on('message-seen', ({  senderUserName,toID,seen }) => {
+    socket.on('message-seen', ({  senderUserName,toID,messageIds }) => {
       
       // console.log('seen',seen)
       console.log('senderUserName',senderUserName)
@@ -58,12 +58,12 @@ app.prepare().then(async () => {
       console.log('toID',toID)
       // console.log('senderSocket',senderSocket)
       // console.log('toID',toID)
-      console.log('seen',seen)
+      // console.log('seen',seen)
       console.log('----------')
       if (senderSocket) {
         // console.log('toID',toID)
-        io.to(toID).emit('message-seen', { senderUserName,seen });
-        socket.broadcast.emit("message-seen", { senderUserName, seen });
+        io.to(toID).emit('message-seen', { senderUserName,messageIds });
+        socket.broadcast.emit("message-seen", { senderUserName, messageIds });
       }
     });
 

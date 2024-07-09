@@ -25,12 +25,10 @@ const ChatSocket = ({ user, users }: any) => {
   const [onReceiveMessage, setOnReceiveMessage] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [userIsTyping, setUserIsTyping] = useState("");
-  const [seenStatus, setSeenStatus] = useState(false);
   const [notifications, setNotifications] = useState<{ [key: string]: number }>(
     {}
   );
 
-  const [userSeenMessage, setUserSeenMessage] = useState("");
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -56,12 +54,13 @@ const ChatSocket = ({ user, users }: any) => {
       setUserNotification(fromUserName);
       setOnReceiveMessage((prevState) => !prevState);
 
-      setUserSeenMessage(fromUserName);
 
       newMessages = {
+        messageId: Math.random(),
         fromUser: fromUserName,
         content,
         fromSelf: false,
+        seen: false
       };
       setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
@@ -89,31 +88,44 @@ const ChatSocket = ({ user, users }: any) => {
     };
   }, []);
 
-  useEffect(() => {
-    // allMessages.forEach((message) => {
 
-    socket.emit("message-seen", {
-      senderUserName: selectedUser,
-      toID: chatId,
-      seen: userSeenMessage === selectedUser && isOpen ? true : false,
-    });
-
-    // });
-  }, [isOpen, selectedUser, userNotification, allMessages]);
 
   useEffect(() => {
-    socket.on("message-seen", ({ senderUserName, seen }) => {
-      console.log(" //ovaj use effect samo slusa onaj koji je selectovan");//resenje ako je senderUserName!==username setSeen(false) na submit message
-      console.log('senderUserName',senderUserName)
-      // setSeenStatus(seen);
-      if (senderUserName === username) {
-        setSeenStatus(seen);
-      }else if(allMessages.length!==0){
-        setSeenStatus(true)
+    
+    if (isOpen && selectedUser) {
+      console.log('OKIDA SE INA OBE STRANE')
+      const unseenMessages = allMessages
+        .filter((message) => message.fromUser === selectedUser && !message.seen)
+        // .map((message) => message.messageId);
+
+        console.log('unseenMessages',unseenMessages)
+
+      if (unseenMessages.length > 0) {
+        socket.emit("message-seen", {
+          senderUserName: selectedUser,
+          messageIds: unseenMessages,
+          toID: chatId,
+        });
       }
-      
+    }
+  }, [isOpen, selectedUser, chatId, allMessages]);
+
+  
+
+  useEffect(() => {
+    socket.on("message-seen", ({ senderUserName, messageIds }) => {
+      console.log('EMITOVAN TEK AKO IMA UNSEEN')
+      setAllMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          (senderUserName === username) ? { ...msg, seen: true } : msg
+        )
+      );
     });
-  }, [selectedUser, isOpen]);
+
+    return () => {
+      socket.off("message-seen");
+    };
+  }, []);
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
@@ -144,10 +156,11 @@ const ChatSocket = ({ user, users }: any) => {
         fromUserName: username,
         // fromID: id,
         toID: chatId,
+        messageId: Math.random()
       });
       setAllMessages((prevState) => [
         ...prevState,
-        { toUser: selectedUser, content: message, fromSelf: true },
+        {  messageId: Math.random(),toUser: selectedUser, content: message, fromSelf: true,seen: false },
       ]);
 
       setMessage("");
@@ -160,7 +173,7 @@ const ChatSocket = ({ user, users }: any) => {
     setIsOpen(true);
     setChatId(chatId);
     setSelectedUser(selectedUserUsername);
-    setUserNotification(selectedUserUsername); //because in case more than one user texted to one user, to know what notification should be reset
+    setUserNotification(selectedUserUsername); 
   };
 
   const handleChange = (event: React.SyntheticEvent) => {
@@ -223,7 +236,7 @@ const ChatSocket = ({ user, users }: any) => {
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {allMessages?.map(
-                  ({ content, fromSelf, toUser, fromUser }, index, arr) => {
+                  ({ content, fromSelf, toUser, fromUser, seen }, index, arr) => {
                     if (fromSelf === true && toUser === selectedUser)
                       return (
                         <div key={index} style={{ textAlign: "right" }}>
@@ -231,7 +244,7 @@ const ChatSocket = ({ user, users }: any) => {
                             {content}
                           </div>
                           {index == arr.length - 1 && (
-                            <p>{seenStatus === false ? "delivered" : "seen"}</p>
+                            <p>{!seen ? "delivered" : "seen"}</p>
                           )}
                         </div>
                       );
