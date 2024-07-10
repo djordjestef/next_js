@@ -29,9 +29,7 @@ const ChatSocket = ({ user, users }: any) => {
     {}
   );
 
-
   const [seenMessages, setSeenMessages] = useState<string[]>([]);
-
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
@@ -47,7 +45,7 @@ const ChatSocket = ({ user, users }: any) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      const { content, fromUserName ,messageId} = data;
+      const { content, fromUserName, messageId } = data;
       let newMessages = {};
       setNotifications((prev) => ({
         ...prev,
@@ -57,13 +55,12 @@ const ChatSocket = ({ user, users }: any) => {
       setUserNotification(fromUserName);
       setOnReceiveMessage((prevState) => !prevState);
 
-
       newMessages = {
         messageId,
-       fromUser: fromUserName,
+        fromUser: fromUserName,
         content,
         fromSelf: false,
-        seen: false
+        seen: false,
       };
       setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
@@ -91,20 +88,23 @@ const ChatSocket = ({ user, users }: any) => {
     };
   }, []);
 
-
-
   useEffect(() => {
-    
     if (isOpen && selectedUser) {
-      console.log('OKIDA SE INA OBE STRANE')
       const unseenMessages = allMessages
-        .filter((message) => message.fromUser === selectedUser && !message.seen)
-        .filter((messageId) => !seenMessages.includes(messageId)); 
-        // .map((message) => message.messageId);
-const messageIds = unseenMessages.map((item)=>item.messageId)
-        console.log('unseenMessages',unseenMessages)
+        .filter((message) => {
+          console.log("message", message);
+          return message.fromUser === selectedUser && !message.seen;
+        })
+        .filter((messageId) => {
+          console.log("seenMessages", seenMessages);
+          return !seenMessages.includes(messageId);
+        });
+      // .map((message) => message.messageId);
+      const messageIds = unseenMessages.map((item) => item.messageId);
+      console.log("UNSEENMessages", unseenMessages);
 
-      if (unseenMessages.length > 0 ) {
+      if (unseenMessages.length > 0) {
+        console.log("EMIT");
         socket.emit("message-seen", {
           senderUserName: selectedUser,
           messageIds,
@@ -115,19 +115,17 @@ const messageIds = unseenMessages.map((item)=>item.messageId)
     }
   }, [isOpen, selectedUser, chatId, allMessages]);
 
-  
-
   useEffect(() => {
     socket.on("message-seen", ({ senderUserName, messageIds }) => {
-      console.log('EMITOVAN TEK AKO IMA UNSEEN')
-      console.log('messageIds',messageIds)
-        setAllMessages((prevMessages) =>
-          prevMessages.map((msg) =>
-            messageIds.includes(msg.messageId)&&(senderUserName === username) ? { ...msg, seen: true } : msg
-          )
-        );
-      
-    
+      console.log("EMITOVAN TEK AKO IMA UNSEEN");
+      // console.log('messageIds',messageIds)
+      setAllMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          messageIds.includes(msg.messageId) && senderUserName === username
+            ? { ...msg, seen: true }
+            : msg
+        )
+      );
     });
 
     return () => {
@@ -145,7 +143,7 @@ const messageIds = unseenMessages.map((item)=>item.messageId)
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
-    console.log('allMessages',allMessages)
+    // console.log('allMessages',allMessages)
     if (messageEl) {
       messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
@@ -154,22 +152,27 @@ const messageIds = unseenMessages.map((item)=>item.messageId)
     }
   }, [allMessages]);
 
-
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setIsTyping(false);
     if (chatId && message !== "") {
-      const messageId = Math.random()
+      const messageId = Math.random();
       socket.emit("private-message", {
         content: message,
         fromUserName: username,
         // fromID: id,
         toID: chatId,
-        messageId 
+        messageId,
       });
       setAllMessages((prevState) => [
         ...prevState,
-        {  messageId,toUser: selectedUser, content: message, fromSelf: true,seen: false },
+        {
+          messageId,
+          toUser: selectedUser,
+          content: message,
+          fromSelf: true,
+          seen: false,
+        },
       ]);
 
       setMessage("");
@@ -182,7 +185,7 @@ const messageIds = unseenMessages.map((item)=>item.messageId)
     setIsOpen(true);
     setChatId(chatId);
     setSelectedUser(selectedUserUsername);
-    setUserNotification(selectedUserUsername); 
+    setUserNotification(selectedUserUsername);
   };
 
   const handleChange = (event: React.SyntheticEvent) => {
@@ -245,7 +248,11 @@ const messageIds = unseenMessages.map((item)=>item.messageId)
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {allMessages?.map(
-                  ({ content, fromSelf, toUser, fromUser, seen }, index, arr) => {
+                  (
+                    { content, fromSelf, toUser, fromUser, seen },
+                    index,
+                    arr
+                  ) => {
                     if (fromSelf === true && toUser === selectedUser)
                       return (
                         <div key={index} style={{ textAlign: "right" }}>

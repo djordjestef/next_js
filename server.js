@@ -16,16 +16,19 @@ app.prepare().then(async () => {
   let onlineUsers = [];
 
   io.on("connection", (socket) => {
-    socket.on("private-message", ({ content, fromUserName, toID, fromID,messageId }) => {
-      const recipient = onlineUsers.find((user) => user.userID === toID);
-      if (recipient) {
-        io.to(toID).emit("private-message", {
-          content,
-          fromUserName,
-          messageId
-        });
+    socket.on(
+      "private-message",
+      ({ content, fromUserName, toID, fromID, messageId }) => {
+        const recipient = onlineUsers.find((user) => user.userID === toID);
+        if (recipient) {
+          io.to(toID).emit("private-message", {
+            content,
+            fromUserName,
+            messageId,
+          });
+        }
       }
-    });
+    );
 
     socket.on("typing", (data) => {
       if (data.typing == true) {
@@ -35,7 +38,7 @@ app.prepare().then(async () => {
       }
     });
 
-    socket.on("new-user-add", (data)=> {
+    socket.on("new-user-add", (data) => {
       if (!onlineUsers.some((user) => user.userID === data.userID)) {
         onlineUsers.push({
           userID: data.userID,
@@ -45,31 +48,21 @@ app.prepare().then(async () => {
       }
       socket.join(data.userID);
 
-      // console.log("onlineUsers", onlineUsers);
       io.emit("get-users", onlineUsers);
     });
 
-    socket.on('message-seen', ({  senderUserName,toID,messageIds }) => {
-      
-      // console.log('seen',seen)
-      console.log('senderUserName',senderUserName)
-      
-      // Find the sender's socket and notify them
-      const senderSocket = onlineUsers.find(user => user.userID === toID);
-      console.log('toID',toID)
-      // console.log('senderSocket',senderSocket)
-      // console.log('toID',toID)
-      // console.log('seen',seen)
-      console.log('----------')
+    socket.on("message-seen", ({ senderUserName, toID, messageIds }) => {
+      console.log("senderUserName", senderUserName);
+
+      const senderSocket = onlineUsers.find((user) => user.userID === toID);
+      console.log("toID", toID);
+      console.log("----------");
+
       if (senderSocket) {
-        // console.log('toID',toID)
-        io.to(toID).emit('message-seen', { senderUserName,messageIds });
+        io.to(toID).emit("message-seen", { senderUserName, messageIds });
         socket.broadcast.emit("message-seen", { senderUserName, messageIds });
       }
     });
-
-
-
 
     socket.on("offline", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
