@@ -16,12 +16,13 @@ app.prepare().then(async () => {
   let onlineUsers = [];
 
   io.on("connection", (socket) => {
-    socket.on("private-message", ({ content, fromUserName, toID, fromID }) => {
+    socket.on("private-message", ({ content, fromUserName, toID, fromID,messageId }) => {
       const recipient = onlineUsers.find((user) => user.userID === toID);
       if (recipient) {
         io.to(toID).emit("private-message", {
           content,
           fromUserName,
+          messageId
         });
       }
     });

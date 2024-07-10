@@ -30,6 +30,9 @@ const ChatSocket = ({ user, users }: any) => {
   );
 
 
+  const [seenMessages, setSeenMessages] = useState<string[]>([]);
+
+
   const liveUserIds = liveUsers.map((item: any) => item.userID);
 
   const filteredUsers = users?.data
@@ -44,7 +47,7 @@ const ChatSocket = ({ user, users }: any) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
-      const { content, fromUserName } = data;
+      const { content, fromUserName ,messageId} = data;
       let newMessages = {};
       setNotifications((prev) => ({
         ...prev,
@@ -56,8 +59,8 @@ const ChatSocket = ({ user, users }: any) => {
 
 
       newMessages = {
-        messageId: Math.random(),
-        fromUser: fromUserName,
+        messageId,
+       fromUser: fromUserName,
         content,
         fromSelf: false,
         seen: false
@@ -96,16 +99,18 @@ const ChatSocket = ({ user, users }: any) => {
       console.log('OKIDA SE INA OBE STRANE')
       const unseenMessages = allMessages
         .filter((message) => message.fromUser === selectedUser && !message.seen)
+        .filter((messageId) => !seenMessages.includes(messageId)); 
         // .map((message) => message.messageId);
-
+const messageIds = unseenMessages.map((item)=>item.messageId)
         console.log('unseenMessages',unseenMessages)
 
-      if (unseenMessages.length > 0) {
+      if (unseenMessages.length > 0 ) {
         socket.emit("message-seen", {
           senderUserName: selectedUser,
-          messageIds: unseenMessages,
+          messageIds,
           toID: chatId,
         });
+        setSeenMessages((prev) => [...prev, ...unseenMessages]);
       }
     }
   }, [isOpen, selectedUser, chatId, allMessages]);
@@ -115,11 +120,14 @@ const ChatSocket = ({ user, users }: any) => {
   useEffect(() => {
     socket.on("message-seen", ({ senderUserName, messageIds }) => {
       console.log('EMITOVAN TEK AKO IMA UNSEEN')
-      setAllMessages((prevMessages) =>
-        prevMessages.map((msg) =>
-          (senderUserName === username) ? { ...msg, seen: true } : msg
-        )
-      );
+      console.log('messageIds',messageIds)
+        setAllMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            messageIds.includes(msg.messageId)&&(senderUserName === username) ? { ...msg, seen: true } : msg
+          )
+        );
+      
+    
     });
 
     return () => {
@@ -151,16 +159,17 @@ const ChatSocket = ({ user, users }: any) => {
     event.preventDefault();
     setIsTyping(false);
     if (chatId && message !== "") {
+      const messageId = Math.random()
       socket.emit("private-message", {
         content: message,
         fromUserName: username,
         // fromID: id,
         toID: chatId,
-        messageId: Math.random()
+        messageId 
       });
       setAllMessages((prevState) => [
         ...prevState,
-        {  messageId: Math.random(),toUser: selectedUser, content: message, fromSelf: true,seen: false },
+        {  messageId,toUser: selectedUser, content: message, fromSelf: true,seen: false },
       ]);
 
       setMessage("");
