@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
+import { v4 as uuidv4 } from 'uuid';
 
 const socket = io("http://localhost:3000");
 
@@ -15,20 +16,19 @@ const debounceFunction = _.debounce((emitFunction) => {
 const ChatSocket = ({ user, users }: any) => {
   const { username, id } = user;
   const messageEl = useRef<any>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState("");
-  const [chatId, setChatId] = useState("");
-  const [liveUsers, setLiveUsers] = useState([]);
-  const [message, setMessage] = useState("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<string>("");
+  const [chatId, setChatId] = useState<string>("");
+  const [liveUsers, setLiveUsers] = useState<object[]>([]);
+  const [message, setMessage] = useState<string>("");
   const [allMessages, setAllMessages] = useState<any[]>([]);
-  const [userNotification, setUserNotification] = useState("");
-  const [onReceiveMessage, setOnReceiveMessage] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [userIsTyping, setUserIsTyping] = useState("");
+  const [userNotification, setUserNotification] = useState<string>("");
+  const [onReceiveMessage, setOnReceiveMessage] = useState<boolean>(false);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [userIsTyping, setUserIsTyping] = useState<string>("");
   const [notifications, setNotifications] = useState<{ [key: string]: number }>(
     {}
   );
-
   const [seenMessages, setSeenMessages] = useState<string[]>([]);
 
   const liveUserIds = liveUsers.map((item: any) => item.userID);
@@ -78,6 +78,18 @@ const ChatSocket = ({ user, users }: any) => {
     socket.on("get-users", (data) => {
       setLiveUsers(data);
     });
+
+    socket.on("message-seen", ({ senderUserName, messageIds }) => {
+      console.log("EMITOVAN TEK AKO IMA UNSEEN");
+      console.log('messageIds',messageIds)
+      setAllMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          messageIds.includes(msg.messageId) && senderUserName === username
+            ? { ...msg, seen: true }
+            : msg
+        )
+      );
+    });
   };
 
   useEffect(() => {
@@ -99,7 +111,7 @@ const ChatSocket = ({ user, users }: any) => {
           console.log("seenMessages", seenMessages);
           return !seenMessages.includes(messageId);
         });
-      // .map((message) => message.messageId);
+  
       const messageIds = unseenMessages.map((item) => item.messageId);
       console.log("UNSEENMessages", unseenMessages);
 
@@ -115,23 +127,23 @@ const ChatSocket = ({ user, users }: any) => {
     }
   }, [isOpen, selectedUser, chatId, allMessages]);
 
-  useEffect(() => {
-    socket.on("message-seen", ({ senderUserName, messageIds }) => {
-      console.log("EMITOVAN TEK AKO IMA UNSEEN");
-      // console.log('messageIds',messageIds)
-      setAllMessages((prevMessages) =>
-        prevMessages.map((msg) =>
-          messageIds.includes(msg.messageId) && senderUserName === username
-            ? { ...msg, seen: true }
-            : msg
-        )
-      );
-    });
+  // useEffect(() => {
+  //   socket.on("message-seen", ({ senderUserName, messageIds }) => {
+  //     console.log("EMITOVAN TEK AKO IMA UNSEEN");
+  //     console.log('messageIds',messageIds)
+  //     setAllMessages((prevMessages) =>
+  //       prevMessages.map((msg) =>
+  //         messageIds.includes(msg.messageId) && senderUserName === username
+  //           ? { ...msg, seen: true }
+  //           : msg
+  //       )
+  //     );
+  //   });
 
-    return () => {
-      socket.off("message-seen");
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("message-seen");
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
@@ -143,7 +155,6 @@ const ChatSocket = ({ user, users }: any) => {
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
-    // console.log('allMessages',allMessages)
     if (messageEl) {
       messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
@@ -156,11 +167,10 @@ const ChatSocket = ({ user, users }: any) => {
     event.preventDefault();
     setIsTyping(false);
     if (chatId && message !== "") {
-      const messageId = Math.random();
+      const messageId = uuidv4();
       socket.emit("private-message", {
         content: message,
         fromUserName: username,
-        // fromID: id,
         toID: chatId,
         messageId,
       });
@@ -248,11 +258,8 @@ const ChatSocket = ({ user, users }: any) => {
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {allMessages?.map(
-                  (
-                    { content, fromSelf, toUser, fromUser, seen },
-                    index,
-                    arr
-                  ) => {
+                  ({ content, fromSelf, toUser, fromUser, seen },index, arr) => {
+                    console.log('seen',seen)
                     if (fromSelf === true && toUser === selectedUser)
                       return (
                         <div key={index} style={{ textAlign: "right" }}>
