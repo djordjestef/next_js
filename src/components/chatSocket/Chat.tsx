@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, startTransition } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const socket = io("http://localhost:3000");
 
@@ -47,13 +47,12 @@ const ChatSocket = ({ user, users }: any) => {
     socket.on("private-message", (data) => {
       const { content, fromUserName, messageId } = data;
       let newMessages = {};
-      startTransition(()=>{
+      startTransition(() => {
         setNotifications((prev) => ({
           ...prev,
           [fromUserName]: (prev[fromUserName] || 0) + 1,
         }));
-      })
-     
+      });
 
       setUserNotification(fromUserName);
       setOnReceiveMessage((prevState) => !prevState);
@@ -84,16 +83,15 @@ const ChatSocket = ({ user, users }: any) => {
 
     socket.on("message-seen", ({ senderUserName, messageIds }) => {
       console.log("EMITOVAN TEK AKO IMA UNSEEN");
-      
-      setAllMessages((prevMessages) =>{
-        console.log('prevMessages',prevMessages)
-       return prevMessages.map((msg) =>
+
+      setAllMessages((prevMessages) => {
+        console.log("prevMessages", prevMessages);
+        return prevMessages.map((msg) =>
           messageIds.includes(msg.messageId) && senderUserName === username
             ? { ...msg, seen: true }
             : msg
-        )
-      }
-      );
+        );
+      });
     });
   };
 
@@ -116,7 +114,7 @@ const ChatSocket = ({ user, users }: any) => {
           console.log("seenMessages", seenMessages);
           return !seenMessages.includes(messageId);
         });
-  
+
       const messageIds = unseenMessages.map((item) => item.messageId);
       console.log("UNSEENMessages", unseenMessages);
 
@@ -152,13 +150,12 @@ const ChatSocket = ({ user, users }: any) => {
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
-      startTransition(()=>{
+      startTransition(() => {
         setNotifications((prev) => ({
           ...prev,
           [selectedUser]: 0,
         }));
-      })
-     
+      });
     }
   }, [selectedUser, onReceiveMessage]);
 
@@ -199,12 +196,18 @@ const ChatSocket = ({ user, users }: any) => {
     }
   };
 
+
+
   const chooseChat = (chatId: string, selectedUserUsername: string) => {
     setIsOpen(true);
     setChatId(chatId);
     setSelectedUser(selectedUserUsername);
     setUserNotification(selectedUserUsername);
+
+   
   };
+
+ 
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
@@ -266,17 +269,30 @@ const ChatSocket = ({ user, users }: any) => {
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {allMessages?.map(
-                  ({ content, fromSelf, toUser, fromUser, seen },index, arr) => {
-                    console.log('seen',seen)
+                  (
+                    { content, fromSelf, toUser, fromUser, seen },
+                    index,
+                    arr
+                  ) => {
+                   const groupBySelectedUser =_.groupBy(arr,'toUser')
+                  //  const last = groupBySelectedUser[toUser].at(-1);
+                  //  console.log('last',last)
                     if (fromSelf === true && toUser === selectedUser)
                       return (
                         <div key={index} style={{ textAlign: "right" }}>
                           <div className={styles.messageContainerSelf}>
                             {content}
                           </div>
-                          {index == arr.length - 1 && (
-                            <p>{!seen ? "delivered" : "seen"}</p>
-                          )}
+                          {/* {groupBySelectedUser[toUser].map((item, index,arr)=>{
+                            if(index==arr.length-1){
+                             return <p key={item.messageId}>{seen ? "seen" : "delivered"}</p>
+                            }
+                          })} */}
+                          
+                          {index == arr.length - 1 && (//here is bug 
+                          <p>{seen ? "seen" : "delivered"}</p>
+
+                           )} 
                         </div>
                       );
 
