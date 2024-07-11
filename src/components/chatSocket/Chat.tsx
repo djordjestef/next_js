@@ -1,7 +1,7 @@
 "use client";
 import styles from "./chatSocket.module.css";
 import { Alert } from "react-st-modal";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
@@ -47,10 +47,13 @@ const ChatSocket = ({ user, users }: any) => {
     socket.on("private-message", (data) => {
       const { content, fromUserName, messageId } = data;
       let newMessages = {};
-      setNotifications((prev) => ({
-        ...prev,
-        [fromUserName]: (prev[fromUserName] || 0) + 1,
-      }));
+      startTransition(()=>{
+        setNotifications((prev) => ({
+          ...prev,
+          [fromUserName]: (prev[fromUserName] || 0) + 1,
+        }));
+      })
+     
 
       setUserNotification(fromUserName);
       setOnReceiveMessage((prevState) => !prevState);
@@ -81,13 +84,15 @@ const ChatSocket = ({ user, users }: any) => {
 
     socket.on("message-seen", ({ senderUserName, messageIds }) => {
       console.log("EMITOVAN TEK AKO IMA UNSEEN");
-      console.log('messageIds',messageIds)
-      setAllMessages((prevMessages) =>
-        prevMessages.map((msg) =>
+      
+      setAllMessages((prevMessages) =>{
+        console.log('prevMessages',prevMessages)
+       return prevMessages.map((msg) =>
           messageIds.includes(msg.messageId) && senderUserName === username
             ? { ...msg, seen: true }
             : msg
         )
+      }
       );
     });
   };
@@ -147,10 +152,13 @@ const ChatSocket = ({ user, users }: any) => {
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
-      setNotifications((prev) => ({
-        ...prev,
-        [selectedUser]: 0,
-      }));
+      startTransition(()=>{
+        setNotifications((prev) => ({
+          ...prev,
+          [selectedUser]: 0,
+        }));
+      })
+     
     }
   }, [selectedUser, onReceiveMessage]);
 
