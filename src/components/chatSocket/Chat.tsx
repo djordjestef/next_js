@@ -82,10 +82,9 @@ const ChatSocket = ({ user, users }: any) => {
     });
 
     socket.on("message-seen", ({ senderUserName, messageIds }) => {
-      console.log("EMITOVAN TEK AKO IMA UNSEEN");
+      // console.log("EMITOVAN TEK AKO IMA UNSEEN", senderUserName);
 
       setAllMessages((prevMessages) => {
-        console.log("prevMessages", prevMessages);
         return prevMessages.map((msg) =>
           messageIds.includes(msg.messageId) && senderUserName === username
             ? { ...msg, seen: true }
@@ -107,19 +106,17 @@ const ChatSocket = ({ user, users }: any) => {
     if (isOpen && selectedUser) {
       const unseenMessages = allMessages
         .filter((message) => {
-          console.log("message", message);
           return message.fromUser === selectedUser && !message.seen;
         })
         .filter((messageId) => {
-          console.log("seenMessages", seenMessages);
           return !seenMessages.includes(messageId);
         });
 
       const messageIds = unseenMessages.map((item) => item.messageId);
-      console.log("UNSEENMessages", unseenMessages);
+      // console.log("UNSEENMessages", unseenMessages);
 
       if (unseenMessages.length > 0) {
-        console.log("EMIT");
+        // console.log("IMA UNSEEEEEEEEEN",unseenMessages);
         socket.emit("message-seen", {
           senderUserName: selectedUser,
           messageIds,
@@ -129,24 +126,6 @@ const ChatSocket = ({ user, users }: any) => {
       }
     }
   }, [isOpen, selectedUser, chatId, allMessages]);
-
-  // useEffect(() => {
-  //   socket.on("message-seen", ({ senderUserName, messageIds }) => {
-  //     console.log("EMITOVAN TEK AKO IMA UNSEEN");
-  //     console.log('messageIds',messageIds)
-  //     setAllMessages((prevMessages) =>
-  //       prevMessages.map((msg) =>
-  //         messageIds.includes(msg.messageId) && senderUserName === username
-  //           ? { ...msg, seen: true }
-  //           : msg
-  //       )
-  //     );
-  //   });
-
-  //   return () => {
-  //     socket.off("message-seen");
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (selectedUser === userNotification && isOpen) {
@@ -196,18 +175,19 @@ const ChatSocket = ({ user, users }: any) => {
     }
   };
 
+  const [userImg, setUserImg] = useState<string>("");
 
-
-  const chooseChat = (chatId: string, selectedUserUsername: string) => {
+  const chooseChat = (
+    chatId: string,
+    selectedUserUsername: string,
+    userImg: string
+  ) => {
     setIsOpen(true);
     setChatId(chatId);
     setSelectedUser(selectedUserUsername);
     setUserNotification(selectedUserUsername);
-
-   
+    setUserImg(userImg);
   };
-
- 
 
   const handleChange = (event: React.SyntheticEvent) => {
     const { value }: any = event.target;
@@ -235,7 +215,7 @@ const ChatSocket = ({ user, users }: any) => {
             <div className={styles.user} key={user._id}>
               <button
                 className={styles.userListBtn}
-                onClick={() => chooseChat(user._id, user.username)}
+                onClick={() => chooseChat(user._id, user.username, user.img)}
               >
                 <div className={styles.detail}>
                   <Image
@@ -268,55 +248,56 @@ const ChatSocket = ({ user, users }: any) => {
             <>
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
-                {allMessages?.map(
-                  (
-                    { content, fromSelf, toUser, fromUser, seen },
-                    index,
-                    arr
-                  ) => {
-                   const groupBySelectedUser =_.groupBy(arr,'toUser')
-                  //  const last = groupBySelectedUser[toUser].at(-1);
-                  //  console.log('last',last)
-                    if (fromSelf === true && toUser === selectedUser)
-                      return (
-                        <div key={index} style={{ textAlign: "right" }}>
-                          <div className={styles.messageContainerSelf}>
-                            {content}
-                          </div>
-                          {/* {groupBySelectedUser[toUser].map((item, index,arr)=>{
-                            if(index==arr.length-1){
-                             return <p key={item.messageId}>{seen ? "seen" : "delivered"}</p>
-                            }
-                          })} */}
-                          
-                          {index == arr.length - 1 && (//here is bug 
-                          <p>{seen ? "seen" : "delivered"}</p>
+                {_.map(_.groupBy(allMessages, "toUser"), (messages) => {
+                  // console.log(_.groupBy(allMessages, "toUser"))
+                  console.log("messages GROUP", messages);
 
-                           )} 
+                  return messages.map((message, index) => {
+                    console.log("cetir prolaska");
+                    const isLastMessage = index === messages.length - 1;
+                    if (
+                      message.fromSelf === true &&
+                      message.toUser === selectedUser
+                    ) {
+                      return (
+                        <div
+                          key={message.messageId}
+                          style={{ textAlign: "right" }}
+                        >
+                          <div className={styles.messageContainerSelf}>
+                            {message.content}
+                          </div>
+                          {isLastMessage && (
+                            <p>{message.seen ? "seen" : "delivered"}</p>
+                          )}
                         </div>
                       );
-
-                    if (fromSelf === false && fromUser === selectedUser)
+                    } else if (
+                      message.fromSelf === false &&
+                      message.fromUser === selectedUser
+                    ) {
                       return (
-                        <div key={index}>
+                        <div key={message.messageId}>
                           <div className={styles.imageContainer}>
                             <Image
-                              src={user.img ? user.img : "/noavatar.png"}
+                              src={userImg ? userImg : "/noavatar.png"}
                               alt=""
                               width={50}
                               height={50}
                               style={{ borderRadius: "50%" }}
                             />
                           </div>
-                          <div key={index} className={styles.messageContainer}>
-                            <strong>{fromUser}</strong>
-
-                            <div>{content}</div>
+                          <div className={styles.messageContainer}>
+                            <strong>{message.fromUser}</strong>
+                            <div>{message.content}</div>
                           </div>
                         </div>
                       );
-                  }
-                )}
+                    }
+                    return null;
+                  });
+                  console.log("------------");
+                })}
               </div>
 
               <br />
