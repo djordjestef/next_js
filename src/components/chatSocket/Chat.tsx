@@ -14,6 +14,22 @@ const debounceFunction = _.debounce((emitFunction) => {
 }, 500);
 
 const ChatSocket = ({ user, users }: any) => {
+  // const djordje = [
+  //   {
+  //     content: "a",
+  //     fromSelf: true,
+  //     messageId: "169a58cd-bf85-4e50-b780-5232b6929f13",
+  //     seen: false,
+  //     toUser: "admin",
+  //   },
+  //   {
+  //     content: "bbbbbbb",
+  //     fromSelf: true,
+  //     messageId: "169a58cd-bf85-4e50-b780-5232b6929f44",
+  //     seen: false,
+  //     toUser: "admin",
+  //   },
+  // ];
   const { username, id } = user;
   const messageEl = useRef<any>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -24,6 +40,7 @@ const ChatSocket = ({ user, users }: any) => {
   const [allMessages, setAllMessages] = useState<any[]>([]);
   const [userNotification, setUserNotification] = useState<string>("");
   const [onReceiveMessage, setOnReceiveMessage] = useState<boolean>(false);
+  const [userImg, setUserImg] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [userIsTyping, setUserIsTyping] = useState<string>("");
   const [notifications, setNotifications] = useState<{ [key: string]: number }>(
@@ -175,7 +192,7 @@ const ChatSocket = ({ user, users }: any) => {
     }
   };
 
-  const [userImg, setUserImg] = useState<string>("");
+
 
   const chooseChat = (
     chatId: string,
@@ -205,6 +222,7 @@ const ChatSocket = ({ user, users }: any) => {
       })
     );
   };
+  console.log("allMessages", allMessages);
 
   return (
     <div style={{ minHeight: "70vh" }}>
