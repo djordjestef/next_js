@@ -14,22 +14,6 @@ const debounceFunction = _.debounce((emitFunction) => {
 }, 500);
 
 const ChatSocket = ({ user, users }: any) => {
-  // const djordje = [
-  //   {
-  //     content: "a",
-  //     fromSelf: true,
-  //     messageId: "169a58cd-bf85-4e50-b780-5232b6929f13",
-  //     seen: false,
-  //     toUser: "admin",
-  //   },
-  //   {
-  //     content: "bbbbbbb",
-  //     fromSelf: true,
-  //     messageId: "169a58cd-bf85-4e50-b780-5232b6929f44",
-  //     seen: false,
-  //     toUser: "admin",
-  //   },
-  // ];
   const { username, id } = user;
   const messageEl = useRef<any>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -125,8 +109,8 @@ const ChatSocket = ({ user, users }: any) => {
         .filter((message) => {
           return message.fromUser === selectedUser && !message.seen;
         })
-        .filter((messageId) => {
-          return !seenMessages.includes(messageId);
+        .filter((message) => {
+          return !seenMessages.includes(message);
         });
 
       const messageIds = unseenMessages.map((item) => item.messageId);
@@ -286,7 +270,7 @@ const ChatSocket = ({ user, users }: any) => {
                             {message.content}
                           </div>
                           {isLastMessage && (
-                            <p>{message.seen ? "seen" : "delivered"}</p>
+                            <p>{message.seen ? "Seen" : "Delivered"}</p>
                           )}
                         </div>
                       );
