@@ -95,6 +95,21 @@ const ChatSocket = ({ user, users }: any) => {
     });
   };
 
+  if (typeof window !== "undefined") {
+    // browser code
+    window?.addEventListener("beforeunload", function (e) {
+
+      console.log('e',e)
+    
+      e.preventDefault();
+      socket.emit("offline");
+    });
+    // window.addEventListener("unload", function () {
+    //   // Emit "offline" event
+    //   socket.emit("offline");
+    // });
+  }
+
   useEffect(() => {
     socketFn();
 
@@ -102,6 +117,10 @@ const ChatSocket = ({ user, users }: any) => {
       socket.emit("offline");
     };
   }, []);
+
+  // const offline = ()=>{
+  //   socket.emit("offline");
+  // }
 
   useEffect(() => {
     if (isOpen && selectedUser) {
@@ -176,8 +195,6 @@ const ChatSocket = ({ user, users }: any) => {
     }
   };
 
-
-
   const chooseChat = (
     chatId: string,
     selectedUserUsername: string,
@@ -213,6 +230,7 @@ const ChatSocket = ({ user, users }: any) => {
       <div className={styles.container}>
         <div className={styles.chatList}>
           <h3 className={styles.listTitle}>Users List</h3>
+          {/* <button onClick={offline}>click</button> */}
           {filteredUsers.map((user: any) => (
             <div className={styles.user} key={user._id}>
               <button
