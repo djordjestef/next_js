@@ -6,6 +6,7 @@ import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
+import { storeMessages } from "@/lib/services";
 
 const socket = io("http://localhost:3000");
 
@@ -35,20 +36,20 @@ const ChatSocket = ({ user, users }: any) => {
 
   //user gets offline when he close the tab or browser
 
-  if (typeof window !== "undefined") {
-    window.addEventListener("beforeunload", function (e) {
-      const confirmationMessage = "Are you sure you want to leave?";
-      e.preventDefault();
-      e.returnValue = confirmationMessage;
+  // if (typeof window !== "undefined") {
+  //   window.addEventListener("beforeunload", function (e) {
+  //     const confirmationMessage = "Are you sure you want to leave?";
+  //     e.preventDefault();
+  //     e.returnValue = confirmationMessage;
 
-      return confirmationMessage;
-    });
+  //     return confirmationMessage;
+  //   });
 
-    window.addEventListener("unload", function () {
-      // Emit the 'offline' event only if the user confirms the beforeunload dialog
-      socket.emit("offline");
-    });
-  }
+  //   window.addEventListener("unload", function () {
+  //     // Emit the 'offline' event only if the user confirms the beforeunload dialog
+  //     socket.emit("offline");
+  //   });
+  // }
 
   const filteredUsers = users?.data
     .filter((user: any) => id !== user._id)
@@ -226,12 +227,16 @@ const ChatSocket = ({ user, users }: any) => {
   };
   console.log("allMessages", allMessages);
 
+  const storeM = async () => {
+    await storeMessages(allMessages);
+  };
+
   return (
     <div style={{ minHeight: "70vh" }}>
       <div className={styles.container}>
         <div className={styles.chatList}>
           <h3 className={styles.listTitle}>Users List</h3>
-          {/* <button onClick={offline}>click</button> */}
+          <button onClick={storeM}>click</button>
           {filteredUsers.map((user: any) => (
             <div className={styles.user} key={user._id}>
               <button
@@ -270,11 +275,8 @@ const ChatSocket = ({ user, users }: any) => {
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {_.map(_.groupBy(allMessages, "toUser"), (messages) => {
-                  // console.log(_.groupBy(allMessages, "toUser"))
-                  console.log("messages GROUP", messages);
 
                   return messages.map((message, index) => {
-                    console.log("cetir prolaska");
                     const isLastMessage = index === messages.length - 1;
                     if (
                       message.fromSelf === true &&
@@ -317,7 +319,6 @@ const ChatSocket = ({ user, users }: any) => {
                     }
                     return null;
                   });
-                  console.log("------------");
                 })}
               </div>
 

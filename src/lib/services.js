@@ -118,3 +118,22 @@ export const createUser = async (formData) => {
     return { data: null, error: { message: "Unknown error" } };
   }
 };
+
+export const storeMessages = async (messages) => {
+  console.log('messages SERVICE',messages)
+  try {
+    const res = await fetch("/api/messages", {
+      method: "POST",
+      cache: "no-cache",
+      body: JSON.stringify({ messages }),
+    });
+
+    console.log('res',res)
+
+    return await res.json();//here is a issue
+  } catch (error) {
+    console.error("Failed to store messages:", error);
+    if (error instanceof Error) return { error: { message: error.message } };
+    return { data: null, error: { message: "Unknown error" } };
+  }
+};
