@@ -65,7 +65,6 @@ app.prepare().then(async () => {
     });
 
     socket.on("offline", () => {
-      console.log('triggered')
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
       // console.log("onlineUsers OFFLINE METHOSD", onlineUsers);
       io.emit("get-users", onlineUsers);

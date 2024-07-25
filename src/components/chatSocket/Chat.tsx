@@ -31,8 +31,24 @@ const ChatSocket = ({ user, users }: any) => {
     {}
   );
   const [seenMessages, setSeenMessages] = useState<string[]>([]);
-
   const liveUserIds = liveUsers.map((item: any) => item.userID);
+
+  //user gets offline when he close the tab or browser
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("beforeunload", function (e) {
+      const confirmationMessage = "Are you sure you want to leave?";
+      e.preventDefault();
+      e.returnValue = confirmationMessage;
+
+      return confirmationMessage;
+    });
+
+    window.addEventListener("unload", function () {
+      // Emit the 'offline' event only if the user confirms the beforeunload dialog
+      socket.emit("offline");
+    });
+  }
 
   const filteredUsers = users?.data
     .filter((user: any) => id !== user._id)
@@ -94,21 +110,6 @@ const ChatSocket = ({ user, users }: any) => {
       });
     });
   };
-
-  if (typeof window !== "undefined") {
-    // browser code
-    window?.addEventListener("beforeunload", function (e) {
-
-      console.log('e',e)
-    
-      e.preventDefault();
-      socket.emit("offline");
-    });
-    // window.addEventListener("unload", function () {
-    //   // Emit "offline" event
-    //   socket.emit("offline");
-    // });
-  }
 
   useEffect(() => {
     socketFn();
