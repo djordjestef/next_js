@@ -6,10 +6,10 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
     await connectToDb();
     const data = await req.json();
-    const {messages} = data
-    console.log('messages',messages)
+    const {message} = data
+    console.log('messages',message)
 
-    const messagePost = new Messages(messages)
+    const messagePost = new Messages(message)
 
     await messagePost.save()
 

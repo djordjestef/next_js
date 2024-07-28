@@ -6,7 +6,7 @@ import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
-import { storeMessages } from "@/lib/services";
+// import { storeMessages } from "@/lib/services";
 
 const socket = io("http://localhost:3000");
 
@@ -179,6 +179,7 @@ const ChatSocket = ({ user, users }: any) => {
         fromUserName: username,
         toID: chatId,
         messageId,
+        toUser:selectedUser
       });
       setAllMessages((prevState) => [
         ...prevState,
@@ -228,7 +229,7 @@ const ChatSocket = ({ user, users }: any) => {
   console.log("allMessages", allMessages);
 
   const storeM = async () => {
-    await storeMessages(allMessages);
+    // await storeMessages(allMessages);
   };
 
   return (

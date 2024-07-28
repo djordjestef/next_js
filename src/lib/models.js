@@ -75,14 +75,14 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    fromSelf: {
-      type: Boolean,
-      required: true,
-    },
-    seen: {
-      type: Boolean,
-      required: true,
-    },
+    // fromSelf: {
+    //   type: Boolean,
+    //   required: true,
+    // },
+    // seen: {
+    //   type: Boolean,
+    //   required: true,
+    // },
   },
   { timestamps: true }
 );
