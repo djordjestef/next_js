@@ -2,7 +2,6 @@ import PostCard from "@/components/postCard/CardPost";
 import styles from "./blog.module.css";
 import { getBlogs } from "@/lib/services";
 import { auth } from "@/lib/auth";
-// import { getPosts } from "@/lib/data";
 
 const BlogPage = async () => {
   // FETCH DATA WITH AN API
