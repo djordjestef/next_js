@@ -1,12 +1,11 @@
 "use client";
 import styles from "./chatSocket.module.css";
 import { Alert } from "react-st-modal";
-import { useState, useEffect, useRef, startTransition } from "react";
+import React, { useState, useEffect, useRef, startTransition } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
-// import { storeMessages } from "@/lib/services";
 
 const socket = io("http://localhost:3000");
 
@@ -133,12 +132,14 @@ const ChatSocket = ({ user, users }: any) => {
         .filter((message) => {
           return !seenMessages.includes(message);
         });
+      
+
 
       const messageIds = unseenMessages.map((item) => item.messageId);
       // console.log("UNSEENMessages", unseenMessages);
 
       if (unseenMessages.length > 0) {
-        // console.log("IMA UNSEEEEEEEEEN",unseenMessages);
+        console.log("IMA UNSEEEEEEEEEN",unseenMessages);
         socket.emit("message-seen", {
           senderUserName: selectedUser,
           messageIds,
@@ -146,6 +147,8 @@ const ChatSocket = ({ user, users }: any) => {
         });
         setSeenMessages((prev) => [...prev, ...unseenMessages]);
       }
+      console.log('seenMessages',seenMessages)
+      console.log('unseenMessages',unseenMessages)
     }
   }, [isOpen, selectedUser, chatId, allMessages]);
 
@@ -226,7 +229,6 @@ const ChatSocket = ({ user, users }: any) => {
       })
     );
   };
-  console.log("allMessages", allMessages);
 
   const storeM = async () => {
     // await storeMessages(allMessages);

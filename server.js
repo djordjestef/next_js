@@ -1,7 +1,8 @@
 const express = require("express");
 const next = require("next");
 const axios = require("axios");
-const storeMessages = require('./src/lib/message')
+const storeMessages = require("./src/lib/message");
+const getMessages = require("./src/lib/message");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -15,19 +16,24 @@ app.prepare().then(async () => {
   const httpServer = http.createServer(server);
   const io = socketIO(httpServer);
   let onlineUsers = [];
+  const allMessages = [];
+
+  getMessages().then((message) => {
+    allMessages.push(message.data);
+  });
 
   io.on("connection", (socket) => {
+    console.log("allMessages", allMessages);
+
     socket.on(
       "private-message",
-      ({ content, fromUserName, toID, fromID, messageId , toUser}) => {
-        
+      ({ content, fromUserName, toID, fromID, messageId, toUser }) => {
         storeMessages({
           content,
           messageId,
           toUser,
-          fromUser:fromUserName,
-         
-        })
+          fromUser: fromUserName,
+        });
         const recipient = onlineUsers.find((user) => user.userID === toID);
         if (recipient) {
           io.to(toID).emit("private-message", {
