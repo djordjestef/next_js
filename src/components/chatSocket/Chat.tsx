@@ -135,10 +135,8 @@ const ChatSocket = ({ user, users }: any) => {
         });
 
       const messageIds = unseenMessages.map((item) => item.messageId);
-      // console.log("UNSEENMessages", unseenMessages);
 
       if (unseenMessages.length > 0) {
-        console.log("IMA UNSEEEEEEEEEN", unseenMessages);
         socket.emit("message-seen", {
           senderUserName: selectedUser,
           messageIds,
@@ -146,8 +144,6 @@ const ChatSocket = ({ user, users }: any) => {
         });
         setSeenMessages((prev) => [...prev, ...unseenMessages]);
       }
-      console.log("seenMessages", seenMessages);
-      console.log("unseenMessages", unseenMessages);
     }
   }, [isOpen, selectedUser, chatId, allMessages]);
 
@@ -182,6 +178,7 @@ const ChatSocket = ({ user, users }: any) => {
         toID: chatId,
         messageId,
         toUser: selectedUser,
+        fromID: id,
       });
       setAllMessages((prevState) => [
         ...prevState,
@@ -229,16 +226,13 @@ const ChatSocket = ({ user, users }: any) => {
     );
   };
 
-  const storeM = async () => {
-    // await storeMessages(allMessages);
-  };
+  console.log('allMessages',allMessages)
 
   return (
     <div style={{ minHeight: "70vh" }}>
       <div className={styles.container}>
         <div className={styles.chatList}>
           <h3 className={styles.listTitle}>Users List</h3>
-          <button onClick={storeM}>click</button>
           {filteredUsers.map((user: any) => (
             <div className={styles.user} key={user._id}>
               <button

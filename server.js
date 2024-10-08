@@ -25,17 +25,6 @@ app.prepare().then(async () => {
   io.on("connection", (socket) => {
     console.log("allMessages", allMessages);
 
-    if (allMessages) {
-      console.log("TRIGGERED IF");
-      allMessages.map((message) => {
-        io.to(message.toID).emit("private-message", {
-          content: message.content,
-          fromUserName: message.fromUser,
-          messageId: message.messageId,
-        });
-      });
-    }
-
     socket.on(
       "private-message",
       ({ content, fromUserName, toID, fromID, messageId, toUser }) => {
@@ -45,6 +34,7 @@ app.prepare().then(async () => {
           toUser,
           fromUser: fromUserName,
           toID,
+          fromID,
         });
         const recipient = onlineUsers.find((user) => user.userID === toID);
 
@@ -77,14 +67,28 @@ app.prepare().then(async () => {
       socket.join(data.userID);
 
       io.emit("get-users", onlineUsers);
+
+      if (allMessages) {
+        const userMessages = allMessages.filter(
+          (message) => message.toID === data.userID
+        );
+
+        userMessages.forEach((message) => {
+          io.to(data.userID).emit("private-message", {
+            content: message.content,
+            fromUserName: message.fromUser,
+            messageId: message.messageId,
+          });
+        });
+      }
     });
 
     socket.on("message-seen", ({ senderUserName, toID, messageIds }) => {
-      console.log("senderUserName", senderUserName);
+      // console.log("senderUserName", senderUserName);
 
       const senderSocket = onlineUsers.find((user) => user.userID === toID);
-      console.log("toID", toID);
-      console.log("----------");
+      // console.log("toID", toID);
+      // console.log("----------");
 
       if (senderSocket) {
         io.to(toID).emit("message-seen", { senderUserName, messageIds });
