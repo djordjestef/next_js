@@ -1,8 +1,8 @@
 const express = require("express");
 const next = require("next");
 const axios = require("axios");
-const storeMessages = require("./src/lib/message");
-const getMessages = require("./src/lib/message");
+const { storeMessages, getMessages } = require("./src/lib/message");
+// const getMessages = require("./src/lib/message");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -16,14 +16,25 @@ app.prepare().then(async () => {
   const httpServer = http.createServer(server);
   const io = socketIO(httpServer);
   let onlineUsers = [];
-  const allMessages = [];
+  let allMessages = null;
 
   getMessages().then((message) => {
-    allMessages.push(message.data);
+    allMessages = message.data;
   });
 
   io.on("connection", (socket) => {
     console.log("allMessages", allMessages);
+
+    if (allMessages) {
+      console.log("TRIGGERED IF");
+      allMessages.map((message) => {
+        io.to(message.toID).emit("private-message", {
+          content: message.content,
+          fromUserName: message.fromUser,
+          messageId: message.messageId,
+        });
+      });
+    }
 
     socket.on(
       "private-message",
@@ -33,8 +44,10 @@ app.prepare().then(async () => {
           messageId,
           toUser,
           fromUser: fromUserName,
+          toID,
         });
         const recipient = onlineUsers.find((user) => user.userID === toID);
+
         if (recipient) {
           io.to(toID).emit("private-message", {
             content,

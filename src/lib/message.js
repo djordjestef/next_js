@@ -7,8 +7,6 @@ const storeMessages = async (message) => {
       body: JSON.stringify({ message }),
     });
 
-    console.log("res", res);
-
     return await res.json();
   } catch (error) {
     console.error("Failed to store messages:", error);
@@ -28,5 +26,7 @@ const getMessages = async () => {
   }
 };
 
-module.exports = storeMessages;
-module.exports = getMessages;
+module.exports = {
+  storeMessages,
+  getMessages,
+};

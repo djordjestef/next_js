@@ -75,6 +75,10 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    toID : {
+      type:String,
+      required:true
+    }
     // fromSelf: {
     //   type: Boolean,
     //   required: true,

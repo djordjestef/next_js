@@ -62,6 +62,7 @@ const ChatSocket = ({ user, users }: any) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
+      console.log("data", data);
       const { content, fromUserName, messageId } = data;
       let newMessages = {};
       startTransition(() => {
@@ -132,14 +133,12 @@ const ChatSocket = ({ user, users }: any) => {
         .filter((message) => {
           return !seenMessages.includes(message);
         });
-      
-
 
       const messageIds = unseenMessages.map((item) => item.messageId);
       // console.log("UNSEENMessages", unseenMessages);
 
       if (unseenMessages.length > 0) {
-        console.log("IMA UNSEEEEEEEEEN",unseenMessages);
+        console.log("IMA UNSEEEEEEEEEN", unseenMessages);
         socket.emit("message-seen", {
           senderUserName: selectedUser,
           messageIds,
@@ -147,8 +146,8 @@ const ChatSocket = ({ user, users }: any) => {
         });
         setSeenMessages((prev) => [...prev, ...unseenMessages]);
       }
-      console.log('seenMessages',seenMessages)
-      console.log('unseenMessages',unseenMessages)
+      console.log("seenMessages", seenMessages);
+      console.log("unseenMessages", unseenMessages);
     }
   }, [isOpen, selectedUser, chatId, allMessages]);
 
@@ -182,7 +181,7 @@ const ChatSocket = ({ user, users }: any) => {
         fromUserName: username,
         toID: chatId,
         messageId,
-        toUser:selectedUser
+        toUser: selectedUser,
       });
       setAllMessages((prevState) => [
         ...prevState,
@@ -278,7 +277,6 @@ const ChatSocket = ({ user, users }: any) => {
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
                 {_.map(_.groupBy(allMessages, "toUser"), (messages) => {
-
                   return messages.map((message, index) => {
                     const isLastMessage = index === messages.length - 1;
                     if (
