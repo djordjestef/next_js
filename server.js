@@ -3,6 +3,7 @@ const next = require("next");
 const axios = require("axios");
 const { storeMessages, getMessages } = require("./src/lib/message");
 // const getMessages = require("./src/lib/message");
+// const uuidv4 =require("uuid");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -27,14 +28,14 @@ app.prepare().then(async () => {
 
     socket.on(
       "private-message",
-      ({ content, fromUserName, toID, fromID, messageId, toUser }) => {
+      ({ content, fromUserName, toID, fromID, messageId, toUser,fromSelf }) => {
         storeMessages({
           content,
           messageId,
-          toUser,
           fromUser: fromUserName,
-          toID,
           fromID,
+          toID,
+          fromSelf, // Sender's perspective
         });
         const recipient = onlineUsers.find((user) => user.userID === toID);
 
@@ -42,7 +43,20 @@ app.prepare().then(async () => {
           io.to(toID).emit("private-message", {
             content,
             fromUserName,
-            messageId,
+            // messageId:messageIdEmit,
+            messageId:`${messageId}-1`,
+
+            messageId
+          },{},()=>{
+            console.log("EMIT CALLBACK")
+            storeMessages({
+              content,
+              messageId:`${messageId}-1`,
+              toUser,
+              toID,
+              fromID,
+              fromSelf:false
+            });
           });
         }
       }

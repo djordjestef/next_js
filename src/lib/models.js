@@ -63,7 +63,7 @@ const messageSchema = new mongoose.Schema(
     messageId: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
     },
     toUser: {
       type: String,
@@ -77,12 +77,19 @@ const messageSchema = new mongoose.Schema(
     },
     toID: {
       type: String,
-      required: true,
+      // required: true,
     },
-    fromID: {
-      type: String,
-      required: true,
+    fromID :{
+      type:String
     },
+    fromSelf:{
+      type: Boolean,
+      required:true
+    }
+    // fromID: {
+    //   type: String,
+    //   required: true,
+    // },
   },
   { timestamps: true }
 );

@@ -179,6 +179,7 @@ const ChatSocket = ({ user, users }: any) => {
         messageId,
         toUser: selectedUser,
         fromID: id,
+        fromSelf:true
       });
       setAllMessages((prevState) => [
         ...prevState,
