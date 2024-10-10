@@ -29,14 +29,14 @@ app.prepare().then(async () => {
     socket.on(
       "private-message",
       ({ content, fromUserName, toID, fromID, messageId, toUser,fromSelf }) => {
-        storeMessages({
-          content,
-          messageId,
-          fromUser: fromUserName,
-          fromID,
-          toID,
-          fromSelf, // Sender's perspective
-        });
+        // storeMessages({
+        //   content,
+        //   messageId,
+        //   fromUser: fromUserName,
+        //   fromID,
+        //   toID,
+        //   fromSelf, // Sender's perspective
+        // });
         const recipient = onlineUsers.find((user) => user.userID === toID);
 
         if (recipient) {
@@ -49,14 +49,14 @@ app.prepare().then(async () => {
             messageId
           },{},()=>{
             console.log("EMIT CALLBACK")
-            storeMessages({
-              content,
-              messageId:`${messageId}-1`,
-              toUser,
-              toID,
-              fromID,
-              fromSelf:false
-            });
+            // storeMessages({
+            //   content,
+            //   messageId:`${messageId}-1`,
+            //   toUser,
+            //   toID,
+            //   fromID,
+            //   fromSelf:false
+            // });
           });
         }
       }

@@ -80,7 +80,7 @@ const ChatSocket = ({ user, users }: any) => {
         fromUser: fromUserName,
         content,
         fromSelf: false,
-        seen: false,
+        // seen: false,
       };
       setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
