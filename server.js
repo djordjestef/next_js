@@ -28,36 +28,49 @@ app.prepare().then(async () => {
 
     socket.on(
       "private-message",
-      ({ content, fromUserName, toID, fromID, messageId, toUser,fromSelf }) => {
-        // storeMessages({
-        //   content,
-        //   messageId,
-        //   fromUser: fromUserName,
-        //   fromID,
-        //   toID,
-        //   fromSelf, // Sender's perspective
-        // });
+      ({
+        content,
+        fromUserName,
+        toID,
+        fromID,
+        messageId,
+        toUser,
+        fromSelf,
+      }) => {
+        storeMessages({
+          content,
+          messageId,
+          fromUser: fromUserName,
+          fromID,
+          toID,
+          fromSelf, // Sender's perspective
+        });
         const recipient = onlineUsers.find((user) => user.userID === toID);
 
         if (recipient) {
-          io.to(toID).emit("private-message", {
-            content,
-            fromUserName,
-            // messageId:messageIdEmit,
-            messageId:`${messageId}-1`,
-
-            messageId
-          },{},()=>{
-            console.log("EMIT CALLBACK")
-            // storeMessages({
-            //   content,
-            //   messageId:`${messageId}-1`,
-            //   toUser,
-            //   toID,
-            //   fromID,
-            //   fromSelf:false
-            // });
-          });
+          io.to(toID).emit(
+            "private-message",
+            {
+              content,
+              fromUserName,
+              // messageId:messageIdEmit,
+              messageId,
+              fromID,
+              toID,
+            },
+            {},
+            () => {
+              console.log("EMIT CALLBACK");
+              // storeMessages({
+              //   content,
+              //   messageId:`${messageId}-1`,
+              //   toUser,
+              //   toID,
+              //   fromID,
+              //   fromSelf:false
+              // });
+            }
+          );
         }
       }
     );
@@ -88,10 +101,17 @@ app.prepare().then(async () => {
         );
 
         userMessages.forEach((message) => {
-          io.to(data.userID).emit("private-message", {
+          // io.to(data.userID).emit("private-message", {
+          //   content: message.content,
+          //   fromUserName: message.fromUser,
+          //   messageId: message.messageId,
+          // });
+          io.emit("private-message", {
             content: message.content,
             fromUserName: message.fromUser,
             messageId: message.messageId,
+            fromID:message.fromID,
+            toID:message.toID
           });
         });
       }

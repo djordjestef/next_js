@@ -62,8 +62,11 @@ const ChatSocket = ({ user, users }: any) => {
 
   const socketFn = async () => {
     socket.on("private-message", (data) => {
+
+      const { content, fromUserName, messageId, fromID, toID } = data;
       console.log("data", data);
-      const { content, fromUserName, messageId } = data;
+      console.log('toID',toID)
+      console.log('fromID',fromID)
       let newMessages = {};
       startTransition(() => {
         setNotifications((prev) => ({
@@ -82,7 +85,17 @@ const ChatSocket = ({ user, users }: any) => {
         fromSelf: false,
         // seen: false,
       };
-      setAllMessages((prevState: any) => [...prevState, newMessages]);
+      setAllMessages((prevState) => {
+        if (id === toID) {
+          console.log('ADMIR ')
+          return [...prevState, newMessages]; // Append the new message as it is
+        } else {
+          console.log('HASH ')
+
+          return [...prevState, { ...newMessages, fromSelf: true }]; // Append with 'fromSelf: true'
+        }
+      });
+      // setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
 
     socket.on("display-typing", (data) => {
@@ -165,6 +178,8 @@ const ChatSocket = ({ user, users }: any) => {
         target.scroll({ top: target.scrollHeight, behavior: "smooth" });
       });
     }
+
+      console.log('allMessages',allMessages)
   }, [allMessages]);
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -227,7 +242,7 @@ const ChatSocket = ({ user, users }: any) => {
     );
   };
 
-  console.log('allMessages',allMessages)
+
 
   return (
     <div style={{ minHeight: "70vh" }}>
