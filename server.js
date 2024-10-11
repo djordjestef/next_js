@@ -40,39 +40,22 @@ app.prepare().then(async () => {
         storeMessages({
           content,
           messageId,
-          fromUser: fromUserName,
-          toUser,
+          // fromUser: fromUserName,
+          // toUser,
           fromID,
           toID,
-          fromSelf, // Sender's perspective
+          // fromSelf, // Sender's perspective
         });
         const recipient = onlineUsers.find((user) => user.userID === toID);
 
         if (recipient) {
-          io.to(toID).emit(
-            "private-message",
-            {
-              content,
-              fromUserName,
-              
-              // messageId:messageIdEmit,
-              messageId,
-              fromID,
-              toID,
-            },
-            {},
-            () => {
-              console.log("EMIT CALLBACK");
-              // storeMessages({
-              //   content,
-              //   messageId:`${messageId}-1`,
-              //   toUser,
-              //   toID,
-              //   fromID,
-              //   fromSelf:false
-              // });
-            }
-          );
+          io.to(toID).emit("private-message", {
+            content,
+            fromUserName,
+            messageId,
+            fromID,
+            toID,
+          });
         }
       }
     );
@@ -110,11 +93,11 @@ app.prepare().then(async () => {
           // });
           io.emit("private-message", {
             content: message.content,
-            fromUserName: message.fromUser,
-            toUser:message.toUser,
+            // fromUserName: message.fromUser,
+            // toUser: message.toUser,
             messageId: message.messageId,
-            fromID:message.fromID,
-            toID:message.toID
+            fromID: message.fromID,
+            toID: message.toID,
           });
         });
       }

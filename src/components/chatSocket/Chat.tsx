@@ -80,19 +80,21 @@ const ChatSocket = ({ user, users }: any) => {
 
       newMessages = {
         messageId,
-        // fromUser: fromUserName,
+        fromUser: fromUserName,
         content,
         fromSelf: false,
         // seen: false,
       };
+      console.log('ADMIN', id===toID)
+      console.log('HASH', id===fromID)
       setAllMessages((prevState) => {
         if (id === toID) {
-          console.log('ADMIR ')
-          return [...prevState, {...newMessages, fromUser:fromUserName}]; // Append the new message as it is
-        } else {
-          console.log('HASH ')
+          // console.log('ADMIR ')
+          return [...prevState, {...newMessages, fromID}]; // Append the new message as it is
+        } else if(id===fromID) {
+          // console.log('HASH ')
 
-          return [...prevState, { ...newMessages, fromSelf: true, toUser }]; // Append with 'fromSelf: true'
+          return [...prevState, { ...newMessages, fromSelf: true, toID }]; // Append with 'fromSelf: true'
         }
       });
       // setAllMessages((prevState: any) => [...prevState, newMessages]);
@@ -191,15 +193,16 @@ const ChatSocket = ({ user, users }: any) => {
         content: message,
         fromUserName: username,
         toID: chatId,
+        fromID: id,
         messageId,
         toUser: selectedUser,
-        fromID: id,
         fromSelf:true
       });
       setAllMessages((prevState) => [
         ...prevState,
         {
           messageId,
+          toID:chatId,
           toUser: selectedUser,
           content: message,
           fromSelf: true,
@@ -289,9 +292,10 @@ const ChatSocket = ({ user, users }: any) => {
                 {_.map(_.groupBy(allMessages, "toUser"), (messages) => {
                   return messages.map((message, index) => {
                     const isLastMessage = index === messages.length - 1;
+                    // console.log('message',message)
                     if (
                       message.fromSelf === true &&
-                      message.toUser === selectedUser
+                      message.toID === chatId
                     ) {
                       return (
                         <div
@@ -308,7 +312,7 @@ const ChatSocket = ({ user, users }: any) => {
                       );
                     } else if (
                       message.fromSelf === false &&
-                      message.fromUser === selectedUser
+                      message.fromID === chatId
                     ) {
                       return (
                         <div key={message.messageId}>

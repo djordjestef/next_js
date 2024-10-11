@@ -65,27 +65,28 @@ const messageSchema = new mongoose.Schema(
       required: true,
       // unique: true,
     },
-    toUser: {
-      type: String,
-    },
-    fromUser: {
-      type: String,
-    },
+    // toUser: {
+    //   type: String,
+    // },
+    // fromUser: {
+    //   type: String,
+    // },
     content: {
       type: String,
       required: true,
     },
     toID: {
       type: String,
-      // required: true,
+      required: true,
     },
     fromID :{
-      type:String
+      type:String,
+      required: true,
     },
-    fromSelf:{
-      type: Boolean,
-      required:true
-    }
+    // fromSelf:{
+    //   type: Boolean,
+    //   required:true
+    // }
     // fromID: {
     //   type: String,
     //   required: true,
