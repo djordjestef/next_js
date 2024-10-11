@@ -41,6 +41,7 @@ app.prepare().then(async () => {
           content,
           messageId,
           fromUser: fromUserName,
+          toUser,
           fromID,
           toID,
           fromSelf, // Sender's perspective
@@ -53,6 +54,7 @@ app.prepare().then(async () => {
             {
               content,
               fromUserName,
+              
               // messageId:messageIdEmit,
               messageId,
               fromID,
@@ -109,6 +111,7 @@ app.prepare().then(async () => {
           io.emit("private-message", {
             content: message.content,
             fromUserName: message.fromUser,
+            toUser:message.toUser,
             messageId: message.messageId,
             fromID:message.fromID,
             toID:message.toID

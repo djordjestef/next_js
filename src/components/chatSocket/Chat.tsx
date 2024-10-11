@@ -63,7 +63,7 @@ const ChatSocket = ({ user, users }: any) => {
   const socketFn = async () => {
     socket.on("private-message", (data) => {
 
-      const { content, fromUserName, messageId, fromID, toID } = data;
+      const { content, fromUserName,toUser, messageId, fromID, toID } = data;
       console.log("data", data);
       console.log('toID',toID)
       console.log('fromID',fromID)
@@ -80,7 +80,7 @@ const ChatSocket = ({ user, users }: any) => {
 
       newMessages = {
         messageId,
-        fromUser: fromUserName,
+        // fromUser: fromUserName,
         content,
         fromSelf: false,
         // seen: false,
@@ -88,11 +88,11 @@ const ChatSocket = ({ user, users }: any) => {
       setAllMessages((prevState) => {
         if (id === toID) {
           console.log('ADMIR ')
-          return [...prevState, newMessages]; // Append the new message as it is
+          return [...prevState, {...newMessages, fromUser:fromUserName}]; // Append the new message as it is
         } else {
           console.log('HASH ')
 
-          return [...prevState, { ...newMessages, fromSelf: true }]; // Append with 'fromSelf: true'
+          return [...prevState, { ...newMessages, fromSelf: true, toUser }]; // Append with 'fromSelf: true'
         }
       });
       // setAllMessages((prevState: any) => [...prevState, newMessages]);
