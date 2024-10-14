@@ -7,7 +7,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     await connectToDb();
     const data = await req.json();
     const { message } = data;
-
     const messagePost = new Messages(message);
 
     await messagePost.save();
