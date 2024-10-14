@@ -30,7 +30,7 @@ app.prepare().then(async () => {
       "private-message",
       ({
         content,
-        fromUserName,
+        fromUser,
         toID,
         fromID,
         messageId,
@@ -40,7 +40,7 @@ app.prepare().then(async () => {
         storeMessages({
           content,
           messageId,
-          // fromUser: fromUserName,
+          fromUser,
           // toUser,
           fromID,
           toID,
@@ -51,7 +51,7 @@ app.prepare().then(async () => {
         if (recipient) {
           io.to(toID).emit("private-message", {
             content,
-            fromUserName,
+            fromUser,
             messageId,
             fromID,
             toID,
@@ -81,24 +81,30 @@ app.prepare().then(async () => {
       io.emit("get-users", onlineUsers);
 
       if (allMessages) {
-        const userMessages = allMessages.filter(
-          (message) => message.toID === data.userID
-        );
+        // const userMessages = allMessages.filter(
+        //   (message) => message.toID === data.userID
+        // );
+        console.log("data.userID", data);
+        // console.log('userMessages',userMessages)
 
-        userMessages.forEach((message) => {
-          // io.to(data.userID).emit("private-message", {
-          //   content: message.content,
-          //   fromUserName: message.fromUser,
-          //   messageId: message.messageId,
-          // });
-          io.emit("private-message", {
-            content: message.content,
-            // fromUserName: message.fromUser,
-            // toUser: message.toUser,
-            messageId: message.messageId,
-            fromID: message.fromID,
-            toID: message.toID,
-          });
+        allMessages.forEach((message) => {
+          if (data.userID === message.toID) {
+            io.to(message.toID).emit("private-message", {
+              content: message.content,
+              fromUser: message.fromUser,
+              messageId: message.messageId,
+              fromID: message.fromID,
+              toID: message.toID,
+            });
+          } else if (data.userID === message.fromID) {
+            io.to(message.fromID).emit("private-message", {
+              content: message.content,
+              fromUser: message.fromUser,
+              messageId: message.messageId,
+              fromID: message.fromID,
+              toID: message.toID,
+            });
+          }
         });
       }
     });

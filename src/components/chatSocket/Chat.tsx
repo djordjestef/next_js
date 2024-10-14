@@ -61,9 +61,10 @@ const ChatSocket = ({ user, users }: any) => {
     });
 
   const socketFn = async () => {
+    console.log("SOCKET FN")
     socket.on("private-message", (data) => {
 
-      const { content, fromUserName,toUser, messageId, fromID, toID } = data;
+      const { content, fromUser,toUser, messageId, fromID, toID } = data;
       console.log("data", data);
       console.log('toID',toID)
       console.log('fromID',fromID)
@@ -71,22 +72,22 @@ const ChatSocket = ({ user, users }: any) => {
       startTransition(() => {
         setNotifications((prev) => ({
           ...prev,
-          [fromUserName]: (prev[fromUserName] || 0) + 1,
+          [fromUser]: (prev[fromUser] || 0) + 1,
         }));
       });
 
-      setUserNotification(fromUserName);
+      setUserNotification(fromUser);
       setOnReceiveMessage((prevState) => !prevState);
 
       newMessages = {
         messageId,
-        fromUser: fromUserName,
+        fromUser,
         content,
         fromSelf: false,
         // seen: false,
       };
-      console.log('ADMIN', id===toID)
-      console.log('HASH', id===fromID)
+      // console.log('ADMIN', id===toID)
+      // console.log('HASH', id===fromID)
       setAllMessages((prevState) => {
         if (id === toID) {
           // console.log('ADMIR ')
@@ -142,10 +143,10 @@ const ChatSocket = ({ user, users }: any) => {
   useEffect(() => {
     if (isOpen && selectedUser) {
       const unseenMessages = allMessages
-        .filter((message) => {
+        ?.filter((message) => {
           return message.fromUser === selectedUser && !message.seen;
         })
-        .filter((message) => {
+        ?.filter((message) => {
           return !seenMessages.includes(message);
         });
 
@@ -191,7 +192,7 @@ const ChatSocket = ({ user, users }: any) => {
       const messageId = uuidv4();
       socket.emit("private-message", {
         content: message,
-        fromUserName: username,
+        fromUser: username,
         toID: chatId,
         fromID: id,
         messageId,
