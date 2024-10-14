@@ -25,6 +25,37 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   }
 };
 
+export const PUT = async (req: NextRequest) => {
+  try {
+    await connectToDb();
+    const data = await req.json();
+    const { toID, seen } = data;
+    console.log('data',data)
+    await Messages.findByIdAndUpdate(toID, seen);
+    // await Messages.updateMany(
+    //   { messageId: { $in: messageIds }, toID: toID },
+    //   { $set: { seen: true } }
+    // );
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        data: null,
+        error: null,
+      }),
+
+      {
+        status: 204,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
 export const GET = async (req: NextRequest, res: NextResponse) => {
   try {
     await connectToDb();

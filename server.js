@@ -1,9 +1,9 @@
 const express = require("express");
 const next = require("next");
 const axios = require("axios");
-const { storeMessages, getMessages } = require("./src/lib/message");
-// const getMessages = require("./src/lib/message");
-// const uuidv4 =require("uuid");
+const { storeMessages, getMessages, updateMessage } = require("./src/lib/message");
+// const  {Messages}  = require("./src/lib/models");
+
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -28,24 +28,14 @@ app.prepare().then(async () => {
 
     socket.on(
       "private-message",
-      ({
-        content,
-        fromUser,
-        toID,
-        fromID,
-        messageId,
-        toUser,
-        fromSelf,
-      }) => {
-        storeMessages({
-          content,
-          messageId,
-          fromUser,
-          // toUser,
-          fromID,
-          toID,
-          // fromSelf, // Sender's perspective
-        });
+      ({ content, fromUser, toID, fromID, messageId, toUser, fromSelf }) => {
+        // storeMessages({
+        //   content,
+        //   messageId,
+        //   fromUser,
+        //   fromID,
+        //   toID,
+        // });
         const recipient = onlineUsers.find((user) => user.userID === toID);
 
         if (recipient) {
@@ -109,8 +99,15 @@ app.prepare().then(async () => {
       }
     });
 
-    socket.on("message-seen", ({ senderUserName, toID, messageIds }) => {
+    socket.on("message-seen", async ({ senderUserName, toID, messageIds }) => {
       // console.log("senderUserName", senderUserName);
+
+      // await Messages.updateMany(
+      //   { messageId: { $in: messageIds }, toID: toID },
+      //   { $set: { seen: true } }
+      // );
+
+      await updateMessage({toID,seen:true})
 
       const senderSocket = onlineUsers.find((user) => user.userID === toID);
       // console.log("toID", toID);
