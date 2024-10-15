@@ -1,5 +1,5 @@
 const storeMessages = async (message) => {
-  console.log("messages SERVICE", message);
+  // console.log("messages SERVICE", message);
   try {
     const res = await fetch("http://localhost:3000/api/messages", {
       method: "POST",
@@ -21,9 +21,10 @@ const updateMessage = async (message)=>{
     const res = fetch('http://localhost:3000/api/messages',{
       method:'PUT',
       cache: "no-cache",
-      body: JSON.stringify(message),
+      body: JSON.stringify({message}),
     });
-    return await res.json();
+    console.log('res',res)
+    return await res;
     
   } catch (error) {
     console.error("Failed to store messages:", error);

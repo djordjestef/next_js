@@ -74,7 +74,7 @@ app.prepare().then(async () => {
         // const userMessages = allMessages.filter(
         //   (message) => message.toID === data.userID
         // );
-        console.log("data.userID", data);
+        // console.log("data.userID", data);
         // console.log('userMessages',userMessages)
 
         allMessages.forEach((message) => {
@@ -106,8 +106,9 @@ app.prepare().then(async () => {
       //   { messageId: { $in: messageIds }, toID: toID },
       //   { $set: { seen: true } }
       // );
-
-      await updateMessage({toID,seen:true})
+      
+      await updateMessage({toID,seen:true, messageIds})
+      console.log('messageIds',messageIds)
 
       const senderSocket = onlineUsers.find((user) => user.userID === toID);
       // console.log("toID", toID);

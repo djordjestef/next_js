@@ -29,23 +29,26 @@ export const PUT = async (req: NextRequest) => {
   try {
     await connectToDb();
     const data = await req.json();
-    const { toID, seen } = data;
-    console.log('data',data)
-    await Messages.findByIdAndUpdate(toID, seen);
-    // await Messages.updateMany(
-    //   { messageId: { $in: messageIds }, toID: toID },
-    //   { $set: { seen: true } }
-    // );
+    const {message:{ toID, seen, messageIds}} = data
+    
+    console.log("toID:", toID);
+    console.log("seen:", seen);
+    console.log("messageIds:", messageIds);
+    await Messages.updateMany(
+      { messageId: { $in: messageIds }, toID: toID },
+      { $set: { seen: seen } }
+    );
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        data: null,
-        error: null,
-      }),
+    // console.log("Update Result:", result);
 
+    return NextResponse.json(
       {
-        status: 204,
+        success: true,
+        message: "Message was updated",
+        data: { messageIds, seen },
+      },
+      {
+        status: 200,
         headers: {
           "Content-Type": "application/json",
         },
