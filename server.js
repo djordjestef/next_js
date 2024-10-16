@@ -29,13 +29,13 @@ app.prepare().then(async () => {
     socket.on(
       "private-message",
       ({ content, fromUser, toID, fromID, messageId, toUser, fromSelf }) => {
-        // storeMessages({
-        //   content,
-        //   messageId,
-        //   fromUser,
-        //   fromID,
-        //   toID,
-        // });
+        storeMessages({
+          content,
+          messageId,
+          fromUser,
+          fromID,
+          toID,
+        });
         const recipient = onlineUsers.find((user) => user.userID === toID);
 
         if (recipient) {
@@ -113,8 +113,7 @@ app.prepare().then(async () => {
       console.log('messageIds',messageIds)
 
       const senderSocket = onlineUsers.find((user) => user.userID === toID);
-      // console.log("toID", toID);
-      // console.log("----------");
+    
 
       if (senderSocket) {
         io.to(toID).emit("message-seen", { senderUserName, messageIds });
@@ -124,7 +123,6 @@ app.prepare().then(async () => {
 
     socket.on("offline", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
-      // console.log("onlineUsers OFFLINE METHOSD", onlineUsers);
       io.emit("get-users", onlineUsers);
     });
   });

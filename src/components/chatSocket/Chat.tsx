@@ -61,13 +61,9 @@ const ChatSocket = ({ user, users }: any) => {
     });
 
   const socketFn = async () => {
-    console.log("SOCKET FN")
     socket.on("private-message", (data) => {
+      const { content, fromUser, toUser, messageId, fromID, toID, seen } = data;
 
-      const { content, fromUser,toUser, messageId, fromID, toID, seen } = data;
-      console.log("data", data);
-      console.log('toID',toID)
-      console.log('fromID',fromID)
       let newMessages = {};
       startTransition(() => {
         setNotifications((prev) => ({
@@ -84,7 +80,7 @@ const ChatSocket = ({ user, users }: any) => {
         fromUser,
         content,
         fromSelf: false,
-        seen
+        seen,
         // seen: false,
       };
       // console.log('ADMIN', id===toID)
@@ -92,8 +88,8 @@ const ChatSocket = ({ user, users }: any) => {
       setAllMessages((prevState) => {
         if (id === toID) {
           // console.log('ADMIR ')
-          return [...prevState, {...newMessages, fromID}]; // Append the new message as it is
-        } else if(id===fromID) {
+          return [...prevState, { ...newMessages, fromID }]; // Append the new message as it is
+        } else if (id === fromID) {
           // console.log('HASH ')
 
           return [...prevState, { ...newMessages, fromSelf: true, toID }]; // Append with 'fromSelf: true'
@@ -152,7 +148,6 @@ const ChatSocket = ({ user, users }: any) => {
         });
 
       const messageIds = unseenMessages.map((item) => item.messageId);
-      
 
       if (unseenMessages.length > 0) {
         socket.emit("message-seen", {
@@ -184,7 +179,7 @@ const ChatSocket = ({ user, users }: any) => {
       });
     }
 
-      console.log('allMessages',allMessages)
+    console.log("allMessages", allMessages);
   }, [allMessages]);
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -199,13 +194,13 @@ const ChatSocket = ({ user, users }: any) => {
         fromID: id,
         messageId,
         toUser: selectedUser,
-        fromSelf:true
+        fromSelf: true,
       });
       setAllMessages((prevState) => [
         ...prevState,
         {
           messageId,
-          toID:chatId,
+          toID: chatId,
           toUser: selectedUser,
           content: message,
           fromSelf: true,
@@ -247,8 +242,6 @@ const ChatSocket = ({ user, users }: any) => {
       })
     );
   };
-
-
 
   return (
     <div style={{ minHeight: "70vh" }}>
@@ -296,10 +289,7 @@ const ChatSocket = ({ user, users }: any) => {
                   return messages.map((message, index) => {
                     const isLastMessage = index === messages.length - 1;
                     // console.log('message',message)
-                    if (
-                      message.fromSelf === true &&
-                      message.toID === chatId
-                    ) {
+                    if (message.fromSelf === true && message.toID === chatId) {
                       return (
                         <div
                           key={message.messageId}
