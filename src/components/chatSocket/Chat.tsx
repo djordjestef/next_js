@@ -64,7 +64,7 @@ const ChatSocket = ({ user, users }: any) => {
     console.log("SOCKET FN")
     socket.on("private-message", (data) => {
 
-      const { content, fromUser,toUser, messageId, fromID, toID } = data;
+      const { content, fromUser,toUser, messageId, fromID, toID, seen } = data;
       console.log("data", data);
       console.log('toID',toID)
       console.log('fromID',fromID)
@@ -84,6 +84,7 @@ const ChatSocket = ({ user, users }: any) => {
         fromUser,
         content,
         fromSelf: false,
+        seen
         // seen: false,
       };
       // console.log('ADMIN', id===toID)
@@ -151,6 +152,7 @@ const ChatSocket = ({ user, users }: any) => {
         });
 
       const messageIds = unseenMessages.map((item) => item.messageId);
+      
 
       if (unseenMessages.length > 0) {
         socket.emit("message-seen", {

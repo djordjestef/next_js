@@ -29,15 +29,13 @@ export const PUT = async (req: NextRequest) => {
   try {
     await connectToDb();
     const data = await req.json();
-    const {message:{ toID, seen, messageIds}} = data
+    const {message:{ toID, seen, messageID}} = data
     
     console.log("toID:", toID);
     console.log("seen:", seen);
-    console.log("messageIds:", messageIds);
-    await Messages.updateMany(
-      { messageId: { $in: messageIds }, toID: toID },
-      { $set: { seen: seen } }
-    );
+    console.log("messageID:", messageID);
+    
+    await Messages.updateOne({messageId:messageID}, { $set: { seen } });
 
     // console.log("Update Result:", result);
 
@@ -45,7 +43,7 @@ export const PUT = async (req: NextRequest) => {
       {
         success: true,
         message: "Message was updated",
-        data: { messageIds, seen },
+        data: { messageID, seen },
       },
       {
         status: 200,

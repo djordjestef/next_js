@@ -85,6 +85,7 @@ app.prepare().then(async () => {
               messageId: message.messageId,
               fromID: message.fromID,
               toID: message.toID,
+              seen:message.seen
             });
           } else if (data.userID === message.fromID) {
             io.to(message.fromID).emit("private-message", {
@@ -93,6 +94,7 @@ app.prepare().then(async () => {
               messageId: message.messageId,
               fromID: message.fromID,
               toID: message.toID,
+              seen:message.seen
             });
           }
         });
@@ -106,8 +108,8 @@ app.prepare().then(async () => {
       //   { messageId: { $in: messageIds }, toID: toID },
       //   { $set: { seen: true } }
       // );
-      
-      await updateMessage({toID,seen:true, messageIds})
+      const messageID = messageIds[messageIds.length-1]
+      await updateMessage({toID,seen:true, messageID})
       console.log('messageIds',messageIds)
 
       const senderSocket = onlineUsers.find((user) => user.userID === toID);
