@@ -74,12 +74,6 @@ app.prepare().then(async () => {
       io.emit("get-users", onlineUsers);
 
       if (allMessages.length !== 0) {
-        // const userMessages = allMessages.filter(
-        //   (message) => message.toID === data.userID
-        // );
-        // console.log("data.userID", data);
-        // console.log('userMessages',userMessages)
-
         allMessages.forEach((message) => {
           if (data.userID === message.toID) {
             io.to(message.toID).emit("private-message", {
