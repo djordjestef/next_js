@@ -31,9 +31,9 @@ export const PUT = async (req: NextRequest) => {
     const data = await req.json();
     const {message:{ toID, seen, messageID}} = data
     
-    console.log("toID:", toID);
-    console.log("seen:", seen);
-    console.log("messageID:", messageID);
+    // console.log("toID:", toID);
+    // console.log("seen:", seen);
+    // console.log("messageID:", messageID);
     
     await Messages.updateOne({messageId:messageID}, { $set: { seen } });
 

@@ -1,9 +1,12 @@
 const express = require("express");
 const next = require("next");
 const axios = require("axios");
-const { storeMessages, getMessages, updateMessage } = require("./src/lib/message");
+const {
+  storeMessages,
+  getMessages,
+  updateMessage,
+} = require("./src/lib/message");
 // const  {Messages}  = require("./src/lib/models");
-
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -29,15 +32,15 @@ app.prepare().then(async () => {
     socket.on(
       "private-message",
       ({ content, fromUser, toID, fromID, messageId, toUser, fromSelf }) => {
-        storeMessages({
-          content,
-          messageId,
-          fromUser,
-          fromID,
-          toID,
-        });
+        // storeMessages({
+        //   content,
+        //   messageId,
+        //   fromUser,
+        //   fromID,
+        //   toID,
+        // });
         const recipient = onlineUsers.find((user) => user.userID === toID);
-
+        console.log("toUser", toUser);
         if (recipient) {
           io.to(toID).emit("private-message", {
             content,
@@ -70,7 +73,7 @@ app.prepare().then(async () => {
 
       io.emit("get-users", onlineUsers);
 
-      if (allMessages) {
+      if (allMessages.length !== 0) {
         // const userMessages = allMessages.filter(
         //   (message) => message.toID === data.userID
         // );
@@ -85,7 +88,7 @@ app.prepare().then(async () => {
               messageId: message.messageId,
               fromID: message.fromID,
               toID: message.toID,
-              seen:message.seen
+              seen: message.seen,
             });
           } else if (data.userID === message.fromID) {
             io.to(message.fromID).emit("private-message", {
@@ -94,7 +97,7 @@ app.prepare().then(async () => {
               messageId: message.messageId,
               fromID: message.fromID,
               toID: message.toID,
-              seen:message.seen
+              seen: message.seen,
             });
           }
         });
@@ -108,12 +111,11 @@ app.prepare().then(async () => {
       //   { messageId: { $in: messageIds }, toID: toID },
       //   { $set: { seen: true } }
       // );
-      const messageID = messageIds[messageIds.length-1]
-      await updateMessage({toID,seen:true, messageID})
-      console.log('messageIds',messageIds)
+      const messageID = messageIds[messageIds.length - 1];
+      await updateMessage({ toID, seen: true, messageID });
+      console.log("messageIds", messageIds);
 
       const senderSocket = onlineUsers.find((user) => user.userID === toID);
-    
 
       if (senderSocket) {
         io.to(toID).emit("message-seen", { senderUserName, messageIds });

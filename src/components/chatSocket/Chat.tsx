@@ -64,6 +64,8 @@ const ChatSocket = ({ user, users }: any) => {
     socket.on("private-message", (data) => {
       const { content, fromUser, toUser, messageId, fromID, toID, seen } = data;
 
+
+
       let newMessages = {};
       startTransition(() => {
         setNotifications((prev) => ({
@@ -74,6 +76,7 @@ const ChatSocket = ({ user, users }: any) => {
 
       setUserNotification(fromUser);
       setOnReceiveMessage((prevState) => !prevState);
+            console.log('toUser',toUser)
 
       newMessages = {
         messageId,
@@ -81,22 +84,27 @@ const ChatSocket = ({ user, users }: any) => {
         content,
         fromSelf: false,
         seen,
+        fromID
         // seen: false,
       };
       // console.log('ADMIN', id===toID)
       // console.log('HASH', id===fromID)
-      setAllMessages((prevState) => {
-        if (id === toID) {
-          // console.log('ADMIR ')
-          return [...prevState, { ...newMessages, fromID }]; // Append the new message as it is
-        } else if (id === fromID) {
-          // console.log('HASH ')
 
-          return [...prevState, { ...newMessages, fromSelf: true, toID }]; // Append with 'fromSelf: true'
-        }
-      });
-      // setAllMessages((prevState: any) => [...prevState, newMessages]);
+      // console.log('fromID',fromID)
+      // setAllMessages((prevState) => {
+      //   if (id === toID) {
+      //     console.log('PRVI IF ')
+      //     return [...prevState, { ...newMessages, fromID }]; // Append the new message as it is
+      //   } else if (id === fromID) {
+      //     console.log('DRUGI IF ')
+
+      //     return [...prevState, { ...newMessages, fromSelf: true, toID }]; // Append with 'fromSelf: true'
+      //   }
+      // });
+      setAllMessages((prevState: any) => [...prevState, newMessages]);
     });
+
+
 
     socket.on("display-typing", (data) => {
       if (data.typing == true && data.selectedUser === username) {
@@ -243,6 +251,8 @@ const ChatSocket = ({ user, users }: any) => {
     );
   };
 
+  console.log('chatId',chatId)
+
   return (
     <div style={{ minHeight: "70vh" }}>
       <div className={styles.container}>
@@ -285,7 +295,46 @@ const ChatSocket = ({ user, users }: any) => {
             <>
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
-                {_.map(_.groupBy(allMessages, "toUser"), (messages) => {
+                {allMessages.map((message, index, arr)=>{
+                  const isLastMessage = index===arr.length-1
+                    if (message.fromSelf === true && message.toID === chatId) {
+                      return (
+                        <div
+                          key={message.messageId}
+                          style={{ textAlign: "right" }}
+                        >
+                          <div className={styles.messageContainerSelf}>
+                            {message.content}
+                          </div>
+                          {( message.toID ===chatId )&& (
+                            <p>{message.seen ? "Seen" : "Delivered"}</p>
+                         )} 
+                        </div>
+                      );
+                    } else if (
+                      message.fromSelf === false &&
+                      message.fromID === chatId
+                    ) {
+                      return (
+                        <div key={message.messageId}>
+                          <div className={styles.imageContainer}>
+                            <Image
+                              src={userImg ? userImg : "/noavatar.png"}
+                              alt=""
+                              width={50}
+                              height={50}
+                              style={{ borderRadius: "50%" }}
+                            />
+                          </div>
+                          <div className={styles.messageContainer}>
+                            <strong>{message.fromUser}</strong>
+                            <div>{message.content}</div>
+                          </div>
+                        </div>
+                      );
+                    }
+                })}
+                {/* {_.map(_.groupBy(allMessages, "toUser"), (messages) => {
                   return messages.map((message, index) => {
                     const isLastMessage = index === messages.length - 1;
                     // console.log('message',message)
@@ -327,7 +376,7 @@ const ChatSocket = ({ user, users }: any) => {
                     }
                     return null;
                   });
-                })}
+                })} */}
               </div>
 
               <br />

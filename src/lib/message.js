@@ -15,23 +15,22 @@ const storeMessages = async (message) => {
   }
 };
 
-const updateMessage = async (message)=>{
-  console.log('message',message)
+const updateMessage = async (message) => {
+  // console.log("message", message);
   try {
-    const res = fetch('http://localhost:3000/api/messages',{
-      method:'PUT',
+    const res = await fetch("http://localhost:3000/api/messages", {
+      method: "PUT",
       cache: "no-cache",
-      body: JSON.stringify({message}),
+      body: JSON.stringify({ message }),
     });
-    console.log('res',res)
-    return await res;
-    
+    // console.log("res", res);
+    return res;
   } catch (error) {
     console.error("Failed to store messages:", error);
     if (error instanceof Error) return { error: { message: error.message } };
     return { data: null, error: { message: "Unknown error" } };
   }
-}
+};
 
 const getMessages = async () => {
   try {
@@ -44,10 +43,8 @@ const getMessages = async () => {
   }
 };
 
-
-
 module.exports = {
   storeMessages,
   getMessages,
-  updateMessage
+  updateMessage,
 };
