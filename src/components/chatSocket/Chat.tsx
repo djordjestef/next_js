@@ -134,7 +134,7 @@ const ChatSocket = ({ user, users }: any) => {
   };
 
   useEffect(() => {
-    console.log('USEEFFECT 0')
+    console.log("USEEFFECT 0");
     socketFn();
 
     return () => {
@@ -147,9 +147,8 @@ const ChatSocket = ({ user, users }: any) => {
   // }
 
   useEffect(() => {
-   
     if (isOpen && selectedUser) {
-      console.log('USEEFFECT 1')
+      console.log("USEEFFECT 1");
       const unseenMessages = allMessages
         ?.filter((message) => {
           return message.fromUser === selectedUser && !message.seen;
@@ -172,7 +171,7 @@ const ChatSocket = ({ user, users }: any) => {
   }, [isOpen, selectedUser, chatId, allMessages]);
 
   useEffect(() => {
-    console.log('USEEFFECT 2')
+    console.log("USEEFFECT 2");
     if (selectedUser === userNotification && isOpen) {
       startTransition(() => {
         setNotifications((prev) => ({
@@ -184,7 +183,7 @@ const ChatSocket = ({ user, users }: any) => {
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
-    console.log('USEEFFECT 3')
+    console.log("USEEFFECT 3");
     if (messageEl) {
       messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
@@ -255,7 +254,6 @@ const ChatSocket = ({ user, users }: any) => {
       })
     );
   };
-
 
   return (
     <div style={{ minHeight: "70vh" }}>
