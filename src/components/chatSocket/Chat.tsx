@@ -1,7 +1,13 @@
 "use client";
 import styles from "./chatSocket.module.css";
 import { Alert } from "react-st-modal";
-import React, { useState, useEffect, useRef, startTransition } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  startTransition,
+  useMemo,
+} from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 import _ from "lodash";
@@ -88,13 +94,13 @@ const ChatSocket = ({ user, users }: any) => {
       // console.log('ADMIN', id===toID)
       // console.log('HASH', id===fromID)
 
-      console.log('fromID',fromID)
+      console.log("fromID", fromID);
       setAllMessages((prevState) => {
         if (id === toID) {
-          console.log('PRVI IF ')
+          console.log("PRVI IF ");
           return [...prevState, { ...newMessages, fromID }]; // Append the new message as it is
         } else if (id === fromID) {
-          console.log('DRUGI IF ')
+          console.log("DRUGI IF ");
 
           return [...prevState, { ...newMessages, fromSelf: true, toID }]; // Append with 'fromSelf: true'
         }
@@ -117,8 +123,6 @@ const ChatSocket = ({ user, users }: any) => {
     });
 
     socket.on("message-seen", ({ senderUserName, messageIds }) => {
-      // console.log("EMITOVAN TEK AKO IMA UNSEEN", senderUserName);
-
       setAllMessages((prevMessages) => {
         return prevMessages.map((msg) =>
           messageIds.includes(msg.messageId) && senderUserName === username
@@ -130,6 +134,7 @@ const ChatSocket = ({ user, users }: any) => {
   };
 
   useEffect(() => {
+    console.log('USEEFFECT 0')
     socketFn();
 
     return () => {
@@ -142,7 +147,9 @@ const ChatSocket = ({ user, users }: any) => {
   // }
 
   useEffect(() => {
+   
     if (isOpen && selectedUser) {
+      console.log('USEEFFECT 1')
       const unseenMessages = allMessages
         ?.filter((message) => {
           return message.fromUser === selectedUser && !message.seen;
@@ -165,6 +172,7 @@ const ChatSocket = ({ user, users }: any) => {
   }, [isOpen, selectedUser, chatId, allMessages]);
 
   useEffect(() => {
+    console.log('USEEFFECT 2')
     if (selectedUser === userNotification && isOpen) {
       startTransition(() => {
         setNotifications((prev) => ({
@@ -176,6 +184,7 @@ const ChatSocket = ({ user, users }: any) => {
   }, [selectedUser, onReceiveMessage]);
 
   useEffect(() => {
+    console.log('USEEFFECT 3')
     if (messageEl) {
       messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
@@ -183,7 +192,7 @@ const ChatSocket = ({ user, users }: any) => {
       });
     }
 
-    // console.log("allMessages", allMessages);
+    console.log("allMessages", allMessages);
   }, [allMessages]);
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -247,9 +256,6 @@ const ChatSocket = ({ user, users }: any) => {
     );
   };
 
-  const groupedMessages = _.groupBy(allMessages,'toUser')
-  console.log('groupedMessages',groupedMessages)
-  console.log('selectedUser',selectedUser)
 
   return (
     <div style={{ minHeight: "70vh" }}>
@@ -293,54 +299,16 @@ const ChatSocket = ({ user, users }: any) => {
             <>
               <h3> {selectedUser}</h3>
               <div className={styles.scrollableContainer} ref={messageEl}>
-                {allMessages.map((message, index, arr) => {
-                  const isLastMessage = index === arr.length - 1;
-                  if (message.fromSelf === true && message.toID === chatId) {
-                    return (
-                      <div
-                        key={message.messageId}
-                        style={{ textAlign: "right" }}
-                      >
-                        <div className={styles.messageContainerSelf}>
-                          {message.content}
-                        </div>
-                        {/* {isLastMessage && ( */}
-                          <p>
-                            {message.toID === chatId && message.seen
-                              ? "Seen"
-                              : "Delivered"}
-                          </p>
-                        {/* )} */}
-                      </div>
-                    );
-                  } else if (
-                    message.fromSelf === false &&
-                    message.fromID === chatId
-                  ) {
-                    return (
-                      <div key={message.messageId}>
-                        <div className={styles.imageContainer}>
-                          <Image
-                            src={userImg ? userImg : "/noavatar.png"}
-                            alt=""
-                            width={50}
-                            height={50}
-                            style={{ borderRadius: "50%" }}
-                          />
-                        </div>
-                        <div className={styles.messageContainer}>
-                          <strong>{message.fromUser}</strong>
-                          <div>{message.content}</div>
-                        </div>
-                      </div>
-                    );
-                  }
-                })}
-                {/* {_.map(_.groupBy(allMessages, "toUser"), (messages) => {
-                  return messages.map((message, index) => {
-                    const isLastMessage = index === messages.length - 1;
-                    // console.log('message',message)
-                    if (message.fromSelf === true && message.toID === chatId) {
+                {allMessages
+                  .filter(
+                    (message) =>
+                      message.toUser === selectedUser ||
+                      message.fromUser === selectedUser
+                  )
+                  .map((message, index, arr) => {
+                    const isLastMessage = index === arr.length - 1;
+
+                    if (message.fromSelf) {
                       return (
                         <div
                           key={message.messageId}
@@ -354,15 +322,12 @@ const ChatSocket = ({ user, users }: any) => {
                           )}
                         </div>
                       );
-                    } else if (
-                      message.fromSelf === false &&
-                      message.fromID === chatId
-                    ) {
+                    } else {
                       return (
                         <div key={message.messageId}>
                           <div className={styles.imageContainer}>
                             <Image
-                              src={userImg ? userImg : "/noavatar.png"}
+                              src={userImg || "/noavatar.png"}
                               alt=""
                               width={50}
                               height={50}
@@ -376,9 +341,7 @@ const ChatSocket = ({ user, users }: any) => {
                         </div>
                       );
                     }
-                    return null;
-                  });
-                })} */}
+                  })}
               </div>
 
               <br />
